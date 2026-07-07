@@ -10,8 +10,8 @@ public partial class MathNodeViewModel : NodeViewModel
     public MathNodeViewModel()
     {
         Name = "Math Compute";
-        Inputs.Add(new PinViewModel { Name = "A" });
-        Inputs.Add(new PinViewModel { Name = "B" });
-        Outputs.Add(new PinViewModel { Name = "Result" });
+        Inputs.Add(new PinViewModel { Title = "A", IsInput = true });
+        Inputs.Add(new PinViewModel { Title = "B", IsInput = true });
+        Outputs.Add(new PinViewModel { Title = "Result", IsInput = false });
     }
 }

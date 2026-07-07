@@ -1,14 +1,16 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Text.Json.Serialization;
+using Avalonia;
 using CommunityToolkit.Mvvm.ComponentModel;
+using NodifyM.Avalonia.ViewModelBase;
 
 namespace icsmooi.Models;
 
 [JsonDerivedType(typeof(SimConnectNodeViewModel), "simconnect")]
 [JsonDerivedType(typeof(MathNodeViewModel), "math")]
 [JsonDerivedType(typeof(FfbOutputNodeViewModel), "ffb")]
-public abstract partial class NodeViewModel : ObservableObject
+public abstract partial class NodeViewModel : ObservableObject, INodePosition
 {
     public Guid Id { get; set; } = Guid.NewGuid();
 
@@ -20,6 +22,22 @@ public abstract partial class NodeViewModel : ObservableObject
 
     [ObservableProperty]
     private double _y;
+
+    /// <summary>Runtime-only: whether this node is currently selected on the canvas.</summary>
+    [JsonIgnore]
+    [ObservableProperty]
+    private bool _isSelected;
+
+    /// <summary>Maps Nodify's Point-based Location to the serialised X/Y doubles.</summary>
+    [JsonIgnore]
+    public Point Location
+    {
+        get => new(X, Y);
+        set { X = value.X; Y = value.Y; }
+    }
+
+    partial void OnXChanged(double value) => OnPropertyChanged(nameof(Location));
+    partial void OnYChanged(double value) => OnPropertyChanged(nameof(Location));
 
     public ObservableCollection<PinViewModel> Inputs { get; set; } = [];
     public ObservableCollection<PinViewModel> Outputs { get; set; } = [];

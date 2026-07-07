@@ -10,6 +10,6 @@ public partial class FfbOutputNodeViewModel : NodeViewModel
     public FfbOutputNodeViewModel()
     {
         Name = "FFB Output";
-        Inputs.Add(new PinViewModel { Name = "Magnitude" });
+        Inputs.Add(new PinViewModel { Title = "Magnitude", IsInput = true });
     }
 }

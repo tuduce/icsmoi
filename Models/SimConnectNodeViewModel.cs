@@ -10,6 +10,6 @@ public partial class SimConnectNodeViewModel : NodeViewModel
     public SimConnectNodeViewModel()
     {
         Name = "SimConnect Input";
-        Outputs.Add(new PinViewModel { Name = "Value" });
+        Outputs.Add(new PinViewModel { Title = "Value", IsInput = false });
     }
 }

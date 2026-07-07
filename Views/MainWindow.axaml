@@ -1,20 +1,205 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:icsmooi.ViewModels"
+        xmlns:models="using:icsmooi.Models"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:controls="clr-namespace:NodifyM.Avalonia.Controls;assembly=NodifyM.Avalonia"
+        xmlns:vmb="clr-namespace:NodifyM.Avalonia.ViewModelBase;assembly=NodifyM.Avalonia"
+        mc:Ignorable="d"
+        d:DesignWidth="1280" d:DesignHeight="800"
         x:Class="icsmooi.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="icsmooi">
+        Title="icsmooi — FFB Profile Editor"
+        MinWidth="900" MinHeight="600"
+        Background="#1A1A2E">
 
     <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel/>
+        <vm:MainWindowViewModel />
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <Window.Resources>
 
+        <!-- ── Connection line template ────────────────────────────────── -->
+        <DataTemplate x:Key="ConnectionTemplate"
+                      DataType="{x:Type vmb:ConnectionViewModelBase}">
+            <controls:Connection Source="{Binding Source.Anchor}"
+                                 Target="{Binding Target.Anchor}" />
+        </DataTemplate>
+
+        <!-- ── Pending connection (drawn while user drags from a pin) ──── -->
+        <DataTemplate x:Key="PendingConnectionTemplate"
+                      DataType="{x:Type vmb:PendingConnectionViewModelBase}">
+            <controls:PendingConnection
+                StartedCommand="{Binding StartCommand}"
+                CompletedCommand="{Binding FinishCommand}" />
+        </DataTemplate>
+
+        <!-- ── Shared connector sub-templates ──────────────────────────── -->
+        <DataTemplate x:Key="InputPinTemplate"
+                      DataType="{x:Type models:PinViewModel}">
+            <controls:NodeInput
+                IsConnected="{Binding IsConnected}"
+                Anchor="{Binding Anchor, Mode=TwoWay}"
+                Header="{Binding Title}" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="OutputPinTemplate"
+                      DataType="{x:Type models:PinViewModel}">
+            <controls:NodeOutput
+                IsConnected="{Binding IsConnected}"
+                Anchor="{Binding Anchor, Mode=TwoWay}"
+                Header="{Binding Title}" />
+        </DataTemplate>
+
+    </Window.Resources>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- ═══ Top toolbar ═══════════════════════════════════════════════ -->
+        <Border Grid.Row="0" Background="#16213E" Padding="10,6"
+                BorderThickness="0,0,0,1" BorderBrush="#0F3460">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="6">
+                    <Button Command="{Binding SaveCommand}"
+                            ToolTip.Tip="Save profile to ~/Documents">💾 Save</Button>
+                    <Button Command="{Binding LoadCommand}"
+                            ToolTip.Tip="Load profile from ~/Documents">📂 Load</Button>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <TextBlock Text="Profile:" VerticalAlignment="Center" Opacity="0.7" />
+                    <TextBox Text="{Binding Profile.ProfileName}"
+                             MinWidth="220" Padding="6,3" />
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- ═══ Main workspace ════════════════════════════════════════════ -->
+        <Grid Grid.Row="1" ColumnDefinitions="160,*">
+
+            <!-- ─── Left sidebar: node palette ──────────────────────────── -->
+            <Border Grid.Column="0" Background="#16213E" Padding="10"
+                    BorderThickness="0,0,1,0" BorderBrush="#0F3460">
+                <StackPanel Spacing="6">
+                    <TextBlock Text="NODE PALETTE" FontSize="11" FontWeight="Bold"
+                               Opacity="0.5" LetterSpacing="1" Margin="0,0,0,6" />
+
+                    <Button Command="{Binding AddSimConnectNodeCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            ToolTip.Tip="MSFS SimConnect variable source">
+                        ⬡  SimConnect Input
+                    </Button>
+                    <Button Command="{Binding AddMathNodeCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            ToolTip.Tip="NCalc expression (e.g. [A] * 0.5)">
+                        ∑  Math Compute
+                    </Button>
+                    <Button Command="{Binding AddFfbOutputNodeCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            ToolTip.Tip="DirectInput FFB effect output">
+                        ⚡  FFB Output
+                    </Button>
+
+                    <Separator Margin="0,8" />
+
+                    <TextBlock Text="TIPS" FontSize="10" Opacity="0.4" LetterSpacing="1" />
+                    <TextBlock FontSize="10" Opacity="0.45" TextWrapping="Wrap"
+                               Text="Drag between pins to connect." />
+                    <TextBlock FontSize="10" Opacity="0.45" TextWrapping="Wrap"
+                               Text="Del — delete selected nodes." />
+                    <TextBlock FontSize="10" Opacity="0.45" TextWrapping="Wrap"
+                               Text="Scroll — zoom canvas." />
+                    <TextBlock FontSize="10" Opacity="0.45" TextWrapping="Wrap"
+                               Text="Middle-drag — pan canvas." />
+                </StackPanel>
+            </Border>
+
+            <!-- ─── Right: NodifyM canvas ────────────────────────────────── -->
+            <controls:NodifyEditor
+                Grid.Column="1"
+                x:Name="Editor"
+                ItemsSource="{Binding Nodes}"
+                Connections="{Binding Connections}"
+                PendingConnection="{Binding PendingConnection}"
+                PendingConnectionTemplate="{StaticResource PendingConnectionTemplate}"
+                ConnectionTemplate="{StaticResource ConnectionTemplate}"
+                DisconnectConnectorCommand="{Binding DisconnectConnectorCommand}"
+                Background="#1E1E2E">
+
+                <!-- ── Node type DataTemplates ──────────────────────────── -->
+                <controls:NodifyEditor.ItemTemplate>
+                    <controls:NodeTemplateSelector>
+
+                        <!-- SimConnect node -->
+                        <DataTemplate DataType="{x:Type models:SimConnectNodeViewModel}">
+                            <controls:Node
+                                Location="{Binding Location, Mode=TwoWay}"
+                                Header="{Binding Name}"
+                                Output="{Binding Outputs}"
+                                OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
+                                <StackPanel Margin="6,4" Spacing="4">
+                                    <TextBlock Text="Variable" FontSize="10" Opacity="0.6" />
+                                    <TextBox Text="{Binding VariableName}" MinWidth="160"
+                                             ToolTip.Tip="MSFS SimConnect variable name" />
+                                </StackPanel>
+                            </controls:Node>
+                        </DataTemplate>
+
+                        <!-- Math compute node -->
+                        <DataTemplate DataType="{x:Type models:MathNodeViewModel}">
+                            <controls:Node
+                                Location="{Binding Location, Mode=TwoWay}"
+                                Header="{Binding Name}"
+                                Input="{Binding Inputs}"
+                                Output="{Binding Outputs}"
+                                InputConnectorTemplate="{StaticResource InputPinTemplate}"
+                                OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
+                                <StackPanel Margin="6,4" Spacing="4">
+                                    <TextBlock Text="Expression" FontSize="10" Opacity="0.6" />
+                                    <TextBox Text="{Binding Expression}" MinWidth="140"
+                                             ToolTip.Tip="NCalc expression — use [A], [B] for inputs" />
+                                </StackPanel>
+                            </controls:Node>
+                        </DataTemplate>
+
+                        <!-- FFB Output node -->
+                        <DataTemplate DataType="{x:Type models:FfbOutputNodeViewModel}">
+                            <controls:Node
+                                Location="{Binding Location, Mode=TwoWay}"
+                                Header="{Binding Name}"
+                                Input="{Binding Inputs}"
+                                InputConnectorTemplate="{StaticResource InputPinTemplate}">
+                                <StackPanel Margin="6,4" Spacing="4">
+                                    <TextBlock Text="Effect Type" FontSize="10" Opacity="0.6" />
+                                    <ComboBox SelectedItem="{Binding EffectType}" MinWidth="140">
+                                        <ComboBoxItem>Constant Force</ComboBoxItem>
+                                        <ComboBoxItem>Sine Wave</ComboBoxItem>
+                                        <ComboBoxItem>Triangle Wave</ComboBoxItem>
+                                        <ComboBoxItem>Square Wave</ComboBoxItem>
+                                        <ComboBoxItem>Sawtooth Up</ComboBoxItem>
+                                        <ComboBoxItem>Sawtooth Down</ComboBoxItem>
+                                        <ComboBoxItem>Spring</ComboBoxItem>
+                                        <ComboBoxItem>Damper</ComboBoxItem>
+                                        <ComboBoxItem>Inertia</ComboBoxItem>
+                                        <ComboBoxItem>Friction</ComboBoxItem>
+                                    </ComboBox>
+                                </StackPanel>
+                            </controls:Node>
+                        </DataTemplate>
+
+                    </controls:NodeTemplateSelector>
+                </controls:NodifyEditor.ItemTemplate>
+
+                <controls:NodifyEditor.KeyBindings>
+                    <KeyBinding Gesture="Delete" Command="{Binding DeleteSelectionCommand}" />
+                </controls:NodifyEditor.KeyBindings>
+
+            </controls:NodifyEditor>
+
+        </Grid>
+    </Grid>
 </Window>
