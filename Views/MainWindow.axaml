@@ -76,10 +76,10 @@
         </Border>
 
         <!-- ═══ Main workspace ════════════════════════════════════════════ -->
-        <Grid Grid.Row="1" ColumnDefinitions="160,*">
+        <Grid Grid.Row="1" ColumnDefinitions="480,*">
 
             <!-- ─── Left sidebar: node palette ──────────────────────────── -->
-            <Border Grid.Column="0" Background="#16213E" Padding="10"
+            <Border Grid.Column="0" Background="#607bc4" Padding="10"
                     BorderThickness="0,0,1,0" BorderBrush="#0F3460">
                 <StackPanel Spacing="6">
                     <TextBlock Text="NODE PALETTE" FontSize="11" FontWeight="Bold"
