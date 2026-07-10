@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using icsmooi.Engine;
 using icsmooi.Models;
 using icsmooi.Services;
 using NodifyM.Avalonia.ViewModelBase;
@@ -13,6 +15,16 @@ namespace icsmooi.ViewModels;
 public partial class MainWindowViewModel : NodifyEditorViewModelBase
 {
     private readonly ProfileSerializerService _serializer = new();
+
+    // ── Evaluation engine ────────────────────────────────────────────────────
+
+    public FfbEngineService Engine { get; } = new();
+
+    [ObservableProperty]
+    private bool _engineRunning;
+
+    [ObservableProperty]
+    private string _engineStatus = "Engine: Stopped";
 
     // The serialisable profile � holds profile name and GUID-keyed connection records.
     [ObservableProperty]
@@ -24,12 +36,41 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
         foreach (var node in _profile.Nodes) Nodes.Add(node);
     }
 
+    // ── Engine commands ──────────────────────────────────────────────────────
+
+    [RelayCommand]
+    private void ToggleEngine()
+    {
+        if (EngineRunning)
+        {
+            Engine.Stop();
+            EngineRunning = false;
+            EngineStatus = "Engine: Stopped";
+        }
+        else
+        {
+            Engine.OutputsUpdated += OnEngineOutputsUpdated;
+            Engine.Start(Profile);
+            EngineRunning = true;
+            EngineStatus = "Engine: Running";
+        }
+    }
+
+    private void OnEngineOutputsUpdated(IReadOnlyDictionary<Guid, double> outputs)
+    {
+        foreach (var ffb in Nodes.OfType<FfbOutputNodeViewModel>())
+            if (outputs.TryGetValue(ffb.Id, out var mag))
+                ffb.LastMagnitude = mag;
+    }
+
     // -- Node palette --------------------------------------------------------
 
     [RelayCommand]
     private void AddSimConnectNode()
     {
+        DeselectAll();
         var node = new SimConnectNodeViewModel { X = 60, Y = 150 };
+        node.IsSelected = true;
         Nodes.Add(node);
         Profile.Nodes.Add(node);
     }
@@ -37,7 +78,9 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     [RelayCommand]
     private void AddMathNode()
     {
+        DeselectAll();
         var node = new MathNodeViewModel { X = 300, Y = 150 };
+        node.IsSelected = true;
         Nodes.Add(node);
         Profile.Nodes.Add(node);
     }
@@ -45,7 +88,9 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     [RelayCommand]
     private void AddFfbOutputNode()
     {
+        DeselectAll();
         var node = new FfbOutputNodeViewModel { X = 560, Y = 150 };
+        node.IsSelected = true;
         Nodes.Add(node);
         Profile.Nodes.Add(node);
     }
@@ -160,6 +205,12 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
         p.Nodes.Add(new MathNodeViewModel       { X = 300, Y = 150 });
         p.Nodes.Add(new FfbOutputNodeViewModel  { X = 560, Y = 150 });
         return p;
+    }
+
+    private void DeselectAll()
+    {
+        foreach (var n in Nodes.OfType<NodeViewModel>())
+            n.IsSelected = false;
     }
 }
 
