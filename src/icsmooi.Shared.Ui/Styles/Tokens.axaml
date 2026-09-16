@@ -1,0 +1,7 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!--
+    Shared design tokens (semantic brushes) for icsmooi.Editor and icsmooi.Runtime.
+    Populated in Phase 9 — see the "Consistent modern visual design system" plan section.
+  -->
+</ResourceDictionary>

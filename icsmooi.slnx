@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/icsmooi.Core/icsmooi.Core.csproj" />
+    <Project Path="src/icsmooi.Editor/icsmooi.Editor.csproj" />
+    <Project Path="src/icsmooi.Runtime/icsmooi.Runtime.csproj" />
+    <Project Path="src/icsmooi.Shared.Ui/icsmooi.Shared.Ui.csproj" />
+  </Folder>
+</Solution>

@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Avalonia.Threading;
 using icsmooi.Models;
 
 namespace icsmooi.Engine;
@@ -14,9 +13,14 @@ namespace icsmooi.Engine;
 ///
 /// <para><b>Thread safety:</b> <see cref="SimData"/> is a
 /// <see cref="ConcurrentDictionary{TKey,TValue}"/> so it can be written from
-/// the Phase 4 SimConnect service thread while the engine timer reads it.
+/// the Phase 5 SimConnect telemetry thread while the engine timer reads it.
 /// All other state is only touched from the timer callback or from the UI
 /// thread in <see cref="Start"/>/<see cref="Stop"/>.</para>
+///
+/// <para><b>UI-technology-agnostic:</b> <see cref="OutputsUpdated"/> fires
+/// directly on the timer thread — this service has no Avalonia UI-thread
+/// dependency, since it's shared by both the Editor (which marshals to its
+/// own UI thread in its subscriber) and the headless Runtime app.</para>
 /// </summary>
 public sealed class FfbEngineService : IDisposable
 {
@@ -34,15 +38,16 @@ public sealed class FfbEngineService : IDisposable
     /// Thread-safe cache of SimConnect variable values.
     /// <list type="bullet">
     ///   <item>Phase 3 – populate with mock data to test the graph.</item>
-    ///   <item>Phase 4 – the SimConnectService will write here continuously.</item>
+    ///   <item>Phase 5 – <c>SimConnectTelemetryService</c> writes here continuously.</item>
     /// </list>
     /// </summary>
     public ConcurrentDictionary<string, double> SimData { get; } = new(
         StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
-    /// Fired on the Avalonia <b>UI thread</b> after every successful evaluation
-    /// tick.  Outputs are keyed by <see cref="FfbOutputNodeViewModel.Id"/>.
+    /// Fired on <b>this service's timer thread</b> after every successful evaluation
+    /// tick — callers that update UI-bound state must marshal to their own UI thread.
+    /// Outputs are keyed by <see cref="FfbOutputNodeViewModel.Id"/>.
     /// </summary>
     public event Action<IReadOnlyDictionary<Guid, double>>? OutputsUpdated;
 
@@ -97,9 +102,9 @@ public sealed class FfbEngineService : IDisposable
         var result = _evaluator.Evaluate(snap.Nodes, snap.Connections, SimData);
         if (result is null) return; // Cycle — skip tick
 
-        // Marshal results to the UI thread for binding updates
+        // Fired on this timer thread — callers marshal to their own UI thread if needed.
         var outputs = (IReadOnlyDictionary<Guid, double>)result;
-        Dispatcher.UIThread.Post(() => OutputsUpdated?.Invoke(outputs));
+        OutputsUpdated?.Invoke(outputs);
     }
 
     // ── Private snapshot record ───────────────────────────────────────────────

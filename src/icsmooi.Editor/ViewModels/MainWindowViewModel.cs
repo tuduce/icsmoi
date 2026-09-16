@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using icsmooi.Engine;
@@ -56,11 +57,16 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
         }
     }
 
+    // FfbEngineService fires this on its own timer thread — marshal to the UI thread
+    // before touching bound view-model state.
     private void OnEngineOutputsUpdated(IReadOnlyDictionary<Guid, double> outputs)
     {
-        foreach (var ffb in Nodes.OfType<FfbOutputNodeViewModel>())
-            if (outputs.TryGetValue(ffb.Id, out var mag))
-                ffb.LastMagnitude = mag;
+        Dispatcher.UIThread.Post(() =>
+        {
+            foreach (var ffb in Nodes.OfType<FfbOutputNodeViewModel>())
+                if (outputs.TryGetValue(ffb.Id, out var mag))
+                    ffb.LastMagnitude = mag;
+        });
     }
 
     // -- Node palette --------------------------------------------------------
