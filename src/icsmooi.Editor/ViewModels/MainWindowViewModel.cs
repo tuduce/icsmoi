@@ -27,6 +27,18 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     [ObservableProperty]
     private string _engineStatus = "Engine: Stopped";
 
+    // ── SimConnect telemetry (test-run only — the Editor never drives real
+    // FFB hardware; see icsmooi.Runtime for that) ───────────────────────────
+
+    private SimConnectTelemetryService? _simConnectService;
+    private IntPtr _windowHandle;
+
+    [ObservableProperty]
+    private bool _simConnectActive;
+
+    [ObservableProperty]
+    private string _simConnectStatus = "Sim: Disconnected";
+
     // The serialisable profile � holds profile name and GUID-keyed connection records.
     [ObservableProperty]
     private FfbProfile _profile = CreateDefaultProfile();
@@ -66,6 +78,46 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
             foreach (var ffb in Nodes.OfType<FfbOutputNodeViewModel>())
                 if (outputs.TryGetValue(ffb.Id, out var mag))
                     ffb.LastMagnitude = mag;
+        });
+    }
+
+    // ── SimConnect commands ──────────────────────────────────────────────────
+
+    /// <summary>Called by the View once it has a real native window handle to hand to SimConnect.</summary>
+    public void AttachWindowHandle(IntPtr handle) => _windowHandle = handle;
+
+    [RelayCommand]
+    private void ToggleSimConnection()
+    {
+        if (SimConnectActive)
+        {
+            _simConnectService!.StateChanged -= OnSimConnectStateChanged;
+            _simConnectService.Dispose();
+            _simConnectService = null;
+            SimConnectActive = false;
+            SimConnectStatus = "Sim: Disconnected";
+        }
+        else
+        {
+            _simConnectService = new SimConnectTelemetryService(Engine.SimData, _windowHandle);
+            _simConnectService.StateChanged += OnSimConnectStateChanged;
+            _simConnectService.Start();
+            SimConnectActive = true;
+            SimConnectStatus = "Sim: Connecting…";
+        }
+    }
+
+    // SimConnectTelemetryService fires this on its own background thread.
+    private void OnSimConnectStateChanged(SimConnectionState state)
+    {
+        Dispatcher.UIThread.Post(() =>
+        {
+            SimConnectStatus = state switch
+            {
+                SimConnectionState.Connected => "Sim: Connected",
+                SimConnectionState.Connecting => "Sim: Connecting…",
+                _ => "Sim: Disconnected (retrying…)",
+            };
         });
     }
 

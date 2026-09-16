@@ -70,3 +70,13 @@ When editing the graph while the engine is running, call `Engine.RefreshSnapshot
 ### View binding
 
 `ViewLocator` (in `icsmooi.Editor`) resolves views by naming convention: `Foo.ViewModels.BarViewModel` → `Foo.Views.BarView` (string replace on the full type name), falling back to a "Not Found" `TextBlock`. New view models need a matching view class following this convention to render.
+
+### SimConnect telemetry (icsmooi.Core/Services/SimConnectTelemetryService.cs)
+
+Vendored from the MSFS SDK — proprietary, not on NuGet: `lib/SimConnect/Microsoft.FlightSimulator.SimConnect.dll` (managed) + `lib/SimConnect/SimConnect.dll` (native), referenced only from `icsmooi.Core.csproj` via `HintPath`/`CopyToOutputDirectory`; both exe projects get the native DLL automatically through `ProjectReference` content propagation. Sourced from the user's sibling `TDX-Air-Mechanics` project, which already has a working SimConnect integration for MSFS.
+
+`SimConnectTelemetryService` runs on its own `TaskCreationOptions.LongRunning` task: constructs `SimConnect` with a real native window handle (required by its constructor) but never pumps Win32 messages for it — it polls `ReceiveMessage()` manually in a `Thread.Sleep(16)` loop instead, exactly like TDX's own `SimConnectService.cs`. Two deltas from TDX: it auto-retries the connection on a timer (`Disconnected → Connecting → Connected` state machine, retried every 5s) instead of requiring a manual "Connect" click, and it requests `SIMCONNECT_PERIOD.VISUAL_FRAME` instead of TDX's `SECOND` for lower-latency FFB-relevant updates. **Known quirk**: constructing `SimConnect` when the sim isn't running doesn't always throw — it can also silently never raise `OnRecvOpen`. A `ConnectTimeout` (5s) treats "still Connecting after N seconds" the same as a thrown exception and retries, rather than getting stuck.
+
+Telemetry lands directly in `FfbEngineService.SimData`, keyed by SimConnect variable name exactly as `SimConnectNodeViewModel.VariableName`/`SimVariableCatalog` use it — no intermediate DTO. `SimVariableCatalog.KnownVariables`' order is load-bearing: it must match `SimConnectTelemetryService`'s internal `TelemetryData` struct field order exactly, since SimConnect maps registered variables to struct fields positionally, not by name (the struct uses a `fixed double Values[SimVariableCatalog.Count]` buffer specifically to make this positional mapping explicit rather than relying on reflection's unordered `GetFields()`).
+
+The Editor's "Connect to Sim" toolbar toggle (`MainWindowViewModel.ToggleSimConnectionCommand`) is test-run telemetry only, per the Editor/Runtime hardware boundary above — it feeds live values into `LastMagnitude`-style readouts, nothing more.

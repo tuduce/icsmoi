@@ -64,6 +64,23 @@
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="6">
                     <Border CornerRadius="4" Padding="8,3" VerticalAlignment="Center"
                             Background="#0F3460">
+                        <TextBlock Text="{Binding SimConnectStatus}"
+                                   FontSize="11" Opacity="0.85" VerticalAlignment="Center" />
+                    </Border>
+                    <Button Command="{Binding ToggleSimConnectionCommand}"
+                            IsVisible="{Binding !SimConnectActive}"
+                            ToolTip.Tip="Connect to a running MSFS2020/2024 instance for live telemetry (test-run only — no hardware output in the Editor)"
+                            TextElement.Foreground="White">
+                        🛩 Connect to Sim
+                    </Button>
+                    <Button Command="{Binding ToggleSimConnectionCommand}"
+                            IsVisible="{Binding SimConnectActive}"
+                            ToolTip.Tip="Disconnect from the sim"
+                            TextElement.Foreground="White">
+                        🛩 Disconnect Sim
+                    </Button>
+                    <Border CornerRadius="4" Padding="8,3" VerticalAlignment="Center"
+                            Background="#0F3460">
                         <TextBlock Text="{Binding EngineStatus}"
                                    FontSize="11" Opacity="0.85" VerticalAlignment="Center" />
                     </Border>
@@ -163,8 +180,10 @@
                                 OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
                                 <StackPanel Margin="6,4" Spacing="4">
                                     <TextBlock Text="Variable" FontSize="10" Opacity="0.6" />
-                                    <TextBox Text="{Binding VariableName}" MinWidth="160"
-                                             ToolTip.Tip="MSFS SimConnect variable name" />
+                                    <AutoCompleteBox Text="{Binding VariableName}" MinWidth="160"
+                                                      ItemsSource="{x:Static models:SimVariableCatalog.VariableNames}"
+                                                      FilterMode="Contains"
+                                                      ToolTip.Tip="MSFS SimConnect variable name — pick from the list or type any variable" />
                                 </StackPanel>
                             </controls:Node>
                         </DataTemplate>

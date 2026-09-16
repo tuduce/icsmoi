@@ -1,3 +1,4 @@
+using System;
 using Avalonia.Controls;
 using Avalonia.Input;
 using icsmooi.ViewModels;
@@ -9,6 +10,19 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+    }
+
+    // SimConnect's constructor requires a real native window handle even though
+    // this app never pumps Win32 messages for it (see SimConnectTelemetryService).
+    protected override void OnOpened(EventArgs e)
+    {
+        base.OnOpened(e);
+
+        if (DataContext is MainWindowViewModel vm)
+        {
+            var handle = TryGetPlatformHandle()?.Handle ?? IntPtr.Zero;
+            vm.AttachWindowHandle(handle);
+        }
     }
 
     // Route Delete to the node-deletion command whenever focus is NOT inside a
@@ -25,7 +39,6 @@ public partial class MainWindow : Window
         {
             if (DataContext is MainWindowViewModel vm)
             {
-                vm.Engine.SimData["AIRSPEED INDICATED"] = 250;
                 vm.DeleteSelectionCommand.Execute(null);
             }
             e.Handled = true;
