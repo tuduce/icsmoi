@@ -153,6 +153,66 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
         Profile.Nodes.Add(node);
     }
 
+    [RelayCommand]
+    private void AddComparisonNode()
+    {
+        DeselectAll();
+        var node = new ComparisonNodeViewModel { X = 300, Y = 300 };
+        node.IsSelected = true;
+        Nodes.Add(node);
+        Profile.Nodes.Add(node);
+    }
+
+    [RelayCommand]
+    private void AddLogicNode()
+    {
+        DeselectAll();
+        var node = new LogicNodeViewModel { X = 300, Y = 300 };
+        node.IsSelected = true;
+        Nodes.Add(node);
+        Profile.Nodes.Add(node);
+    }
+
+    [RelayCommand]
+    private void AddSelectNode()
+    {
+        DeselectAll();
+        var node = new SelectNodeViewModel { X = 300, Y = 300 };
+        node.IsSelected = true;
+        Nodes.Add(node);
+        Profile.Nodes.Add(node);
+    }
+
+    [RelayCommand]
+    private void AddClampNode()
+    {
+        DeselectAll();
+        var node = new ClampNodeViewModel { X = 300, Y = 300 };
+        node.IsSelected = true;
+        Nodes.Add(node);
+        Profile.Nodes.Add(node);
+    }
+
+    [RelayCommand]
+    private void AddRangeMapNode()
+    {
+        DeselectAll();
+        var node = new RangeMapNodeViewModel { X = 300, Y = 300 };
+        node.IsSelected = true;
+        Nodes.Add(node);
+        Profile.Nodes.Add(node);
+    }
+
+    [RelayCommand]
+    private void AddCurveNode()
+    {
+        DeselectAll();
+        var node = new CurveNodeViewModel { X = 300, Y = 300 };
+        node.IsSelected = true;
+        Nodes.Add(node);
+        Profile.Nodes.Add(node);
+    }
+
     // -- Connection handling (overrides NodifyEditorViewModelBase) -----------
 
     public override void Connect(ConnectorViewModelBase source, ConnectorViewModelBase target)

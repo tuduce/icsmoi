@@ -127,6 +127,30 @@ public sealed class GraphEvaluator
                     EvalMath(math, wireValues);
                     break;
 
+                case ComparisonNodeViewModel cmp:
+                    EvalComparison(cmp, wireValues);
+                    break;
+
+                case LogicNodeViewModel logic:
+                    EvalLogic(logic, wireValues);
+                    break;
+
+                case SelectNodeViewModel select:
+                    EvalSelect(select, wireValues);
+                    break;
+
+                case ClampNodeViewModel clamp:
+                    EvalClamp(clamp, wireValues);
+                    break;
+
+                case RangeMapNodeViewModel rangeMap:
+                    EvalRangeMap(rangeMap, wireValues);
+                    break;
+
+                case CurveNodeViewModel curve:
+                    EvalCurve(curve, wireValues);
+                    break;
+
                 case FfbOutputNodeViewModel ffb:
                     var pin = ffb.Inputs.FirstOrDefault();
                     outputs[ffb.Id] = pin is not null && wireValues.TryGetValue(pin.Id, out var mag)
@@ -188,5 +212,138 @@ public sealed class GraphEvaluator
         var outPin = node.Outputs.FirstOrDefault();
         if (outPin is not null)
             wireValues[outPin.Id] = result;
+    }
+
+    private static void EvalComparison(ComparisonNodeViewModel node, Dictionary<Guid, double> wireValues)
+    {
+        var a = GetPinValue(node, "A", wireValues);
+        var b = GetPinValue(node, "B", wireValues);
+
+        var result = node.Operator switch
+        {
+            ComparisonOperator.GreaterThan => a > b,
+            ComparisonOperator.LessThan => a < b,
+            ComparisonOperator.GreaterOrEqual => a >= b,
+            ComparisonOperator.LessOrEqual => a <= b,
+            ComparisonOperator.Equal => a == b,
+            ComparisonOperator.NotEqual => a != b,
+            _ => false,
+        };
+
+        SetOutputValue(node, result ? 1.0 : 0.0, wireValues);
+    }
+
+    private static void EvalLogic(LogicNodeViewModel node, Dictionary<Guid, double> wireValues)
+    {
+        var a = GetPinValue(node, "A", wireValues) != 0.0;
+        var b = GetPinValue(node, "B", wireValues) != 0.0;
+
+        var result = node.Operator switch
+        {
+            LogicOperator.And => a && b,
+            LogicOperator.Or => a || b,
+            LogicOperator.Not => !a,
+            LogicOperator.Xor => a ^ b,
+            _ => false,
+        };
+
+        SetOutputValue(node, result ? 1.0 : 0.0, wireValues);
+    }
+
+    private static void EvalSelect(SelectNodeViewModel node, Dictionary<Guid, double> wireValues)
+    {
+        var condition = GetPinValue(node, "Condition", wireValues) != 0.0;
+        var value = condition
+            ? GetPinValue(node, "IfTrue", wireValues)
+            : GetPinValue(node, "IfFalse", wireValues);
+
+        SetOutputValue(node, value, wireValues);
+    }
+
+    private static void EvalClamp(ClampNodeViewModel node, Dictionary<Guid, double> wireValues)
+    {
+        var value = GetPinValue(node, "Value", wireValues);
+        var min = GetPinValue(node, "Min", wireValues);
+        var max = GetPinValue(node, "Max", wireValues);
+        if (min > max) (min, max) = (max, min);
+
+        SetOutputValue(node, Math.Clamp(value, min, max), wireValues);
+    }
+
+    private static void EvalRangeMap(RangeMapNodeViewModel node, Dictionary<Guid, double> wireValues)
+    {
+        var value = GetPinValue(node, "Value", wireValues);
+        var inMin = GetPinValue(node, "InMin", wireValues);
+        var inMax = GetPinValue(node, "InMax", wireValues);
+        var outMin = GetPinValue(node, "OutMin", wireValues);
+        var outMax = GetPinValue(node, "OutMax", wireValues);
+
+        var inSpan = inMax - inMin;
+        var result = Math.Abs(inSpan) < double.Epsilon
+            ? outMin
+            : outMin + (value - inMin) / inSpan * (outMax - outMin);
+
+        if (node.Clamp)
+        {
+            var lo = Math.Min(outMin, outMax);
+            var hi = Math.Max(outMin, outMax);
+            result = Math.Clamp(result, lo, hi);
+        }
+
+        SetOutputValue(node, result, wireValues);
+    }
+
+    private static void EvalCurve(CurveNodeViewModel node, Dictionary<Guid, double> wireValues)
+    {
+        var value = GetPinValue(node, "Value", wireValues);
+        var points = node.Points;
+
+        double result;
+        if (points.Count == 0)
+        {
+            result = 0.0;
+        }
+        else if (points.Count == 1)
+        {
+            result = points[0].Y;
+        }
+        else
+        {
+            var sorted = points.OrderBy(p => p.X).ToList();
+            if (value <= sorted[0].X)
+            {
+                result = sorted[0].Y;
+            }
+            else if (value >= sorted[^1].X)
+            {
+                result = sorted[^1].Y;
+            }
+            else
+            {
+                var upperIndex = sorted.FindIndex(p => p.X >= value);
+                var lower = sorted[upperIndex - 1];
+                var upper = sorted[upperIndex];
+                var span = upper.X - lower.X;
+                var t = span == 0 ? 0 : (value - lower.X) / span;
+                result = lower.Y + t * (upper.Y - lower.Y);
+            }
+        }
+
+        SetOutputValue(node, result, wireValues);
+    }
+
+    // ── Shared pin-access helpers for fixed-named-pin node types ─────────────
+
+    private static double GetPinValue(NodeViewModel node, string pinTitle, Dictionary<Guid, double> wireValues)
+    {
+        var pin = node.Inputs.FirstOrDefault(p => p.Title == pinTitle);
+        return pin is not null && wireValues.TryGetValue(pin.Id, out var v) ? v : 0.0;
+    }
+
+    private static void SetOutputValue(NodeViewModel node, double value, Dictionary<Guid, double> wireValues)
+    {
+        var outPin = node.Outputs.FirstOrDefault();
+        if (outPin is not null)
+            wireValues[outPin.Id] = value;
     }
 }

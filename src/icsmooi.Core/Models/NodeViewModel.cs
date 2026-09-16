@@ -10,6 +10,12 @@ namespace icsmooi.Models;
 [JsonDerivedType(typeof(SimConnectNodeViewModel), "simconnect")]
 [JsonDerivedType(typeof(MathNodeViewModel), "math")]
 [JsonDerivedType(typeof(FfbOutputNodeViewModel), "ffb")]
+[JsonDerivedType(typeof(ComparisonNodeViewModel), "comparison")]
+[JsonDerivedType(typeof(LogicNodeViewModel), "logic")]
+[JsonDerivedType(typeof(SelectNodeViewModel), "select")]
+[JsonDerivedType(typeof(ClampNodeViewModel), "clamp")]
+[JsonDerivedType(typeof(RangeMapNodeViewModel), "rangemap")]
+[JsonDerivedType(typeof(CurveNodeViewModel), "curve")]
 public abstract partial class NodeViewModel : ObservableObject, INodePosition
 {
     public Guid Id { get; set; } = Guid.NewGuid();

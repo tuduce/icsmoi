@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:icsmooi.ViewModels"
         xmlns:models="using:icsmooi.Models"
+        xmlns:views="using:icsmooi.Views"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:NodifyM.Avalonia.Controls;assembly=NodifyM.Avalonia"
@@ -140,6 +141,48 @@
                         ⚡  FFB Output
                     </Button>
 
+                    <TextBlock Text="LOGIC &amp; COMPARE" FontSize="10" Opacity="0.5"
+                               LetterSpacing="1" Margin="0,6,0,0" />
+                    <Button Command="{Binding AddComparisonNodeCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            ToolTip.Tip="Compare A and B (&gt;, &lt;, ==, ...)">
+                        ⚖  Compare
+                    </Button>
+                    <Button Command="{Binding AddLogicNodeCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            ToolTip.Tip="AND / OR / NOT / XOR">
+                        🔧  Logic
+                    </Button>
+                    <Button Command="{Binding AddSelectNodeCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            ToolTip.Tip="Pick IfTrue or IfFalse based on Condition">
+                        🔀  Select
+                    </Button>
+
+                    <TextBlock Text="SHAPING" FontSize="10" Opacity="0.5"
+                               LetterSpacing="1" Margin="0,6,0,0" />
+                    <Button Command="{Binding AddClampNodeCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            ToolTip.Tip="Clamp Value between Min and Max">
+                        ✂  Clamp
+                    </Button>
+                    <Button Command="{Binding AddRangeMapNodeCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            ToolTip.Tip="Remap Value from one range to another">
+                        📐  Range Map
+                    </Button>
+                    <Button Command="{Binding AddCurveNodeCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            ToolTip.Tip="Multi-point curve — drag to shape">
+                        📈  Curve
+                    </Button>
+
                     <Separator Margin="0,8" />
 
                     <TextBlock Text="TIPS" FontSize="10" Opacity="0.4" LetterSpacing="1" />
@@ -233,6 +276,112 @@
                                         <TextBlock FontSize="11" FontFamily="Consolas,Monospace"
                                                    Text="{Binding LastMagnitude, StringFormat='⚡ {0:F4}'}" />
                                     </Border>
+                                </StackPanel>
+                            </controls:Node>
+                        </DataTemplate>
+
+                        <!-- Comparison node -->
+                        <DataTemplate DataType="{x:Type models:ComparisonNodeViewModel}">
+                            <controls:Node
+                                Location="{Binding Location, Mode=TwoWay}"
+                                IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                                Header="{Binding Name}"
+                                Input="{Binding Inputs}"
+                                Output="{Binding Outputs}"
+                                InputConnectorTemplate="{StaticResource InputPinTemplate}"
+                                OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
+                                <StackPanel Margin="6,4" Spacing="4">
+                                    <TextBlock Text="Operator" FontSize="10" Opacity="0.6" />
+                                    <ComboBox ItemsSource="{x:Static models:ComparisonNodeViewModel.Operators}"
+                                              SelectedItem="{Binding Operator, Mode=TwoWay}"
+                                              MinWidth="120" />
+                                </StackPanel>
+                            </controls:Node>
+                        </DataTemplate>
+
+                        <!-- Logic node -->
+                        <DataTemplate DataType="{x:Type models:LogicNodeViewModel}">
+                            <controls:Node
+                                Location="{Binding Location, Mode=TwoWay}"
+                                IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                                Header="{Binding Name}"
+                                Input="{Binding Inputs}"
+                                Output="{Binding Outputs}"
+                                InputConnectorTemplate="{StaticResource InputPinTemplate}"
+                                OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
+                                <StackPanel Margin="6,4" Spacing="4">
+                                    <TextBlock Text="Operator" FontSize="10" Opacity="0.6" />
+                                    <ComboBox ItemsSource="{x:Static models:LogicNodeViewModel.Operators}"
+                                              SelectedItem="{Binding Operator, Mode=TwoWay}"
+                                              MinWidth="120" />
+                                </StackPanel>
+                            </controls:Node>
+                        </DataTemplate>
+
+                        <!-- Select node -->
+                        <DataTemplate DataType="{x:Type models:SelectNodeViewModel}">
+                            <controls:Node
+                                Location="{Binding Location, Mode=TwoWay}"
+                                IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                                Header="{Binding Name}"
+                                Input="{Binding Inputs}"
+                                Output="{Binding Outputs}"
+                                InputConnectorTemplate="{StaticResource InputPinTemplate}"
+                                OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
+                                <StackPanel Margin="6,4" Spacing="4">
+                                    <TextBlock Text="IfTrue when Condition ≠ 0" FontSize="10"
+                                               Opacity="0.6" TextWrapping="Wrap" MaxWidth="130" />
+                                </StackPanel>
+                            </controls:Node>
+                        </DataTemplate>
+
+                        <!-- Clamp node -->
+                        <DataTemplate DataType="{x:Type models:ClampNodeViewModel}">
+                            <controls:Node
+                                Location="{Binding Location, Mode=TwoWay}"
+                                IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                                Header="{Binding Name}"
+                                Input="{Binding Inputs}"
+                                Output="{Binding Outputs}"
+                                InputConnectorTemplate="{StaticResource InputPinTemplate}"
+                                OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
+                                <StackPanel Margin="6,4" Spacing="4">
+                                    <TextBlock Text="Clamp(Value, Min, Max)" FontSize="10"
+                                               Opacity="0.6" TextWrapping="Wrap" MaxWidth="130" />
+                                </StackPanel>
+                            </controls:Node>
+                        </DataTemplate>
+
+                        <!-- Range Map node -->
+                        <DataTemplate DataType="{x:Type models:RangeMapNodeViewModel}">
+                            <controls:Node
+                                Location="{Binding Location, Mode=TwoWay}"
+                                IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                                Header="{Binding Name}"
+                                Input="{Binding Inputs}"
+                                Output="{Binding Outputs}"
+                                InputConnectorTemplate="{StaticResource InputPinTemplate}"
+                                OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
+                                <StackPanel Margin="6,4" Spacing="4">
+                                    <CheckBox IsChecked="{Binding Clamp, Mode=TwoWay}"
+                                              Content="Clamp output" FontSize="10" />
+                                </StackPanel>
+                            </controls:Node>
+                        </DataTemplate>
+
+                        <!-- Curve node -->
+                        <DataTemplate DataType="{x:Type models:CurveNodeViewModel}">
+                            <controls:Node
+                                Location="{Binding Location, Mode=TwoWay}"
+                                IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                                Header="{Binding Name}"
+                                Input="{Binding Inputs}"
+                                Output="{Binding Outputs}"
+                                InputConnectorTemplate="{StaticResource InputPinTemplate}"
+                                OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
+                                <StackPanel Margin="6,4" Spacing="4">
+                                    <views:CurveEditorControl Points="{Binding Points}"
+                                        ToolTip.Tip="Double-click empty space to add a point, double-click a point to remove it" />
                                 </StackPanel>
                             </controls:Node>
                         </DataTemplate>
