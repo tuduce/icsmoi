@@ -1,23 +1,51 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:icsmooi.Runtime.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        d:DesignWidth="420" d:DesignHeight="260"
+        d:DesignWidth="420" d:DesignHeight="340"
         x:Class="icsmooi.Runtime.Views.StatusWindow"
+        x:DataType="vm:StatusWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="icsmooi Runtime"
-        Width="420" Height="260"
+        Width="420" Height="340"
         CanResize="False"
         Background="#1A1A2E">
 
-    <StackPanel Margin="20" Spacing="10">
-        <TextBlock Text="icsmooi Runtime" FontSize="18" FontWeight="Bold"
-                    Foreground="White" />
+    <StackPanel Margin="20" Spacing="12">
+        <TextBlock Text="icsmooi Runtime" FontSize="18" FontWeight="Bold" Foreground="White" />
         <TextBlock Text="Background telemetry + force-feedback engine."
                     Foreground="#CCCCCC" TextWrapping="Wrap" />
-        <TextBlock Text="Status UI (profile, sim connection, active effects) lands in a later phase."
-                    Foreground="#888888" FontSize="11" TextWrapping="Wrap" />
+
+        <Border Background="#16213E" CornerRadius="6" Padding="12" Margin="0,8,0,0">
+            <StackPanel Spacing="8">
+                <DockPanel>
+                    <Button DockPanel.Dock="Right" Click="OnLoadProfileClicked"
+                            ToolTip.Tip="Load a saved .icsmooi.json profile">
+                        Load Profile…
+                    </Button>
+                    <TextBlock Text="{Binding ProfileName}" FontWeight="Bold"
+                               Foreground="White" VerticalAlignment="Center" />
+                </DockPanel>
+
+                <TextBlock Text="{Binding SimConnectStatus}" Foreground="#CCCCCC" FontSize="12" />
+                <TextBlock Text="{Binding EngineStatus}" Foreground="#CCCCCC" FontSize="12" />
+
+                <Separator Margin="0,4" />
+
+                <DockPanel>
+                    <ToggleSwitch DockPanel.Dock="Right"
+                                  IsChecked="{Binding EffectsEnabled, Mode=TwoWay}"
+                                  OnContent="" OffContent=""
+                                  ToolTip.Tip="Enable real DirectInput hardware output — off by default" />
+                    <TextBlock Text="{Binding EffectsStatus}" FontWeight="Bold"
+                               Foreground="White" VerticalAlignment="Center" />
+                </DockPanel>
+                <TextBlock Text="Effects stay off until you switch this on — loading a profile and running the engine only ever produces simulated readouts."
+                           Foreground="#888888" FontSize="10" TextWrapping="Wrap" />
+            </StackPanel>
+        </Border>
     </StackPanel>
 
 </Window>
