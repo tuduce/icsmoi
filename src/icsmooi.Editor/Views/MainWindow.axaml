@@ -183,6 +183,21 @@
                         📈  Curve
                     </Button>
 
+                    <TextBlock Text="HARDWARE OUTPUT" FontSize="10" Opacity="0.5"
+                               LetterSpacing="1" Margin="0,6,0,0" />
+                    <Button Command="{Binding AddConstantForceOutputNodeCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            ToolTip.Tip="Real DirectInput Constant Force effect (Runtime app only)">
+                        🔨  Constant Force
+                    </Button>
+                    <Button Command="{Binding AddConditionOutputNodeCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            ToolTip.Tip="Real DirectInput Spring/Damper/Inertia/Friction effect (Runtime app only)">
+                        🌀  Condition
+                    </Button>
+
                     <Separator Margin="0,8" />
 
                     <TextBlock Text="TIPS" FontSize="10" Opacity="0.4" LetterSpacing="1" />
@@ -382,6 +397,70 @@
                                 <StackPanel Margin="6,4" Spacing="4">
                                     <views:CurveEditorControl Points="{Binding Points}"
                                         ToolTip.Tip="Double-click empty space to add a point, double-click a point to remove it" />
+                                </StackPanel>
+                            </controls:Node>
+                        </DataTemplate>
+
+                        <!-- Constant Force output node (real hardware — Runtime app only) -->
+                        <DataTemplate DataType="{x:Type models:ConstantForceOutputNodeViewModel}">
+                            <controls:Node
+                                Location="{Binding Location, Mode=TwoWay}"
+                                IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                                Header="{Binding Name}"
+                                Input="{Binding Inputs}"
+                                InputConnectorTemplate="{StaticResource InputPinTemplate}">
+                                <StackPanel Margin="6,4" Spacing="4">
+                                    <TextBlock Text="Device" FontSize="10" Opacity="0.6" />
+                                    <ComboBox ItemsSource="{Binding $parent[Window].DataContext.AvailableDevices}"
+                                              SelectedValueBinding="{Binding InstanceGuid}"
+                                              SelectedValue="{Binding DeviceInstanceGuid, Mode=TwoWay}"
+                                              DisplayMemberBinding="{Binding ProductName}"
+                                              MinWidth="140" PlaceholderText="(no device selected)" />
+                                    <TextBlock Text="Axis Index / Gain" FontSize="10" Opacity="0.6" />
+                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                        <NumericUpDown Value="{Binding AxisIndex, Mode=TwoWay}"
+                                                       Minimum="0" Increment="1" Width="70" ShowButtonSpinner="False" />
+                                        <NumericUpDown Value="{Binding Gain, Mode=TwoWay}"
+                                                       Minimum="0" Maximum="10000" Increment="500" Width="90" ShowButtonSpinner="False" />
+                                    </StackPanel>
+                                    <Border Background="#0F3460" CornerRadius="3" Padding="4,2">
+                                        <TextBlock FontSize="11" FontFamily="Consolas,Monospace"
+                                                   Text="{Binding LastMagnitude, StringFormat='⚡ {0:F4}'}" />
+                                    </Border>
+                                </StackPanel>
+                            </controls:Node>
+                        </DataTemplate>
+
+                        <!-- Condition output node (spring/damper/inertia/friction — real hardware, Runtime app only) -->
+                        <DataTemplate DataType="{x:Type models:ConditionOutputNodeViewModel}">
+                            <controls:Node
+                                Location="{Binding Location, Mode=TwoWay}"
+                                IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                                Header="{Binding Name}"
+                                Input="{Binding Inputs}"
+                                InputConnectorTemplate="{StaticResource InputPinTemplate}">
+                                <StackPanel Margin="6,4" Spacing="4">
+                                    <TextBlock Text="Kind" FontSize="10" Opacity="0.6" />
+                                    <ComboBox ItemsSource="{x:Static models:ConditionOutputNodeViewModel.ConditionKinds}"
+                                              SelectedItem="{Binding ConditionKind, Mode=TwoWay}"
+                                              MinWidth="120" />
+                                    <TextBlock Text="Device" FontSize="10" Opacity="0.6" />
+                                    <ComboBox ItemsSource="{Binding $parent[Window].DataContext.AvailableDevices}"
+                                              SelectedValueBinding="{Binding InstanceGuid}"
+                                              SelectedValue="{Binding DeviceInstanceGuid, Mode=TwoWay}"
+                                              DisplayMemberBinding="{Binding ProductName}"
+                                              MinWidth="140" PlaceholderText="(no device selected)" />
+                                    <TextBlock Text="Axis Index / Gain" FontSize="10" Opacity="0.6" />
+                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                        <NumericUpDown Value="{Binding AxisIndex, Mode=TwoWay}"
+                                                       Minimum="0" Increment="1" Width="70" ShowButtonSpinner="False" />
+                                        <NumericUpDown Value="{Binding Gain, Mode=TwoWay}"
+                                                       Minimum="0" Maximum="10000" Increment="500" Width="90" ShowButtonSpinner="False" />
+                                    </StackPanel>
+                                    <Border Background="#0F3460" CornerRadius="3" Padding="4,2">
+                                        <TextBlock FontSize="11" FontFamily="Consolas,Monospace"
+                                                   Text="{Binding LastPositiveCoefficient, StringFormat='⚡ {0:F4}'}" />
+                                    </Border>
                                 </StackPanel>
                             </controls:Node>
                         </DataTemplate>

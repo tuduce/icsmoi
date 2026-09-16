@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using CommunityToolkit.Mvvm.Input;
 using icsmooi.Engine;
 using icsmooi.Models;
 using icsmooi.Services;
+using icsmooi.Services.DirectInput;
 using NodifyM.Avalonia.ViewModelBase;
 
 namespace icsmooi.ViewModels;
@@ -16,6 +18,21 @@ namespace icsmooi.ViewModels;
 public partial class MainWindowViewModel : NodifyEditorViewModelBase
 {
     private readonly ProfileSerializerService _serializer = new();
+
+    // ── DirectInput device picker (enumeration only — the Editor never
+    // acquires a device or creates a real effect; see icsmooi.Runtime for that) ──
+
+    private readonly FfbDeviceManager _deviceManager = new();
+
+    public ObservableCollection<FfbDeviceInfo> AvailableDevices { get; } = [];
+
+    [RelayCommand]
+    private void RefreshDevices()
+    {
+        AvailableDevices.Clear();
+        foreach (var device in _deviceManager.EnumerateDevices())
+            AvailableDevices.Add(device);
+    }
 
     // ── Evaluation engine ────────────────────────────────────────────────────
 
@@ -47,6 +64,7 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     {
         // Seed the NodifyEditor Nodes collection from the initial profile
         foreach (var node in _profile.Nodes) Nodes.Add(node);
+        RefreshDevices();
     }
 
     // ── Engine commands ──────────────────────────────────────────────────────
@@ -78,6 +96,14 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
             foreach (var ffb in Nodes.OfType<FfbOutputNodeViewModel>())
                 if (outputs.TryGetValue(ffb.Id, out var mag))
                     ffb.LastMagnitude = mag;
+
+            foreach (var cf in Nodes.OfType<ConstantForceOutputNodeViewModel>())
+                if (outputs.TryGetValue(cf.Id, out var mag))
+                    cf.LastMagnitude = mag;
+
+            foreach (var cond in Nodes.OfType<ConditionOutputNodeViewModel>())
+                if (outputs.TryGetValue(cond.Id, out var coeff))
+                    cond.LastPositiveCoefficient = coeff;
         });
     }
 
@@ -208,6 +234,26 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     {
         DeselectAll();
         var node = new CurveNodeViewModel { X = 300, Y = 300 };
+        node.IsSelected = true;
+        Nodes.Add(node);
+        Profile.Nodes.Add(node);
+    }
+
+    [RelayCommand]
+    private void AddConstantForceOutputNode()
+    {
+        DeselectAll();
+        var node = new ConstantForceOutputNodeViewModel { X = 560, Y = 300 };
+        node.IsSelected = true;
+        Nodes.Add(node);
+        Profile.Nodes.Add(node);
+    }
+
+    [RelayCommand]
+    private void AddConditionOutputNode()
+    {
+        DeselectAll();
+        var node = new ConditionOutputNodeViewModel { X = 560, Y = 300 };
         node.IsSelected = true;
         Nodes.Add(node);
         Profile.Nodes.Add(node);

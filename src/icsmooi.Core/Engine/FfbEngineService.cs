@@ -51,6 +51,14 @@ public sealed class FfbEngineService : IDisposable
     /// </summary>
     public event Action<IReadOnlyDictionary<Guid, double>>? OutputsUpdated;
 
+    /// <summary>
+    /// Fired on the same timer thread as <see cref="OutputsUpdated"/>, carrying
+    /// richer per-effect-type parameters for real hardware-output node types.
+    /// Only <c>icsmooi.Runtime</c>'s <c>FfbEffectManager</c> subscribes to this —
+    /// the Editor never drives real FFB hardware.
+    /// </summary>
+    public event Action<IReadOnlyDictionary<Guid, EffectOutputParams>>? HardwareOutputsUpdated;
+
     /// <summary>Whether the engine timer is active.</summary>
     public bool IsRunning { get; private set; }
 
@@ -103,8 +111,8 @@ public sealed class FfbEngineService : IDisposable
         if (result is null) return; // Cycle — skip tick
 
         // Fired on this timer thread — callers marshal to their own UI thread if needed.
-        var outputs = (IReadOnlyDictionary<Guid, double>)result;
-        OutputsUpdated?.Invoke(outputs);
+        OutputsUpdated?.Invoke(result.Magnitudes);
+        HardwareOutputsUpdated?.Invoke(result.EffectParams);
     }
 
     // ── Private snapshot record ───────────────────────────────────────────────

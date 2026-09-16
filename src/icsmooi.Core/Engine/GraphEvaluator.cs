@@ -25,24 +25,20 @@ namespace icsmooi.Engine;
 public sealed class GraphEvaluator
 {
     /// <summary>
-    /// Evaluates the graph and returns the output magnitude for every
-    /// <see cref="FfbOutputNodeViewModel"/> found in <paramref name="nodes"/>.
+    /// Evaluates the graph and returns both a UI-readout magnitude and (for
+    /// real hardware-output node types) richer per-effect parameters for
+    /// every output node found in <paramref name="nodes"/>.
     /// </summary>
     /// <param name="nodes">Snapshot of all nodes in the profile.</param>
     /// <param name="connections">Snapshot of all connections.</param>
-    /// <param name="simData">Current SimConnect variable values (variable name → value).
-    ///   Phase 4 will supply a <c>ConcurrentDictionary</c> here; Phase 3 passes a
-    ///   read-only mock.</param>
-    /// <returns>
-    ///   A dictionary mapping each <see cref="FfbOutputNodeViewModel.Id"/> to its
-    ///   computed magnitude, or <c>null</c> if the graph contains a cycle.
-    /// </returns>
-    public Dictionary<Guid, double>? Evaluate(
+    /// <param name="simData">Current SimConnect variable values (variable name → value).</param>
+    /// <returns>The evaluated outputs, or <c>null</c> if the graph contains a cycle.</returns>
+    public NodeOutputResult? Evaluate(
         IReadOnlyList<NodeViewModel> nodes,
         IReadOnlyList<ConnectionViewModel> connections,
         IReadOnlyDictionary<string, double> simData)
     {
-        if (nodes.Count == 0) return [];
+        if (nodes.Count == 0) return new NodeOutputResult([], []);
 
         // ── 1.  Build lookup tables ─────────────────────────────────────────
 
@@ -111,7 +107,8 @@ public sealed class GraphEvaluator
 
         // ── 6.  Evaluate nodes in topological order ───────────────────────────
 
-        var outputs = new Dictionary<Guid, double>();
+        var magnitudes = new Dictionary<Guid, double>();
+        var effectParams = new Dictionary<Guid, EffectOutputParams>();
 
         foreach (var nodeId in evalOrder)
         {
@@ -153,8 +150,24 @@ public sealed class GraphEvaluator
 
                 case FfbOutputNodeViewModel ffb:
                     var pin = ffb.Inputs.FirstOrDefault();
-                    outputs[ffb.Id] = pin is not null && wireValues.TryGetValue(pin.Id, out var mag)
+                    magnitudes[ffb.Id] = pin is not null && wireValues.TryGetValue(pin.Id, out var mag)
                         ? mag : 0.0;
+                    break;
+
+                case ConstantForceOutputNodeViewModel constantForce:
+                    var cfMagnitude = GetPinValue(constantForce, "Magnitude", wireValues);
+                    magnitudes[constantForce.Id] = cfMagnitude;
+                    effectParams[constantForce.Id] = new ConstantForceParams(cfMagnitude);
+                    break;
+
+                case ConditionOutputNodeViewModel condition:
+                    var posCoeff = GetPinValue(condition, "PositiveCoefficient", wireValues);
+                    var negCoeff = GetPinValue(condition, "NegativeCoefficient", wireValues);
+                    var offset = GetPinValue(condition, "Offset", wireValues);
+                    var deadBand = GetPinValue(condition, "DeadBand", wireValues);
+                    var saturation = GetPinValue(condition, "Saturation", wireValues);
+                    magnitudes[condition.Id] = posCoeff;
+                    effectParams[condition.Id] = new ConditionParams(posCoeff, negCoeff, offset, deadBand, saturation);
                     break;
             }
 
@@ -168,7 +181,7 @@ public sealed class GraphEvaluator
             }
         }
 
-        return outputs;
+        return new NodeOutputResult(magnitudes, effectParams);
     }
 
     // ── Node-type evaluation helpers ─────────────────────────────────────────

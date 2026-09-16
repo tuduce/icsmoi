@@ -16,6 +16,8 @@ namespace icsmooi.Models;
 [JsonDerivedType(typeof(ClampNodeViewModel), "clamp")]
 [JsonDerivedType(typeof(RangeMapNodeViewModel), "rangemap")]
 [JsonDerivedType(typeof(CurveNodeViewModel), "curve")]
+[JsonDerivedType(typeof(ConstantForceOutputNodeViewModel), "constantforce")]
+[JsonDerivedType(typeof(ConditionOutputNodeViewModel), "condition")]
 public abstract partial class NodeViewModel : ObservableObject, INodePosition
 {
     public Guid Id { get; set; } = Guid.NewGuid();
