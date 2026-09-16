@@ -16,3 +16,15 @@ public sealed record ConditionParams(
     double Offset,
     double DeadBand,
     double Saturation) : EffectOutputParams;
+
+public sealed record PeriodicParams(
+    Models.Waveform Waveform,
+    double Magnitude,
+    double Period,
+    double Phase,
+    double Offset) : EffectOutputParams;
+
+public sealed record RampParams(
+    double StartMagnitude,
+    double EndMagnitude,
+    double Duration) : EffectOutputParams;

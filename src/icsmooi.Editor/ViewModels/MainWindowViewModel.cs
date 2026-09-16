@@ -104,6 +104,14 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
             foreach (var cond in Nodes.OfType<ConditionOutputNodeViewModel>())
                 if (outputs.TryGetValue(cond.Id, out var coeff))
                     cond.LastPositiveCoefficient = coeff;
+
+            foreach (var periodic in Nodes.OfType<PeriodicOutputNodeViewModel>())
+                if (outputs.TryGetValue(periodic.Id, out var pMag))
+                    periodic.LastMagnitude = pMag;
+
+            foreach (var ramp in Nodes.OfType<RampForceOutputNodeViewModel>())
+                if (outputs.TryGetValue(ramp.Id, out var rMag))
+                    ramp.LastStartMagnitude = rMag;
         });
     }
 
@@ -254,6 +262,26 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     {
         DeselectAll();
         var node = new ConditionOutputNodeViewModel { X = 560, Y = 300 };
+        node.IsSelected = true;
+        Nodes.Add(node);
+        Profile.Nodes.Add(node);
+    }
+
+    [RelayCommand]
+    private void AddPeriodicOutputNode()
+    {
+        DeselectAll();
+        var node = new PeriodicOutputNodeViewModel { X = 560, Y = 300 };
+        node.IsSelected = true;
+        Nodes.Add(node);
+        Profile.Nodes.Add(node);
+    }
+
+    [RelayCommand]
+    private void AddRampForceOutputNode()
+    {
+        DeselectAll();
+        var node = new RampForceOutputNodeViewModel { X = 560, Y = 300 };
         node.IsSelected = true;
         Nodes.Add(node);
         Profile.Nodes.Add(node);

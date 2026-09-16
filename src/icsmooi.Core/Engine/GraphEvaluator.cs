@@ -169,6 +169,23 @@ public sealed class GraphEvaluator
                     magnitudes[condition.Id] = posCoeff;
                     effectParams[condition.Id] = new ConditionParams(posCoeff, negCoeff, offset, deadBand, saturation);
                     break;
+
+                case PeriodicOutputNodeViewModel periodic:
+                    var pMagnitude = GetPinValue(periodic, "Magnitude", wireValues);
+                    var period = GetPinValue(periodic, "Period", wireValues);
+                    var phase = GetPinValue(periodic, "Phase", wireValues);
+                    var pOffset = GetPinValue(periodic, "Offset", wireValues);
+                    magnitudes[periodic.Id] = pMagnitude;
+                    effectParams[periodic.Id] = new PeriodicParams(periodic.Waveform, pMagnitude, period, phase, pOffset);
+                    break;
+
+                case RampForceOutputNodeViewModel ramp:
+                    var startMagnitude = GetPinValue(ramp, "StartMagnitude", wireValues);
+                    var endMagnitude = GetPinValue(ramp, "EndMagnitude", wireValues);
+                    var duration = GetPinValue(ramp, "Duration", wireValues);
+                    magnitudes[ramp.Id] = startMagnitude;
+                    effectParams[ramp.Id] = new RampParams(startMagnitude, endMagnitude, duration);
+                    break;
             }
 
             // Propagate this node's output pin values to every connected downstream pin

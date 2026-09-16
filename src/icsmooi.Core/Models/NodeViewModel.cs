@@ -18,6 +18,8 @@ namespace icsmooi.Models;
 [JsonDerivedType(typeof(CurveNodeViewModel), "curve")]
 [JsonDerivedType(typeof(ConstantForceOutputNodeViewModel), "constantforce")]
 [JsonDerivedType(typeof(ConditionOutputNodeViewModel), "condition")]
+[JsonDerivedType(typeof(PeriodicOutputNodeViewModel), "periodic")]
+[JsonDerivedType(typeof(RampForceOutputNodeViewModel), "rampforce")]
 public abstract partial class NodeViewModel : ObservableObject, INodePosition
 {
     public Guid Id { get; set; } = Guid.NewGuid();

@@ -48,6 +48,20 @@ public sealed class FfbEffectManager : IDisposable
                         TryUpdate(cond.Id, deviceGuid, cond.AxisIndex, cond.Gain, () => BuildCondition(condParams),
                             ConditionEffectGuid(cond.ConditionKind), cond, n => n.LastPositiveCoefficient = condParams.PositiveCoefficient);
                     break;
+
+                case PeriodicOutputNodeViewModel { DeviceInstanceGuid: { } deviceGuid } periodic:
+                    liveIds.Add(periodic.Id);
+                    if (effectParams.TryGetValue(periodic.Id, out var periodicRaw) && periodicRaw is PeriodicParams periodicParams)
+                        TryUpdate(periodic.Id, deviceGuid, periodic.AxisIndex, periodic.Gain, () => BuildPeriodic(periodicParams),
+                            WaveformEffectGuid(periodic.Waveform), periodic, n => n.LastMagnitude = periodicParams.Magnitude);
+                    break;
+
+                case RampForceOutputNodeViewModel { DeviceInstanceGuid: { } deviceGuid } ramp:
+                    liveIds.Add(ramp.Id);
+                    if (effectParams.TryGetValue(ramp.Id, out var rampRaw) && rampRaw is RampParams rampParams)
+                        TryUpdate(ramp.Id, deviceGuid, ramp.AxisIndex, ramp.Gain, () => BuildRamp(rampParams),
+                            EffectGuid.RampForce, ramp, n => n.LastStartMagnitude = rampParams.StartMagnitude);
+                    break;
             }
         }
 
@@ -72,7 +86,6 @@ public sealed class FfbEffectManager : IDisposable
 
         if (!_effects.TryGetValue(nodeId, out var effect))
         {
-            parameters.Duration = int.MaxValue;
             effect = device.CreateEffect(effectGuid, parameters);
             effect.Start(1);
             _effects[nodeId] = effect;
@@ -85,13 +98,18 @@ public sealed class FfbEffectManager : IDisposable
         applyReadout(node);
     }
 
+    // Continuous effects (everything except Ramp) play until explicitly stopped.
+    private const int InfiniteDuration = int.MaxValue;
+
     private static EffectParameters BuildConstantForce(ConstantForceParams p) => new()
     {
+        Duration = InfiniteDuration,
         Parameters = new ConstantForce { Magnitude = ToDirectInputUnits(p.Magnitude) },
     };
 
     private static EffectParameters BuildCondition(ConditionParams p) => new()
     {
+        Duration = InfiniteDuration,
         Parameters = new ConditionSet
         {
             Conditions =
@@ -109,6 +127,28 @@ public sealed class FfbEffectManager : IDisposable
         },
     };
 
+    private static EffectParameters BuildPeriodic(PeriodicParams p) => new()
+    {
+        Duration = InfiniteDuration,
+        Parameters = new PeriodicForce
+        {
+            Magnitude = ToDirectInputUnits(p.Magnitude),
+            Offset = ToDirectInputUnits(p.Offset),
+            Phase = ToDirectInputPhase(p.Phase),
+            Period = ToDirectInputMicroseconds(p.Period),
+        },
+    };
+
+    private static EffectParameters BuildRamp(RampParams p) => new()
+    {
+        Duration = ToDirectInputMicroseconds(p.Duration),
+        Parameters = new RampForce
+        {
+            Start = ToDirectInputUnits(p.StartMagnitude),
+            End = ToDirectInputUnits(p.EndMagnitude),
+        },
+    };
+
     private static Guid ConditionEffectGuid(ConditionKind kind) => kind switch
     {
         ConditionKind.Spring => EffectGuid.Spring,
@@ -118,8 +158,24 @@ public sealed class FfbEffectManager : IDisposable
         _ => EffectGuid.Spring,
     };
 
+    private static Guid WaveformEffectGuid(Waveform waveform) => waveform switch
+    {
+        Waveform.Sine => EffectGuid.Sine,
+        Waveform.Square => EffectGuid.Square,
+        Waveform.Triangle => EffectGuid.Triangle,
+        Waveform.SawtoothUp => EffectGuid.SawtoothUp,
+        Waveform.SawtoothDown => EffectGuid.SawtoothDown,
+        _ => EffectGuid.Sine,
+    };
+
     /// <summary>Normalized [-1, 1] (or [0, 1] for saturation/deadband) to DirectInput's fixed ±10000 range.</summary>
     private static int ToDirectInputUnits(double normalized) => (int)Math.Clamp(normalized * 10000, -10000, 10000);
+
+    /// <summary>Seconds to DirectInput's microsecond duration/period units.</summary>
+    private static int ToDirectInputMicroseconds(double seconds) => (int)Math.Clamp(seconds * 1_000_000, 0, int.MaxValue);
+
+    /// <summary>Normalized [0, 1) cycle phase to DirectInput's hundredths-of-a-degree (0-35999).</summary>
+    private static int ToDirectInputPhase(double normalized) => (int)(((normalized % 1.0 + 1.0) % 1.0) * 36000);
 
     private void RemoveEffect(Guid nodeId)
     {
