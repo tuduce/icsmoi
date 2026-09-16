@@ -83,6 +83,7 @@ When editing the graph while the engine is running, call `Engine.RefreshSnapshot
 - Device acquisition uses `CooperativeLevel` (not `CooperativeLevelFlags`) for `SetCooperativeLevel`'s flags argument.
 - All ±10000-range DirectInput integer units are produced by `FfbEffectManager.ToDirectInputUnits(double)` from the graph's normalized `[-1, 1]`-ish doubles — keep new effect types going through this same helper rather than hand-rolling the scaling. `Period`/`Duration` (seconds → microseconds) and `Phase` (normalized `[0,1)` cycle → hundredths-of-a-degree) have their own dedicated helpers for the same reason.
 - Verified against real hardware: `FfbDeviceManager.EnumerateDevices()` correctly detects an attached FFB device (product name + instance GUID) with zero acquisition. `AcquireDevice`/`CreateEffect` have not yet been exercised against real hardware in this repo — deliberately: the "Effects" safety gate below has been kept off throughout development.
+- Verified against a live running MSFS instance: the Editor's "Connect to Sim" toggle reaches `SimConnectionState.Connected` (real `OnRecvOpen` handshake, all 16 `AddToDataDefinition` calls + `RegisterDataDefineStruct`/`RequestDataOnSimObject` succeeding), and a `SimConnectNodeViewModel` wired directly to an `FfbOutputNodeViewModel` showed real, continuously-updating `AIRSPEED INDICATED` values end-to-end through `GraphEvaluator` into the UI readout.
 
 ### Runtime app (icsmooi.Runtime)
 
