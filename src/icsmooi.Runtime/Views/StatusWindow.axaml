@@ -11,14 +11,15 @@
         Title="icsmooi Runtime"
         Width="420" Height="340"
         CanResize="False"
-        Background="#1A1A2E">
+        Background="{DynamicResource Icsmooi.Background}">
 
     <StackPanel Margin="20" Spacing="12">
-        <TextBlock Text="icsmooi Runtime" FontSize="18" FontWeight="Bold" Foreground="White" />
+        <TextBlock Text="icsmooi Runtime" FontSize="18" FontWeight="Bold"
+                   Foreground="{DynamicResource Icsmooi.Text}" />
         <TextBlock Text="Background telemetry + force-feedback engine."
-                    Foreground="#CCCCCC" TextWrapping="Wrap" />
+                    Foreground="{DynamicResource Icsmooi.TextMuted}" TextWrapping="Wrap" />
 
-        <Border Background="#16213E" CornerRadius="6" Padding="12" Margin="0,8,0,0">
+        <Border Background="{DynamicResource Icsmooi.Surface}" CornerRadius="6" Padding="12" Margin="0,8,0,0">
             <StackPanel Spacing="8">
                 <DockPanel>
                     <Button DockPanel.Dock="Right" Click="OnLoadProfileClicked"
@@ -26,11 +27,11 @@
                         Load Profile…
                     </Button>
                     <TextBlock Text="{Binding ProfileName}" FontWeight="Bold"
-                               Foreground="White" VerticalAlignment="Center" />
+                               Foreground="{DynamicResource Icsmooi.Text}" VerticalAlignment="Center" />
                 </DockPanel>
 
-                <TextBlock Text="{Binding SimConnectStatus}" Foreground="#CCCCCC" FontSize="12" />
-                <TextBlock Text="{Binding EngineStatus}" Foreground="#CCCCCC" FontSize="12" />
+                <TextBlock Text="{Binding SimConnectStatus}" Foreground="{DynamicResource Icsmooi.TextMuted}" FontSize="12" />
+                <TextBlock Text="{Binding EngineStatus}" Foreground="{DynamicResource Icsmooi.TextMuted}" FontSize="12" />
 
                 <Separator Margin="0,4" />
 
@@ -39,11 +40,20 @@
                                   IsChecked="{Binding EffectsEnabled, Mode=TwoWay}"
                                   OnContent="" OffContent=""
                                   ToolTip.Tip="Enable real DirectInput hardware output — off by default" />
-                    <TextBlock Text="{Binding EffectsStatus}" FontWeight="Bold"
-                               Foreground="White" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding EffectsStatus}" FontWeight="Bold" VerticalAlignment="Center"
+                               Classes.enabled="{Binding EffectsEnabled}">
+                        <TextBlock.Styles>
+                            <Style Selector="TextBlock">
+                                <Setter Property="Foreground" Value="{DynamicResource Icsmooi.TextMuted}" />
+                            </Style>
+                            <Style Selector="TextBlock.enabled">
+                                <Setter Property="Foreground" Value="{DynamicResource Icsmooi.Warning}" />
+                            </Style>
+                        </TextBlock.Styles>
+                    </TextBlock>
                 </DockPanel>
                 <TextBlock Text="Effects stay off until you switch this on — loading a profile and running the engine only ever produces simulated readouts."
-                           Foreground="#888888" FontSize="10" TextWrapping="Wrap" />
+                           Foreground="{DynamicResource Icsmooi.TextMuted}" FontSize="10" Opacity="0.8" TextWrapping="Wrap" />
             </StackPanel>
         </Border>
     </StackPanel>

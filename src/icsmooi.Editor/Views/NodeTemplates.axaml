@@ -1,0 +1,381 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:models="using:icsmooi.Models"
+                    xmlns:views="using:icsmooi.Views"
+                    xmlns:controls="clr-namespace:NodifyM.Avalonia.Controls;assembly=NodifyM.Avalonia"
+                    xmlns:vmb="clr-namespace:NodifyM.Avalonia.ViewModelBase;assembly=NodifyM.Avalonia">
+
+    <!--
+        All node-graph DataTemplates, split out of MainWindow.axaml for
+        file-size/maintainability once the node catalog grew past a
+        handful of types (Phase 9). Each node DataTemplate leads with a
+        thin category-accent stripe (Icsmooi.Category.* — see
+        icsmooi.Shared.Ui/Styles/Tokens.axaml) so users can tell a node's
+        category apart at a glance; NodifyM.Avalonia's Node control has no
+        built-in per-instance accent-color property, so this is hand-rolled
+        per template rather than a shared style setter.
+    -->
+
+    <!-- ── Connection line template ────────────────────────────────── -->
+    <DataTemplate x:Key="ConnectionTemplate"
+                  DataType="{x:Type vmb:ConnectionViewModelBase}">
+        <controls:Connection Source="{Binding Source.Anchor}"
+                             Target="{Binding Target.Anchor}" />
+    </DataTemplate>
+
+    <!-- ── Pending connection (drawn while user drags from a pin) ──── -->
+    <DataTemplate x:Key="PendingConnectionTemplate"
+                  DataType="{x:Type vmb:PendingConnectionViewModelBase}">
+        <controls:PendingConnection
+            StartedCommand="{Binding StartCommand}"
+            CompletedCommand="{Binding FinishCommand}" />
+    </DataTemplate>
+
+    <!-- ── Shared connector sub-templates ──────────────────────────── -->
+    <DataTemplate x:Key="InputPinTemplate"
+                  DataType="{x:Type models:PinViewModel}">
+        <controls:NodeInput
+            IsConnected="{Binding IsConnected}"
+            Anchor="{Binding Anchor, Mode=TwoWay}"
+            Header="{Binding Title}" />
+    </DataTemplate>
+
+    <DataTemplate x:Key="OutputPinTemplate"
+                  DataType="{x:Type models:PinViewModel}">
+        <controls:NodeOutput
+            IsConnected="{Binding IsConnected}"
+            Anchor="{Binding Anchor, Mode=TwoWay}"
+            Header="{Binding Title}" />
+    </DataTemplate>
+
+    <!--
+        Category accent stripe: each node DataTemplate below leads its body
+        with a thin Border tinted per category (Icsmooi.Category.*) —
+        Input/MathLogic/Shaping/HardwareOutput — inlined per-template rather
+        than shared, since there's no single ControlTemplate seam that would
+        apply consistently across every node's differently-shaped body.
+    -->
+
+    <controls:NodeTemplateSelector x:Key="MainNodeTemplateSelector">
+
+        <!-- SimConnect node -->
+        <DataTemplate DataType="{x:Type models:SimConnectNodeViewModel}">
+            <controls:Node
+                Location="{Binding Location, Mode=TwoWay}"
+                IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                Header="{Binding Name}"
+                Output="{Binding Outputs}"
+                OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
+                <StackPanel Margin="6,4" Spacing="4">
+                    <Border Height="3" Background="{DynamicResource Icsmooi.Category.Input}" Margin="-6,-4,-6,0" />
+                    <TextBlock Text="Variable" FontSize="10" Opacity="0.6" />
+                    <AutoCompleteBox Text="{Binding VariableName}" MinWidth="160"
+                                      ItemsSource="{x:Static models:SimVariableCatalog.VariableNames}"
+                                      FilterMode="Contains"
+                                      ToolTip.Tip="MSFS SimConnect variable name — pick from the list or type any variable" />
+                </StackPanel>
+            </controls:Node>
+        </DataTemplate>
+
+        <!-- Math compute node -->
+        <DataTemplate DataType="{x:Type models:MathNodeViewModel}">
+            <controls:Node
+                Location="{Binding Location, Mode=TwoWay}"
+                IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                Header="{Binding Name}"
+                Input="{Binding Inputs}"
+                Output="{Binding Outputs}"
+                InputConnectorTemplate="{StaticResource InputPinTemplate}"
+                OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
+                <StackPanel Margin="6,4" Spacing="4">
+                    <Border Height="3" Background="{DynamicResource Icsmooi.Category.MathLogic}" Margin="-6,-4,-6,0" />
+                    <TextBlock Text="Expression" FontSize="10" Opacity="0.6" />
+                    <TextBox Text="{Binding Expression}" MinWidth="140"
+                             ToolTip.Tip="NCalc expression — use [A], [B] for inputs" />
+                </StackPanel>
+            </controls:Node>
+        </DataTemplate>
+
+        <!-- FFB Output node (legacy placeholder — see ConstantForce/Condition/Periodic/RampForce for real hardware) -->
+        <DataTemplate DataType="{x:Type models:FfbOutputNodeViewModel}">
+            <controls:Node
+                Location="{Binding Location, Mode=TwoWay}"
+                IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                Header="{Binding Name}"
+                Input="{Binding Inputs}"
+                InputConnectorTemplate="{StaticResource InputPinTemplate}">
+                <StackPanel Margin="6,4" Spacing="4">
+                    <Border Height="3" Background="{DynamicResource Icsmooi.Category.HardwareOutput}" Margin="-6,-4,-6,0" />
+                    <TextBlock Text="Effect Type" FontSize="10" Opacity="0.6" />
+                    <ComboBox SelectedItem="{Binding EffectType}" MinWidth="140">
+                        <ComboBoxItem>Constant Force</ComboBoxItem>
+                        <ComboBoxItem>Sine Wave</ComboBoxItem>
+                        <ComboBoxItem>Triangle Wave</ComboBoxItem>
+                        <ComboBoxItem>Square Wave</ComboBoxItem>
+                        <ComboBoxItem>Sawtooth Up</ComboBoxItem>
+                        <ComboBoxItem>Sawtooth Down</ComboBoxItem>
+                        <ComboBoxItem>Spring</ComboBoxItem>
+                        <ComboBoxItem>Damper</ComboBoxItem>
+                        <ComboBoxItem>Inertia</ComboBoxItem>
+                        <ComboBoxItem>Friction</ComboBoxItem>
+                    </ComboBox>
+                    <!-- Live engine output readout (0.0000 when engine is stopped) -->
+                    <Border Background="{DynamicResource Icsmooi.SurfaceAlt}" CornerRadius="3" Padding="4,2">
+                        <TextBlock FontSize="11" FontFamily="Consolas,Monospace"
+                                   Text="{Binding LastMagnitude, StringFormat='⚡ {0:F4}'}" />
+                    </Border>
+                </StackPanel>
+            </controls:Node>
+        </DataTemplate>
+
+        <!-- Comparison node -->
+        <DataTemplate DataType="{x:Type models:ComparisonNodeViewModel}">
+            <controls:Node
+                Location="{Binding Location, Mode=TwoWay}"
+                IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                Header="{Binding Name}"
+                Input="{Binding Inputs}"
+                Output="{Binding Outputs}"
+                InputConnectorTemplate="{StaticResource InputPinTemplate}"
+                OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
+                <StackPanel Margin="6,4" Spacing="4">
+                    <Border Height="3" Background="{DynamicResource Icsmooi.Category.MathLogic}" Margin="-6,-4,-6,0" />
+                    <TextBlock Text="Operator" FontSize="10" Opacity="0.6" />
+                    <ComboBox ItemsSource="{x:Static models:ComparisonNodeViewModel.Operators}"
+                              SelectedItem="{Binding Operator, Mode=TwoWay}"
+                              MinWidth="120" />
+                </StackPanel>
+            </controls:Node>
+        </DataTemplate>
+
+        <!-- Logic node -->
+        <DataTemplate DataType="{x:Type models:LogicNodeViewModel}">
+            <controls:Node
+                Location="{Binding Location, Mode=TwoWay}"
+                IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                Header="{Binding Name}"
+                Input="{Binding Inputs}"
+                Output="{Binding Outputs}"
+                InputConnectorTemplate="{StaticResource InputPinTemplate}"
+                OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
+                <StackPanel Margin="6,4" Spacing="4">
+                    <Border Height="3" Background="{DynamicResource Icsmooi.Category.MathLogic}" Margin="-6,-4,-6,0" />
+                    <TextBlock Text="Operator" FontSize="10" Opacity="0.6" />
+                    <ComboBox ItemsSource="{x:Static models:LogicNodeViewModel.Operators}"
+                              SelectedItem="{Binding Operator, Mode=TwoWay}"
+                              MinWidth="120" />
+                </StackPanel>
+            </controls:Node>
+        </DataTemplate>
+
+        <!-- Select node -->
+        <DataTemplate DataType="{x:Type models:SelectNodeViewModel}">
+            <controls:Node
+                Location="{Binding Location, Mode=TwoWay}"
+                IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                Header="{Binding Name}"
+                Input="{Binding Inputs}"
+                Output="{Binding Outputs}"
+                InputConnectorTemplate="{StaticResource InputPinTemplate}"
+                OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
+                <StackPanel Margin="6,4" Spacing="4">
+                    <Border Height="3" Background="{DynamicResource Icsmooi.Category.MathLogic}" Margin="-6,-4,-6,0" />
+                    <TextBlock Text="IfTrue when Condition ≠ 0" FontSize="10"
+                               Opacity="0.6" TextWrapping="Wrap" MaxWidth="130" />
+                </StackPanel>
+            </controls:Node>
+        </DataTemplate>
+
+        <!-- Clamp node -->
+        <DataTemplate DataType="{x:Type models:ClampNodeViewModel}">
+            <controls:Node
+                Location="{Binding Location, Mode=TwoWay}"
+                IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                Header="{Binding Name}"
+                Input="{Binding Inputs}"
+                Output="{Binding Outputs}"
+                InputConnectorTemplate="{StaticResource InputPinTemplate}"
+                OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
+                <StackPanel Margin="6,4" Spacing="4">
+                    <Border Height="3" Background="{DynamicResource Icsmooi.Category.Shaping}" Margin="-6,-4,-6,0" />
+                    <TextBlock Text="Clamp(Value, Min, Max)" FontSize="10"
+                               Opacity="0.6" TextWrapping="Wrap" MaxWidth="130" />
+                </StackPanel>
+            </controls:Node>
+        </DataTemplate>
+
+        <!-- Range Map node -->
+        <DataTemplate DataType="{x:Type models:RangeMapNodeViewModel}">
+            <controls:Node
+                Location="{Binding Location, Mode=TwoWay}"
+                IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                Header="{Binding Name}"
+                Input="{Binding Inputs}"
+                Output="{Binding Outputs}"
+                InputConnectorTemplate="{StaticResource InputPinTemplate}"
+                OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
+                <StackPanel Margin="6,4" Spacing="4">
+                    <Border Height="3" Background="{DynamicResource Icsmooi.Category.Shaping}" Margin="-6,-4,-6,0" />
+                    <CheckBox IsChecked="{Binding Clamp, Mode=TwoWay}"
+                              Content="Clamp output" FontSize="10" />
+                </StackPanel>
+            </controls:Node>
+        </DataTemplate>
+
+        <!-- Curve node -->
+        <DataTemplate DataType="{x:Type models:CurveNodeViewModel}">
+            <controls:Node
+                Location="{Binding Location, Mode=TwoWay}"
+                IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                Header="{Binding Name}"
+                Input="{Binding Inputs}"
+                Output="{Binding Outputs}"
+                InputConnectorTemplate="{StaticResource InputPinTemplate}"
+                OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
+                <StackPanel Margin="6,4" Spacing="4">
+                    <Border Height="3" Background="{DynamicResource Icsmooi.Category.Shaping}" Margin="-6,-4,-6,0" />
+                    <views:CurveEditorControl Points="{Binding Points}"
+                        ToolTip.Tip="Double-click empty space to add a point, double-click a point to remove it" />
+                </StackPanel>
+            </controls:Node>
+        </DataTemplate>
+
+        <!-- Constant Force output node (real hardware — Runtime app only) -->
+        <DataTemplate DataType="{x:Type models:ConstantForceOutputNodeViewModel}">
+            <controls:Node
+                Location="{Binding Location, Mode=TwoWay}"
+                IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                Header="{Binding Name}"
+                Input="{Binding Inputs}"
+                InputConnectorTemplate="{StaticResource InputPinTemplate}">
+                <StackPanel Margin="6,4" Spacing="4">
+                    <Border Height="3" Background="{DynamicResource Icsmooi.Category.HardwareOutput}" Margin="-6,-4,-6,0" />
+                    <TextBlock Text="Device" FontSize="10" Opacity="0.6" />
+                    <ComboBox x:CompileBindings="False"
+                              ItemsSource="{Binding $parent[Window].DataContext.AvailableDevices}"
+                              SelectedValueBinding="{Binding InstanceGuid}"
+                              SelectedValue="{Binding DeviceInstanceGuid, Mode=TwoWay}"
+                              DisplayMemberBinding="{Binding ProductName}"
+                              MinWidth="140" PlaceholderText="(no device selected)" />
+                    <TextBlock Text="Axis Index / Gain" FontSize="10" Opacity="0.6" />
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <NumericUpDown Value="{Binding AxisIndex, Mode=TwoWay}"
+                                       Minimum="0" Increment="1" Width="70" ShowButtonSpinner="False" />
+                        <NumericUpDown Value="{Binding Gain, Mode=TwoWay}"
+                                       Minimum="0" Maximum="10000" Increment="500" Width="90" ShowButtonSpinner="False" />
+                    </StackPanel>
+                    <Border Background="{DynamicResource Icsmooi.SurfaceAlt}" CornerRadius="3" Padding="4,2">
+                        <TextBlock FontSize="11" FontFamily="Consolas,Monospace"
+                                   Text="{Binding LastMagnitude, StringFormat='⚡ {0:F4}'}" />
+                    </Border>
+                </StackPanel>
+            </controls:Node>
+        </DataTemplate>
+
+        <!-- Condition output node (spring/damper/inertia/friction — real hardware, Runtime app only) -->
+        <DataTemplate DataType="{x:Type models:ConditionOutputNodeViewModel}">
+            <controls:Node
+                Location="{Binding Location, Mode=TwoWay}"
+                IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                Header="{Binding Name}"
+                Input="{Binding Inputs}"
+                InputConnectorTemplate="{StaticResource InputPinTemplate}">
+                <StackPanel Margin="6,4" Spacing="4">
+                    <Border Height="3" Background="{DynamicResource Icsmooi.Category.HardwareOutput}" Margin="-6,-4,-6,0" />
+                    <TextBlock Text="Kind" FontSize="10" Opacity="0.6" />
+                    <ComboBox ItemsSource="{x:Static models:ConditionOutputNodeViewModel.ConditionKinds}"
+                              SelectedItem="{Binding ConditionKind, Mode=TwoWay}"
+                              MinWidth="120" />
+                    <TextBlock Text="Device" FontSize="10" Opacity="0.6" />
+                    <ComboBox x:CompileBindings="False"
+                              ItemsSource="{Binding $parent[Window].DataContext.AvailableDevices}"
+                              SelectedValueBinding="{Binding InstanceGuid}"
+                              SelectedValue="{Binding DeviceInstanceGuid, Mode=TwoWay}"
+                              DisplayMemberBinding="{Binding ProductName}"
+                              MinWidth="140" PlaceholderText="(no device selected)" />
+                    <TextBlock Text="Axis Index / Gain" FontSize="10" Opacity="0.6" />
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <NumericUpDown Value="{Binding AxisIndex, Mode=TwoWay}"
+                                       Minimum="0" Increment="1" Width="70" ShowButtonSpinner="False" />
+                        <NumericUpDown Value="{Binding Gain, Mode=TwoWay}"
+                                       Minimum="0" Maximum="10000" Increment="500" Width="90" ShowButtonSpinner="False" />
+                    </StackPanel>
+                    <Border Background="{DynamicResource Icsmooi.SurfaceAlt}" CornerRadius="3" Padding="4,2">
+                        <TextBlock FontSize="11" FontFamily="Consolas,Monospace"
+                                   Text="{Binding LastPositiveCoefficient, StringFormat='⚡ {0:F4}'}" />
+                    </Border>
+                </StackPanel>
+            </controls:Node>
+        </DataTemplate>
+
+        <!-- Periodic output node (sine/square/triangle/sawtooth — real hardware, Runtime app only) -->
+        <DataTemplate DataType="{x:Type models:PeriodicOutputNodeViewModel}">
+            <controls:Node
+                Location="{Binding Location, Mode=TwoWay}"
+                IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                Header="{Binding Name}"
+                Input="{Binding Inputs}"
+                InputConnectorTemplate="{StaticResource InputPinTemplate}">
+                <StackPanel Margin="6,4" Spacing="4">
+                    <Border Height="3" Background="{DynamicResource Icsmooi.Category.HardwareOutput}" Margin="-6,-4,-6,0" />
+                    <TextBlock Text="Waveform" FontSize="10" Opacity="0.6" />
+                    <ComboBox ItemsSource="{x:Static models:PeriodicOutputNodeViewModel.Waveforms}"
+                              SelectedItem="{Binding Waveform, Mode=TwoWay}"
+                              MinWidth="120" />
+                    <TextBlock Text="Device" FontSize="10" Opacity="0.6" />
+                    <ComboBox x:CompileBindings="False"
+                              ItemsSource="{Binding $parent[Window].DataContext.AvailableDevices}"
+                              SelectedValueBinding="{Binding InstanceGuid}"
+                              SelectedValue="{Binding DeviceInstanceGuid, Mode=TwoWay}"
+                              DisplayMemberBinding="{Binding ProductName}"
+                              MinWidth="140" PlaceholderText="(no device selected)" />
+                    <TextBlock Text="Axis Index / Gain" FontSize="10" Opacity="0.6" />
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <NumericUpDown Value="{Binding AxisIndex, Mode=TwoWay}"
+                                       Minimum="0" Increment="1" Width="70" ShowButtonSpinner="False" />
+                        <NumericUpDown Value="{Binding Gain, Mode=TwoWay}"
+                                       Minimum="0" Maximum="10000" Increment="500" Width="90" ShowButtonSpinner="False" />
+                    </StackPanel>
+                    <Border Background="{DynamicResource Icsmooi.SurfaceAlt}" CornerRadius="3" Padding="4,2">
+                        <TextBlock FontSize="11" FontFamily="Consolas,Monospace"
+                                   Text="{Binding LastMagnitude, StringFormat='⚡ {0:F4}'}" />
+                    </Border>
+                </StackPanel>
+            </controls:Node>
+        </DataTemplate>
+
+        <!-- Ramp Force output node (real hardware — Runtime app only) -->
+        <DataTemplate DataType="{x:Type models:RampForceOutputNodeViewModel}">
+            <controls:Node
+                Location="{Binding Location, Mode=TwoWay}"
+                IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                Header="{Binding Name}"
+                Input="{Binding Inputs}"
+                InputConnectorTemplate="{StaticResource InputPinTemplate}">
+                <StackPanel Margin="6,4" Spacing="4">
+                    <Border Height="3" Background="{DynamicResource Icsmooi.Category.HardwareOutput}" Margin="-6,-4,-6,0" />
+                    <TextBlock Text="Device" FontSize="10" Opacity="0.6" />
+                    <ComboBox x:CompileBindings="False"
+                              ItemsSource="{Binding $parent[Window].DataContext.AvailableDevices}"
+                              SelectedValueBinding="{Binding InstanceGuid}"
+                              SelectedValue="{Binding DeviceInstanceGuid, Mode=TwoWay}"
+                              DisplayMemberBinding="{Binding ProductName}"
+                              MinWidth="140" PlaceholderText="(no device selected)" />
+                    <TextBlock Text="Axis Index / Gain" FontSize="10" Opacity="0.6" />
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <NumericUpDown Value="{Binding AxisIndex, Mode=TwoWay}"
+                                       Minimum="0" Increment="1" Width="70" ShowButtonSpinner="False" />
+                        <NumericUpDown Value="{Binding Gain, Mode=TwoWay}"
+                                       Minimum="0" Maximum="10000" Increment="500" Width="90" ShowButtonSpinner="False" />
+                    </StackPanel>
+                    <Border Background="{DynamicResource Icsmooi.SurfaceAlt}" CornerRadius="3" Padding="4,2">
+                        <TextBlock FontSize="11" FontFamily="Consolas,Monospace"
+                                   Text="{Binding LastStartMagnitude, StringFormat='⚡ {0:F4}'}" />
+                    </Border>
+                </StackPanel>
+            </controls:Node>
+        </DataTemplate>
+
+    </controls:NodeTemplateSelector>
+
+</ResourceDictionary>

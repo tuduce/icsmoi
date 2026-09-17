@@ -1,7 +1,68 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <!--
-    Shared design tokens (semantic brushes) for icsmooi.Editor and icsmooi.Runtime.
-    Populated in Phase 9 — see the "Consistent modern visual design system" plan section.
+    Shared design tokens for icsmooi.Editor and icsmooi.Runtime — merged into
+    both apps' App.axaml so they present one consistent look despite being
+    separate processes. A single dark palette (no light-theme variant): the
+    app's identity is a deep navy/slate look, not an OS-theme-following one.
+
+    Also overrides a handful of NodifyM.Avalonia's own Dark.axaml color keys
+    (Node.*, NodifyEditor.BackgroundColor, GridLinesColor,
+    ItemContainer.SelectedColor) so the node canvas matches this palette
+    instead of NodifyM's generic charcoal default — everything else from
+    NodifyM's Dark/Brushes dictionaries (connector/connection colors,
+    selection rectangle, etc.) is kept as-is. Merge order matters: this file
+    must be merged *after* NodifyM's Dark.axaml/Brushes.axaml so these
+    overrides win.
   -->
+
+  <!-- ── App chrome tokens ────────────────────────────────────────────── -->
+
+  <Color x:Key="Icsmooi.BackgroundColor">#1A1A2E</Color>
+  <Color x:Key="Icsmooi.SurfaceColor">#16213E</Color>
+  <Color x:Key="Icsmooi.SurfaceAltColor">#0F3460</Color>
+  <Color x:Key="Icsmooi.BorderColor">#0F3460</Color>
+  <Color x:Key="Icsmooi.AccentColor">#4FC3F7</Color>
+  <Color x:Key="Icsmooi.TextColor">#FFFFFF</Color>
+  <Color x:Key="Icsmooi.TextMutedColor">#AAAAAA</Color>
+  <Color x:Key="Icsmooi.SuccessColor">#4CAF50</Color>
+  <Color x:Key="Icsmooi.WarningColor">#FFB300</Color>
+  <Color x:Key="Icsmooi.ErrorColor">#E53935</Color>
+
+  <SolidColorBrush x:Key="Icsmooi.Background" Color="{DynamicResource Icsmooi.BackgroundColor}" />
+  <SolidColorBrush x:Key="Icsmooi.Surface" Color="{DynamicResource Icsmooi.SurfaceColor}" />
+  <SolidColorBrush x:Key="Icsmooi.SurfaceAlt" Color="{DynamicResource Icsmooi.SurfaceAltColor}" />
+  <SolidColorBrush x:Key="Icsmooi.Border" Color="{DynamicResource Icsmooi.BorderColor}" />
+  <SolidColorBrush x:Key="Icsmooi.Accent" Color="{DynamicResource Icsmooi.AccentColor}" />
+  <SolidColorBrush x:Key="Icsmooi.Text" Color="{DynamicResource Icsmooi.TextColor}" />
+  <SolidColorBrush x:Key="Icsmooi.TextMuted" Color="{DynamicResource Icsmooi.TextMutedColor}" />
+  <SolidColorBrush x:Key="Icsmooi.Success" Color="{DynamicResource Icsmooi.SuccessColor}" />
+  <SolidColorBrush x:Key="Icsmooi.Warning" Color="{DynamicResource Icsmooi.WarningColor}" />
+  <SolidColorBrush x:Key="Icsmooi.Error" Color="{DynamicResource Icsmooi.ErrorColor}" />
+
+  <!-- ── Per-node-category accents (header tint + used for palette glyphs) ─ -->
+  <!-- Input: SimConnect · MathLogic: Math/Compare/Logic/Select ·           -->
+  <!-- Shaping: Clamp/RangeMap/Curve · HardwareOutput: real DirectInput FX  -->
+
+  <Color x:Key="Icsmooi.Category.InputColor">#3B82F6</Color>
+  <Color x:Key="Icsmooi.Category.MathLogicColor">#22C55E</Color>
+  <Color x:Key="Icsmooi.Category.ShapingColor">#F59E0B</Color>
+  <Color x:Key="Icsmooi.Category.HardwareOutputColor">#EF4444</Color>
+
+  <SolidColorBrush x:Key="Icsmooi.Category.Input" Color="{DynamicResource Icsmooi.Category.InputColor}" />
+  <SolidColorBrush x:Key="Icsmooi.Category.MathLogic" Color="{DynamicResource Icsmooi.Category.MathLogicColor}" />
+  <SolidColorBrush x:Key="Icsmooi.Category.Shaping" Color="{DynamicResource Icsmooi.Category.ShapingColor}" />
+  <SolidColorBrush x:Key="Icsmooi.Category.HardwareOutput" Color="{DynamicResource Icsmooi.Category.HardwareOutputColor}" />
+
+  <!-- ── NodifyM.Avalonia Dark.axaml overrides ────────────────────────────── -->
+
+  <Color x:Key="NodifyEditor.BackgroundColor">#1E1E2E</Color>
+  <Color x:Key="GridLinesColor">#2A2A40</Color>
+  <Color x:Key="ItemContainer.SelectedColor">#4FC3F7</Color>
+  <Color x:Key="Node.BackgroundColor">#242438</Color>
+  <Color x:Key="Node.ContentColor">#242438</Color>
+  <Color x:Key="Node.HeaderColor">#16213E</Color>
+  <Color x:Key="Node.FooterColor">#16213E</Color>
+  <Color x:Key="Node.BorderColor">#0F3460</Color>
+
 </ResourceDictionary>
