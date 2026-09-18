@@ -17,8 +17,9 @@ namespace icsmooi.Engine;
 ///         supplied <paramref name="simData"/> cache.</item>
 ///   <item><see cref="MathNodeViewModel"/> – evaluates the NCalc expression,
 ///         mapping pin titles (e.g. "A", "B") to the wired input values.</item>
-///   <item><see cref="FfbOutputNodeViewModel"/> – collects the final
-///         magnitude from its single input wire.</item>
+///   <item>The typed hardware-output nodes (Constant Force, Condition,
+///         Periodic, Ramp) – collect their input-pin values into
+///         per-effect parameters.</item>
 /// </list>
 /// </para>
 /// </summary>
@@ -146,12 +147,6 @@ public sealed class GraphEvaluator
 
                 case CurveNodeViewModel curve:
                     EvalCurve(curve, wireValues);
-                    break;
-
-                case FfbOutputNodeViewModel ffb:
-                    var pin = ffb.Inputs.FirstOrDefault();
-                    magnitudes[ffb.Id] = pin is not null && wireValues.TryGetValue(pin.Id, out var mag)
-                        ? mag : 0.0;
                     break;
 
                 case ConstantForceOutputNodeViewModel constantForce:

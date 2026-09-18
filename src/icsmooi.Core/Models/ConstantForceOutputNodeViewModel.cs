@@ -5,9 +5,8 @@ using System.Text.Json.Serialization;
 namespace icsmooi.Models;
 
 /// <summary>
-/// A real DirectInput Constant Force effect output. Unlike the placeholder
-/// <see cref="FfbOutputNodeViewModel"/>, this node is a genuine hardware
-/// target: <c>Services.DirectInput.FfbEffectManager</c> creates one
+/// A real DirectInput Constant Force effect output. This node is a genuine
+/// hardware target: <c>Services.DirectInput.FfbEffectManager</c> creates one
 /// long-lived DirectInput effect per node instance and keeps it updated in
 /// place every tick — never recreated per tick.
 /// </summary>

@@ -19,7 +19,7 @@
         <TextBlock Text="Background telemetry + force-feedback engine."
                     Foreground="{DynamicResource Icsmooi.TextMuted}" TextWrapping="Wrap" />
 
-        <Border Background="{DynamicResource Icsmooi.Surface}" CornerRadius="6" Padding="12" Margin="0,8,0,0">
+        <Border Background="{DynamicResource Icsmooi.Surface}" CornerRadius="{DynamicResource Icsmooi.NodeRadius}" Padding="14" Margin="0,8,0,0">
             <StackPanel Spacing="8">
                 <DockPanel>
                     <Button DockPanel.Dock="Right" Click="OnLoadProfileClicked"

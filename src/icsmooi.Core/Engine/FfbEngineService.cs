@@ -47,7 +47,7 @@ public sealed class FfbEngineService : IDisposable
     /// <summary>
     /// Fired on <b>this service's timer thread</b> after every successful evaluation
     /// tick — callers that update UI-bound state must marshal to their own UI thread.
-    /// Outputs are keyed by <see cref="FfbOutputNodeViewModel.Id"/>.
+    /// Outputs are keyed by the output node's <see cref="NodeViewModel.Id"/>.
     /// </summary>
     public event Action<IReadOnlyDictionary<Guid, double>>? OutputsUpdated;
 

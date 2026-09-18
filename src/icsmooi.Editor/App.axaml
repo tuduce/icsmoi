@@ -3,7 +3,7 @@
              x:Class="icsmooi.App"
              xmlns:local="using:icsmooi"
              RequestedThemeVariant="Dark">
-             <!-- icsmooi always uses its own dark navy/slate palette — see icsmooi.Shared.Ui/Styles/Tokens.axaml — rather than following the OS theme. -->
+             <!-- icsmooi always uses its own dark graphite/afterburner palette — see icsmooi.Shared.Ui/Styles/Tokens.axaml — rather than following the OS theme. -->
 
     <Application.DataTemplates>
         <local:ViewLocator/>
@@ -22,5 +22,7 @@
     <Application.Styles>
         <FluentTheme />
         <StyleInclude Source="avares://NodifyM.Avalonia/Styles/ControlStyles.axaml" />
+        <StyleInclude Source="avares://icsmooi.Shared.Ui/Styles/Controls.axaml" />
+        <StyleInclude Source="avares://icsmooi.Editor/Styles/NodeStyles.axaml" />
     </Application.Styles>
 </Application>

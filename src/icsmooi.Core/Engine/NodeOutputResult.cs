@@ -8,8 +8,7 @@ namespace icsmooi.Engine;
 /// </summary>
 /// <param name="Magnitudes">
 /// Node ID → single-scalar magnitude, for UI readouts (e.g. <c>LastMagnitude</c>
-/// bindings). Populated for every output-shaped node, including the legacy
-/// placeholder <see cref="Models.FfbOutputNodeViewModel"/>.
+/// bindings). Populated for every hardware-output node.
 /// </param>
 /// <param name="EffectParams">
 /// Node ID → richer per-effect-type parameters, for real DirectInput hardware

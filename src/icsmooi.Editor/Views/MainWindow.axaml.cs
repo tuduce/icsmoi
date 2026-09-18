@@ -1,6 +1,9 @@
 using System;
+using System.IO;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Interactivity;
+using Avalonia.Platform.Storage;
 using icsmooi.ViewModels;
 
 namespace icsmooi.Views;
@@ -23,6 +26,54 @@ public partial class MainWindow : Window
             var handle = TryGetPlatformHandle()?.Handle ?? IntPtr.Zero;
             vm.AttachWindowHandle(handle);
         }
+    }
+
+    // ── Profile open/save via the OS file pickers ───────────────────────────
+
+    private static readonly FilePickerFileType ProfileFileType =
+        new("icsmooi profile") { Patterns = ["*" + MainWindowViewModel.ProfileFileExtension] };
+
+    // Reopen where the user last was; fall back to Documents the first time.
+    private async System.Threading.Tasks.Task<IStorageFolder?> GetStartLocationAsync(MainWindowViewModel vm)
+    {
+        var dir = vm.CurrentFilePath is { } current ? Path.GetDirectoryName(current) : null;
+        if (dir is not null && await StorageProvider.TryGetFolderFromPathAsync(dir) is { } folder)
+            return folder;
+        return await StorageProvider.TryGetWellKnownFolderAsync(WellKnownFolder.Documents);
+    }
+
+    private async void OnSaveClicked(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is not MainWindowViewModel vm) return;
+
+        var file = await StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = "Save icsmooi profile",
+            SuggestedFileName = vm.SuggestedFileName,
+            DefaultExtension = "json",
+            ShowOverwritePrompt = true,
+            SuggestedStartLocation = await GetStartLocationAsync(vm),
+            FileTypeChoices = [ProfileFileType],
+        });
+
+        if (file?.TryGetLocalPath() is { } path)
+            await vm.SaveToPathAsync(path);
+    }
+
+    private async void OnLoadClicked(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is not MainWindowViewModel vm) return;
+
+        var files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "Open icsmooi profile",
+            AllowMultiple = false,
+            SuggestedStartLocation = await GetStartLocationAsync(vm),
+            FileTypeFilter = [ProfileFileType, FilePickerFileTypes.All],
+        });
+
+        if (files.Count > 0 && files[0].TryGetLocalPath() is { } path)
+            await vm.LoadFromPathAsync(path);
     }
 
     // Route Delete to the node-deletion command whenever focus is NOT inside a

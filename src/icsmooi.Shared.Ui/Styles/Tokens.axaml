@@ -4,7 +4,8 @@
     Shared design tokens for icsmooi.Editor and icsmooi.Runtime — merged into
     both apps' App.axaml so they present one consistent look despite being
     separate processes. A single dark palette (no light-theme variant): the
-    app's identity is a deep navy/slate look, not an OS-theme-following one.
+    app's identity is the "Afterburner" look — graphite surfaces, afterburner
+    orange for "force" and steel blue for "air" — not an OS-theme-following one.
 
     Also overrides a handful of NodifyM.Avalonia's own Dark.axaml color keys
     (Node.*, NodifyEditor.BackgroundColor, GridLinesColor,
@@ -18,16 +19,16 @@
 
   <!-- ── App chrome tokens ────────────────────────────────────────────── -->
 
-  <Color x:Key="Icsmooi.BackgroundColor">#1A1A2E</Color>
-  <Color x:Key="Icsmooi.SurfaceColor">#16213E</Color>
-  <Color x:Key="Icsmooi.SurfaceAltColor">#0F3460</Color>
-  <Color x:Key="Icsmooi.BorderColor">#0F3460</Color>
-  <Color x:Key="Icsmooi.AccentColor">#4FC3F7</Color>
-  <Color x:Key="Icsmooi.TextColor">#FFFFFF</Color>
-  <Color x:Key="Icsmooi.TextMutedColor">#AAAAAA</Color>
-  <Color x:Key="Icsmooi.SuccessColor">#4CAF50</Color>
-  <Color x:Key="Icsmooi.WarningColor">#FFB300</Color>
-  <Color x:Key="Icsmooi.ErrorColor">#E53935</Color>
+  <Color x:Key="Icsmooi.BackgroundColor">#101216</Color>
+  <Color x:Key="Icsmooi.SurfaceColor">#181B21</Color>
+  <Color x:Key="Icsmooi.SurfaceAltColor">#232831</Color>
+  <Color x:Key="Icsmooi.BorderColor">#313845</Color>
+  <Color x:Key="Icsmooi.AccentColor">#FF5A1F</Color>
+  <Color x:Key="Icsmooi.TextColor">#F4F5F7</Color>
+  <Color x:Key="Icsmooi.TextMutedColor">#9AA3B2</Color>
+  <Color x:Key="Icsmooi.SuccessColor">#2DD4BF</Color>
+  <Color x:Key="Icsmooi.WarningColor">#FACC15</Color>
+  <Color x:Key="Icsmooi.ErrorColor">#EF4444</Color>
 
   <SolidColorBrush x:Key="Icsmooi.Background" Color="{DynamicResource Icsmooi.BackgroundColor}" />
   <SolidColorBrush x:Key="Icsmooi.Surface" Color="{DynamicResource Icsmooi.SurfaceColor}" />
@@ -44,25 +45,61 @@
   <!-- Input: SimConnect · MathLogic: Math/Compare/Logic/Select ·           -->
   <!-- Shaping: Clamp/RangeMap/Curve · HardwareOutput: real DirectInput FX  -->
 
-  <Color x:Key="Icsmooi.Category.InputColor">#3B82F6</Color>
-  <Color x:Key="Icsmooi.Category.MathLogicColor">#22C55E</Color>
-  <Color x:Key="Icsmooi.Category.ShapingColor">#F59E0B</Color>
-  <Color x:Key="Icsmooi.Category.HardwareOutputColor">#EF4444</Color>
+  <Color x:Key="Icsmooi.Category.InputColor">#5B8DEF</Color>
+  <Color x:Key="Icsmooi.Category.MathLogicColor">#2DD4BF</Color>
+  <Color x:Key="Icsmooi.Category.ShapingColor">#FACC15</Color>
+  <Color x:Key="Icsmooi.Category.HardwareOutputColor">#FF5A1F</Color>
 
   <SolidColorBrush x:Key="Icsmooi.Category.Input" Color="{DynamicResource Icsmooi.Category.InputColor}" />
   <SolidColorBrush x:Key="Icsmooi.Category.MathLogic" Color="{DynamicResource Icsmooi.Category.MathLogicColor}" />
   <SolidColorBrush x:Key="Icsmooi.Category.Shaping" Color="{DynamicResource Icsmooi.Category.ShapingColor}" />
   <SolidColorBrush x:Key="Icsmooi.Category.HardwareOutput" Color="{DynamicResource Icsmooi.Category.HardwareOutputColor}" />
 
+  <!-- ── Shape tokens ─────────────────────────────────────────────────── -->
+
+  <CornerRadius x:Key="Icsmooi.PillRadius">999</CornerRadius>
+  <CornerRadius x:Key="Icsmooi.NodeRadius">12</CornerRadius>
+  <!-- Inner radii for a node's header/footer fills: NodeRadius minus the 2px node border,   -->
+  <!-- so the fill is concentric with the border/selection ring instead of overshooting it. -->
+  <CornerRadius x:Key="Icsmooi.NodeHeaderRadius">10,10,0,0</CornerRadius>
+  <CornerRadius x:Key="Icsmooi.NodeFooterRadius">0,0,10,10</CornerRadius>
+  <CornerRadius x:Key="Icsmooi.ChipRadius">8</CornerRadius>
+
+  <!-- ── Fluent Button state overrides ────────────────────────────────── -->
+  <!-- Fluent's Button template resolves these keys per pseudo-class, so      -->
+  <!-- overriding them (rather than setting Background on a style) keeps      -->
+  <!-- hover/pressed/disabled states working. Hover flips to the accent.      -->
+
+  <SolidColorBrush x:Key="ButtonBackground" Color="{DynamicResource Icsmooi.SurfaceAltColor}" />
+  <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="{DynamicResource Icsmooi.AccentColor}" />
+  <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#D94A15" />
+  <SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="{DynamicResource Icsmooi.SurfaceColor}" />
+  <SolidColorBrush x:Key="ButtonForeground" Color="{DynamicResource Icsmooi.TextColor}" />
+  <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="{DynamicResource Icsmooi.BackgroundColor}" />
+  <SolidColorBrush x:Key="ButtonForegroundPressed" Color="{DynamicResource Icsmooi.BackgroundColor}" />
+  <SolidColorBrush x:Key="ButtonForegroundDisabled" Color="{DynamicResource Icsmooi.TextMutedColor}" />
+  <SolidColorBrush x:Key="ButtonBorderBrush" Color="{DynamicResource Icsmooi.BorderColor}" />
+  <SolidColorBrush x:Key="ButtonBorderBrushPointerOver" Color="{DynamicResource Icsmooi.AccentColor}" />
+  <SolidColorBrush x:Key="ButtonBorderBrushPressed" Color="#D94A15" />
+  <SolidColorBrush x:Key="ButtonBorderBrushDisabled" Color="{DynamicResource Icsmooi.BorderColor}" />
+
   <!-- ── NodifyM.Avalonia Dark.axaml overrides ────────────────────────────── -->
 
-  <Color x:Key="NodifyEditor.BackgroundColor">#1E1E2E</Color>
-  <Color x:Key="GridLinesColor">#2A2A40</Color>
-  <Color x:Key="ItemContainer.SelectedColor">#4FC3F7</Color>
-  <Color x:Key="Node.BackgroundColor">#242438</Color>
-  <Color x:Key="Node.ContentColor">#242438</Color>
-  <Color x:Key="Node.HeaderColor">#16213E</Color>
-  <Color x:Key="Node.FooterColor">#16213E</Color>
-  <Color x:Key="Node.BorderColor">#0F3460</Color>
+  <Color x:Key="NodifyEditor.BackgroundColor">#0C0E11</Color>
+  <!-- NodifyM's LargeGridLine control does NOT read GridLinesColor (only the minimap border
+       does); it draws with its own Brush property (default Gainsboro) at 0.5px thickness,
+       which anti-aliases to ~25% coverage. So the *visible* line is roughly
+       background + 25% of (brush - background): the brush below is deliberately ~4x
+       brighter than the line you see. Applied via a controls|LargeGridLine style in
+       icsmooi.Editor/Styles/NodeStyles.axaml. Tune this one value to change the grid. -->
+  <Color x:Key="Icsmooi.GridLinesColor">#404A5D</Color>
+  <SolidColorBrush x:Key="Icsmooi.GridLines" Color="{DynamicResource Icsmooi.GridLinesColor}" />
+  <Color x:Key="GridLinesColor">#404A5D</Color>
+  <Color x:Key="ItemContainer.SelectedColor">#F4F5F7</Color>
+  <Color x:Key="Node.BackgroundColor">#181B21</Color>
+  <Color x:Key="Node.ContentColor">#181B21</Color>
+  <Color x:Key="Node.HeaderColor">#232831</Color>
+  <Color x:Key="Node.FooterColor">#232831</Color>
+  <Color x:Key="Node.BorderColor">#313845</Color>
 
 </ResourceDictionary>

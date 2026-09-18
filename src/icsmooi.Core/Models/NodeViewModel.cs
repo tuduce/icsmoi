@@ -9,7 +9,6 @@ namespace icsmooi.Models;
 
 [JsonDerivedType(typeof(SimConnectNodeViewModel), "simconnect")]
 [JsonDerivedType(typeof(MathNodeViewModel), "math")]
-[JsonDerivedType(typeof(FfbOutputNodeViewModel), "ffb")]
 [JsonDerivedType(typeof(ComparisonNodeViewModel), "comparison")]
 [JsonDerivedType(typeof(LogicNodeViewModel), "logic")]
 [JsonDerivedType(typeof(SelectNodeViewModel), "select")]

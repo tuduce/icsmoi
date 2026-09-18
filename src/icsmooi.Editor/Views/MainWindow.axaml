@@ -32,48 +32,51 @@
                 BorderThickness="0,0,0,1" BorderBrush="{DynamicResource Icsmooi.Border}">
             <DockPanel>
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="6">
-                    <Border CornerRadius="4" Padding="8,3" VerticalAlignment="Center"
+                    <Border CornerRadius="{DynamicResource Icsmooi.PillRadius}" Padding="10,3" VerticalAlignment="Center"
                             Background="{DynamicResource Icsmooi.SurfaceAlt}">
                         <TextBlock Text="{Binding SimConnectStatus}"
                                    FontSize="11" Opacity="0.85" VerticalAlignment="Center" />
                     </Border>
                     <Button Command="{Binding ToggleSimConnectionCommand}"
                             IsVisible="{Binding !SimConnectActive}"
-                            ToolTip.Tip="Connect to a running MSFS2020/2024 instance for live telemetry (test-run only — no hardware output in the Editor)"
-                            TextElement.Foreground="White">
+                            ToolTip.Tip="Connect to a running MSFS2020/2024 instance for live telemetry (test-run only — no hardware output in the Editor)">
                         🛩 Connect to Sim
                     </Button>
                     <Button Command="{Binding ToggleSimConnectionCommand}"
                             IsVisible="{Binding SimConnectActive}"
-                            ToolTip.Tip="Disconnect from the sim"
-                            TextElement.Foreground="White">
+                            ToolTip.Tip="Disconnect from the sim">
                         🛩 Disconnect Sim
                     </Button>
-                    <Border CornerRadius="4" Padding="8,3" VerticalAlignment="Center"
+                    <Border CornerRadius="{DynamicResource Icsmooi.PillRadius}" Padding="10,3" VerticalAlignment="Center"
                             Background="{DynamicResource Icsmooi.SurfaceAlt}">
                         <TextBlock Text="{Binding EngineStatus}"
                                    FontSize="11" Opacity="0.85" VerticalAlignment="Center" />
                     </Border>
                     <Button Command="{Binding ToggleEngineCommand}"
                             IsVisible="{Binding !EngineRunning}"
-                            ToolTip.Tip="Start the evaluation engine (100 Hz)"
-                            TextElement.Foreground="White">
+                            ToolTip.Tip="Start the evaluation engine (100 Hz)">
                         ▶ Start Engine
                     </Button>
                     <Button Command="{Binding ToggleEngineCommand}"
                             IsVisible="{Binding EngineRunning}"
-                            ToolTip.Tip="Stop the evaluation engine"
-                            TextElement.Foreground="White">
+                            ToolTip.Tip="Stop the evaluation engine">
                         ⏹ Stop Engine
                     </Button>
-                    <Button Command="{Binding SaveCommand}"
-                            ToolTip.Tip="Save profile to ~/Documents">💾</Button>
-                    <Button Command="{Binding LoadCommand}"
-                            ToolTip.Tip="Load profile from ~/Documents">📂</Button>
+                    <Border CornerRadius="{DynamicResource Icsmooi.PillRadius}" Padding="10,3" VerticalAlignment="Center"
+                            Background="{DynamicResource Icsmooi.SurfaceAlt}"
+                            IsVisible="{Binding FileStatus, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                        <TextBlock Text="{Binding FileStatus}" MaxWidth="260" TextTrimming="CharacterEllipsis"
+                                   FontSize="11" Opacity="0.85" VerticalAlignment="Center"
+                                   ToolTip.Tip="{Binding FileStatus}" />
+                    </Border>
+                    <Button Click="OnSaveClicked"
+                            ToolTip.Tip="Save profile as… (choose any location)">💾</Button>
+                    <Button Click="OnLoadClicked"
+                            ToolTip.Tip="Open profile… (choose any location)">📂</Button>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
                     <TextBlock Text="Profile:" VerticalAlignment="Center" Opacity="0.7"
-                               TextElement.Foreground="White" />
+                               Foreground="{DynamicResource Icsmooi.Text}" />
                     <TextBox Text="{Binding Profile.ProfileName}"
                              MinWidth="220" Padding="6,3" />
                 </StackPanel>
@@ -89,7 +92,6 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel Spacing="6" Margin="10">
                     <TextBlock Text="NODE PALETTE" FontSize="11" FontWeight="Bold"
-                               TextElement.Foreground="White"
                                Opacity="0.5" LetterSpacing="1" Margin="0,0,0,6" />
 
                     <TextBlock Text="INPUT" FontSize="10" FontWeight="Bold"
@@ -154,12 +156,6 @@
                     <TextBlock Text="HARDWARE OUTPUT" FontSize="10" FontWeight="Bold"
                                Foreground="{DynamicResource Icsmooi.Category.HardwareOutput}"
                                LetterSpacing="1" Margin="0,6,0,0" />
-                    <Button Command="{Binding AddFfbOutputNodeCommand}"
-                            HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Left"
-                            ToolTip.Tip="Legacy placeholder effect output (magnitude readout only, no real hardware)">
-                        ⚡  FFB Output
-                    </Button>
                     <Button Command="{Binding AddConstantForceOutputNodeCommand}"
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Left"

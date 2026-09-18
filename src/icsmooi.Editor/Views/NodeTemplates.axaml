@@ -8,12 +8,11 @@
     <!--
         All node-graph DataTemplates, split out of MainWindow.axaml for
         file-size/maintainability once the node catalog grew past a
-        handful of types (Phase 9). Each node DataTemplate leads with a
-        thin category-accent stripe (Icsmooi.Category.* — see
+        handful of types (Phase 9). Each node's header is tinted by its
+        category (HeaderBrush = Icsmooi.Category.* — see
         icsmooi.Shared.Ui/Styles/Tokens.axaml) so users can tell a node's
-        category apart at a glance; NodifyM.Avalonia's Node control has no
-        built-in per-instance accent-color property, so this is hand-rolled
-        per template rather than a shared style setter.
+        category apart at a glance. The rounded, clipped Node template and
+        the dark header text live in Styles/NodeStyles.axaml.
     -->
 
     <!-- ── Connection line template ────────────────────────────────── -->
@@ -48,14 +47,6 @@
             Header="{Binding Title}" />
     </DataTemplate>
 
-    <!--
-        Category accent stripe: each node DataTemplate below leads its body
-        with a thin Border tinted per category (Icsmooi.Category.*) —
-        Input/MathLogic/Shaping/HardwareOutput — inlined per-template rather
-        than shared, since there's no single ControlTemplate seam that would
-        apply consistently across every node's differently-shaped body.
-    -->
-
     <controls:NodeTemplateSelector x:Key="MainNodeTemplateSelector">
 
         <!-- SimConnect node -->
@@ -63,11 +54,11 @@
             <controls:Node
                 Location="{Binding Location, Mode=TwoWay}"
                 IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                HeaderBrush="{DynamicResource Icsmooi.Category.Input}"
                 Header="{Binding Name}"
                 Output="{Binding Outputs}"
                 OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
                 <StackPanel Margin="6,4" Spacing="4">
-                    <Border Height="3" Background="{DynamicResource Icsmooi.Category.Input}" Margin="-6,-4,-6,0" />
                     <TextBlock Text="Variable" FontSize="10" Opacity="0.6" />
                     <AutoCompleteBox Text="{Binding VariableName}" MinWidth="160"
                                       ItemsSource="{x:Static models:SimVariableCatalog.VariableNames}"
@@ -82,48 +73,16 @@
             <controls:Node
                 Location="{Binding Location, Mode=TwoWay}"
                 IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                HeaderBrush="{DynamicResource Icsmooi.Category.MathLogic}"
                 Header="{Binding Name}"
                 Input="{Binding Inputs}"
                 Output="{Binding Outputs}"
                 InputConnectorTemplate="{StaticResource InputPinTemplate}"
                 OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
                 <StackPanel Margin="6,4" Spacing="4">
-                    <Border Height="3" Background="{DynamicResource Icsmooi.Category.MathLogic}" Margin="-6,-4,-6,0" />
                     <TextBlock Text="Expression" FontSize="10" Opacity="0.6" />
                     <TextBox Text="{Binding Expression}" MinWidth="140"
                              ToolTip.Tip="NCalc expression — use [A], [B] for inputs" />
-                </StackPanel>
-            </controls:Node>
-        </DataTemplate>
-
-        <!-- FFB Output node (legacy placeholder — see ConstantForce/Condition/Periodic/RampForce for real hardware) -->
-        <DataTemplate DataType="{x:Type models:FfbOutputNodeViewModel}">
-            <controls:Node
-                Location="{Binding Location, Mode=TwoWay}"
-                IsSelected="{Binding IsSelected, Mode=TwoWay}"
-                Header="{Binding Name}"
-                Input="{Binding Inputs}"
-                InputConnectorTemplate="{StaticResource InputPinTemplate}">
-                <StackPanel Margin="6,4" Spacing="4">
-                    <Border Height="3" Background="{DynamicResource Icsmooi.Category.HardwareOutput}" Margin="-6,-4,-6,0" />
-                    <TextBlock Text="Effect Type" FontSize="10" Opacity="0.6" />
-                    <ComboBox SelectedItem="{Binding EffectType}" MinWidth="140">
-                        <ComboBoxItem>Constant Force</ComboBoxItem>
-                        <ComboBoxItem>Sine Wave</ComboBoxItem>
-                        <ComboBoxItem>Triangle Wave</ComboBoxItem>
-                        <ComboBoxItem>Square Wave</ComboBoxItem>
-                        <ComboBoxItem>Sawtooth Up</ComboBoxItem>
-                        <ComboBoxItem>Sawtooth Down</ComboBoxItem>
-                        <ComboBoxItem>Spring</ComboBoxItem>
-                        <ComboBoxItem>Damper</ComboBoxItem>
-                        <ComboBoxItem>Inertia</ComboBoxItem>
-                        <ComboBoxItem>Friction</ComboBoxItem>
-                    </ComboBox>
-                    <!-- Live engine output readout (0.0000 when engine is stopped) -->
-                    <Border Background="{DynamicResource Icsmooi.SurfaceAlt}" CornerRadius="3" Padding="4,2">
-                        <TextBlock FontSize="11" FontFamily="Consolas,Monospace"
-                                   Text="{Binding LastMagnitude, StringFormat='⚡ {0:F4}'}" />
-                    </Border>
                 </StackPanel>
             </controls:Node>
         </DataTemplate>
@@ -133,13 +92,13 @@
             <controls:Node
                 Location="{Binding Location, Mode=TwoWay}"
                 IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                HeaderBrush="{DynamicResource Icsmooi.Category.MathLogic}"
                 Header="{Binding Name}"
                 Input="{Binding Inputs}"
                 Output="{Binding Outputs}"
                 InputConnectorTemplate="{StaticResource InputPinTemplate}"
                 OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
                 <StackPanel Margin="6,4" Spacing="4">
-                    <Border Height="3" Background="{DynamicResource Icsmooi.Category.MathLogic}" Margin="-6,-4,-6,0" />
                     <TextBlock Text="Operator" FontSize="10" Opacity="0.6" />
                     <ComboBox ItemsSource="{x:Static models:ComparisonNodeViewModel.Operators}"
                               SelectedItem="{Binding Operator, Mode=TwoWay}"
@@ -153,13 +112,13 @@
             <controls:Node
                 Location="{Binding Location, Mode=TwoWay}"
                 IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                HeaderBrush="{DynamicResource Icsmooi.Category.MathLogic}"
                 Header="{Binding Name}"
                 Input="{Binding Inputs}"
                 Output="{Binding Outputs}"
                 InputConnectorTemplate="{StaticResource InputPinTemplate}"
                 OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
                 <StackPanel Margin="6,4" Spacing="4">
-                    <Border Height="3" Background="{DynamicResource Icsmooi.Category.MathLogic}" Margin="-6,-4,-6,0" />
                     <TextBlock Text="Operator" FontSize="10" Opacity="0.6" />
                     <ComboBox ItemsSource="{x:Static models:LogicNodeViewModel.Operators}"
                               SelectedItem="{Binding Operator, Mode=TwoWay}"
@@ -173,13 +132,13 @@
             <controls:Node
                 Location="{Binding Location, Mode=TwoWay}"
                 IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                HeaderBrush="{DynamicResource Icsmooi.Category.MathLogic}"
                 Header="{Binding Name}"
                 Input="{Binding Inputs}"
                 Output="{Binding Outputs}"
                 InputConnectorTemplate="{StaticResource InputPinTemplate}"
                 OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
                 <StackPanel Margin="6,4" Spacing="4">
-                    <Border Height="3" Background="{DynamicResource Icsmooi.Category.MathLogic}" Margin="-6,-4,-6,0" />
                     <TextBlock Text="IfTrue when Condition ≠ 0" FontSize="10"
                                Opacity="0.6" TextWrapping="Wrap" MaxWidth="130" />
                 </StackPanel>
@@ -191,13 +150,13 @@
             <controls:Node
                 Location="{Binding Location, Mode=TwoWay}"
                 IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                HeaderBrush="{DynamicResource Icsmooi.Category.Shaping}"
                 Header="{Binding Name}"
                 Input="{Binding Inputs}"
                 Output="{Binding Outputs}"
                 InputConnectorTemplate="{StaticResource InputPinTemplate}"
                 OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
                 <StackPanel Margin="6,4" Spacing="4">
-                    <Border Height="3" Background="{DynamicResource Icsmooi.Category.Shaping}" Margin="-6,-4,-6,0" />
                     <TextBlock Text="Clamp(Value, Min, Max)" FontSize="10"
                                Opacity="0.6" TextWrapping="Wrap" MaxWidth="130" />
                 </StackPanel>
@@ -209,13 +168,13 @@
             <controls:Node
                 Location="{Binding Location, Mode=TwoWay}"
                 IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                HeaderBrush="{DynamicResource Icsmooi.Category.Shaping}"
                 Header="{Binding Name}"
                 Input="{Binding Inputs}"
                 Output="{Binding Outputs}"
                 InputConnectorTemplate="{StaticResource InputPinTemplate}"
                 OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
                 <StackPanel Margin="6,4" Spacing="4">
-                    <Border Height="3" Background="{DynamicResource Icsmooi.Category.Shaping}" Margin="-6,-4,-6,0" />
                     <CheckBox IsChecked="{Binding Clamp, Mode=TwoWay}"
                               Content="Clamp output" FontSize="10" />
                 </StackPanel>
@@ -227,13 +186,13 @@
             <controls:Node
                 Location="{Binding Location, Mode=TwoWay}"
                 IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                HeaderBrush="{DynamicResource Icsmooi.Category.Shaping}"
                 Header="{Binding Name}"
                 Input="{Binding Inputs}"
                 Output="{Binding Outputs}"
                 InputConnectorTemplate="{StaticResource InputPinTemplate}"
                 OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
                 <StackPanel Margin="6,4" Spacing="4">
-                    <Border Height="3" Background="{DynamicResource Icsmooi.Category.Shaping}" Margin="-6,-4,-6,0" />
                     <views:CurveEditorControl Points="{Binding Points}"
                         ToolTip.Tip="Double-click empty space to add a point, double-click a point to remove it" />
                 </StackPanel>
@@ -245,11 +204,11 @@
             <controls:Node
                 Location="{Binding Location, Mode=TwoWay}"
                 IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                HeaderBrush="{DynamicResource Icsmooi.Category.HardwareOutput}"
                 Header="{Binding Name}"
                 Input="{Binding Inputs}"
                 InputConnectorTemplate="{StaticResource InputPinTemplate}">
                 <StackPanel Margin="6,4" Spacing="4">
-                    <Border Height="3" Background="{DynamicResource Icsmooi.Category.HardwareOutput}" Margin="-6,-4,-6,0" />
                     <TextBlock Text="Device" FontSize="10" Opacity="0.6" />
                     <ComboBox x:CompileBindings="False"
                               ItemsSource="{Binding $parent[Window].DataContext.AvailableDevices}"
@@ -264,7 +223,7 @@
                         <NumericUpDown Value="{Binding Gain, Mode=TwoWay}"
                                        Minimum="0" Maximum="10000" Increment="500" Width="90" ShowButtonSpinner="False" />
                     </StackPanel>
-                    <Border Background="{DynamicResource Icsmooi.SurfaceAlt}" CornerRadius="3" Padding="4,2">
+                    <Border Background="{DynamicResource Icsmooi.SurfaceAlt}" CornerRadius="{DynamicResource Icsmooi.ChipRadius}" Padding="8,3">
                         <TextBlock FontSize="11" FontFamily="Consolas,Monospace"
                                    Text="{Binding LastMagnitude, StringFormat='⚡ {0:F4}'}" />
                     </Border>
@@ -277,11 +236,11 @@
             <controls:Node
                 Location="{Binding Location, Mode=TwoWay}"
                 IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                HeaderBrush="{DynamicResource Icsmooi.Category.HardwareOutput}"
                 Header="{Binding Name}"
                 Input="{Binding Inputs}"
                 InputConnectorTemplate="{StaticResource InputPinTemplate}">
                 <StackPanel Margin="6,4" Spacing="4">
-                    <Border Height="3" Background="{DynamicResource Icsmooi.Category.HardwareOutput}" Margin="-6,-4,-6,0" />
                     <TextBlock Text="Kind" FontSize="10" Opacity="0.6" />
                     <ComboBox ItemsSource="{x:Static models:ConditionOutputNodeViewModel.ConditionKinds}"
                               SelectedItem="{Binding ConditionKind, Mode=TwoWay}"
@@ -300,7 +259,7 @@
                         <NumericUpDown Value="{Binding Gain, Mode=TwoWay}"
                                        Minimum="0" Maximum="10000" Increment="500" Width="90" ShowButtonSpinner="False" />
                     </StackPanel>
-                    <Border Background="{DynamicResource Icsmooi.SurfaceAlt}" CornerRadius="3" Padding="4,2">
+                    <Border Background="{DynamicResource Icsmooi.SurfaceAlt}" CornerRadius="{DynamicResource Icsmooi.ChipRadius}" Padding="8,3">
                         <TextBlock FontSize="11" FontFamily="Consolas,Monospace"
                                    Text="{Binding LastPositiveCoefficient, StringFormat='⚡ {0:F4}'}" />
                     </Border>
@@ -313,11 +272,11 @@
             <controls:Node
                 Location="{Binding Location, Mode=TwoWay}"
                 IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                HeaderBrush="{DynamicResource Icsmooi.Category.HardwareOutput}"
                 Header="{Binding Name}"
                 Input="{Binding Inputs}"
                 InputConnectorTemplate="{StaticResource InputPinTemplate}">
                 <StackPanel Margin="6,4" Spacing="4">
-                    <Border Height="3" Background="{DynamicResource Icsmooi.Category.HardwareOutput}" Margin="-6,-4,-6,0" />
                     <TextBlock Text="Waveform" FontSize="10" Opacity="0.6" />
                     <ComboBox ItemsSource="{x:Static models:PeriodicOutputNodeViewModel.Waveforms}"
                               SelectedItem="{Binding Waveform, Mode=TwoWay}"
@@ -336,7 +295,7 @@
                         <NumericUpDown Value="{Binding Gain, Mode=TwoWay}"
                                        Minimum="0" Maximum="10000" Increment="500" Width="90" ShowButtonSpinner="False" />
                     </StackPanel>
-                    <Border Background="{DynamicResource Icsmooi.SurfaceAlt}" CornerRadius="3" Padding="4,2">
+                    <Border Background="{DynamicResource Icsmooi.SurfaceAlt}" CornerRadius="{DynamicResource Icsmooi.ChipRadius}" Padding="8,3">
                         <TextBlock FontSize="11" FontFamily="Consolas,Monospace"
                                    Text="{Binding LastMagnitude, StringFormat='⚡ {0:F4}'}" />
                     </Border>
@@ -349,11 +308,11 @@
             <controls:Node
                 Location="{Binding Location, Mode=TwoWay}"
                 IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                HeaderBrush="{DynamicResource Icsmooi.Category.HardwareOutput}"
                 Header="{Binding Name}"
                 Input="{Binding Inputs}"
                 InputConnectorTemplate="{StaticResource InputPinTemplate}">
                 <StackPanel Margin="6,4" Spacing="4">
-                    <Border Height="3" Background="{DynamicResource Icsmooi.Category.HardwareOutput}" Margin="-6,-4,-6,0" />
                     <TextBlock Text="Device" FontSize="10" Opacity="0.6" />
                     <ComboBox x:CompileBindings="False"
                               ItemsSource="{Binding $parent[Window].DataContext.AvailableDevices}"
@@ -368,7 +327,7 @@
                         <NumericUpDown Value="{Binding Gain, Mode=TwoWay}"
                                        Minimum="0" Maximum="10000" Increment="500" Width="90" ShowButtonSpinner="False" />
                     </StackPanel>
-                    <Border Background="{DynamicResource Icsmooi.SurfaceAlt}" CornerRadius="3" Padding="4,2">
+                    <Border Background="{DynamicResource Icsmooi.SurfaceAlt}" CornerRadius="{DynamicResource Icsmooi.ChipRadius}" Padding="8,3">
                         <TextBlock FontSize="11" FontFamily="Consolas,Monospace"
                                    Text="{Binding LastStartMagnitude, StringFormat='⚡ {0:F4}'}" />
                     </Border>

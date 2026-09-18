@@ -93,10 +93,6 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     {
         Dispatcher.UIThread.Post(() =>
         {
-            foreach (var ffb in Nodes.OfType<FfbOutputNodeViewModel>())
-                if (outputs.TryGetValue(ffb.Id, out var mag))
-                    ffb.LastMagnitude = mag;
-
             foreach (var cf in Nodes.OfType<ConstantForceOutputNodeViewModel>())
                 if (outputs.TryGetValue(cf.Id, out var mag))
                     cf.LastMagnitude = mag;
@@ -172,16 +168,6 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     {
         DeselectAll();
         var node = new MathNodeViewModel { X = 300, Y = 150 };
-        node.IsSelected = true;
-        Nodes.Add(node);
-        Profile.Nodes.Add(node);
-    }
-
-    [RelayCommand]
-    private void AddFfbOutputNode()
-    {
-        DeselectAll();
-        var node = new FfbOutputNodeViewModel { X = 560, Y = 150 };
         node.IsSelected = true;
         Nodes.Add(node);
         Profile.Nodes.Add(node);
@@ -348,22 +334,68 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     }
 
     // -- Save / Load ---------------------------------------------------------
+    // The OS file pickers live in MainWindow.axaml.cs (only a Window has a
+    // StorageProvider); it hands the chosen paths to these methods.
 
-    [RelayCommand]
-    private async Task SaveAsync()
+    public const string ProfileFileExtension = ".icsmooi.json";
+
+    /// <summary>Path of the file this profile was last loaded from / saved to; seeds the pickers' start folder.</summary>
+    [ObservableProperty]
+    private string? _currentFilePath;
+
+    /// <summary>Short result of the last save/load (empty until one happens).</summary>
+    [ObservableProperty]
+    private string _fileStatus = "";
+
+    /// <summary>Default file name offered by the Save dialog, derived from the profile name.</summary>
+    public string SuggestedFileName
     {
-        var dir = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
-        Directory.CreateDirectory(dir);
-        await _serializer.SaveAsync(Profile, Path.Combine(dir, $"{Profile.ProfileName}.icsmooi.json"));
+        get
+        {
+            var name = string.Concat(Profile.ProfileName.Select(c =>
+                Array.IndexOf(Path.GetInvalidFileNameChars(), c) >= 0 ? '_' : c)).Trim();
+            return (name.Length == 0 ? "profile" : name) + ProfileFileExtension;
+        }
     }
 
-    [RelayCommand]
-    private async Task LoadAsync()
+    public async Task SaveToPathAsync(string path)
     {
-        var dir = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
-        var path = Path.Combine(dir, $"{Profile.ProfileName}.icsmooi.json");
-        if (File.Exists(path))
+        path = NormalizeProfilePath(path);
+        try
+        {
+            await _serializer.SaveAsync(Profile, path);
+            CurrentFilePath = path;
+            FileStatus = $"Saved {Path.GetFileName(path)}";
+        }
+        catch (Exception ex)
+        {
+            FileStatus = $"Save failed: {ex.Message}";
+        }
+    }
+
+    public async Task LoadFromPathAsync(string path)
+    {
+        try
+        {
             LoadProfile(await _serializer.LoadAsync(path));
+            CurrentFilePath = path;
+            FileStatus = $"Loaded {Path.GetFileName(path)}";
+        }
+        catch (Exception ex)
+        {
+            // Arbitrary files can now be picked, so a wrong/older/corrupt file is expected
+            // (e.g. a profile still containing the removed "FFB Output" node).
+            FileStatus = $"Load failed: {ex.Message}";
+        }
+    }
+
+    // Runtime's picker only shows *.icsmooi.json, so make sure saved files carry that suffix
+    // even when the user typed a bare name or plain ".json".
+    private static string NormalizeProfilePath(string path)
+    {
+        if (path.EndsWith(ProfileFileExtension, StringComparison.OrdinalIgnoreCase)) return path;
+        if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase)) path = path[..^".json".Length];
+        return path + ProfileFileExtension;
     }
 
     // -- Internal helpers ----------------------------------------------------
@@ -394,8 +426,8 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     {
         var p = new FfbProfile { ProfileName = "My Profile" };
         p.Nodes.Add(new SimConnectNodeViewModel { X = 60,  Y = 150 });
-        p.Nodes.Add(new MathNodeViewModel       { X = 300, Y = 150 });
-        p.Nodes.Add(new FfbOutputNodeViewModel  { X = 560, Y = 150 });
+        p.Nodes.Add(new MathNodeViewModel       { X = 340, Y = 150 });
+        p.Nodes.Add(new ConstantForceOutputNodeViewModel { X = 640, Y = 150 });
         return p;
     }
 
