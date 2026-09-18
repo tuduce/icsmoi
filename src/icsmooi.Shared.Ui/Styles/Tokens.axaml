@@ -58,6 +58,11 @@
   <!-- ── Shape tokens ─────────────────────────────────────────────────── -->
 
   <CornerRadius x:Key="Icsmooi.PillRadius">999</CornerRadius>
+
+  <!-- Translucent light disc behind an icon in a button's rounded end (Icons.axaml BadgeIcon). -->
+  <!-- White-at-12% rather than a fixed color so it reads on both the resting and the orange  -->
+  <!-- hover background.                                                                     -->
+  <SolidColorBrush x:Key="Icsmooi.IconBadge" Color="#1FFFFFFF" />
   <CornerRadius x:Key="Icsmooi.NodeRadius">12</CornerRadius>
   <!-- Inner radii for a node's header/footer fills: NodeRadius minus the 2px node border,   -->
   <!-- so the fill is concentric with the border/selection ring instead of overshooting it. -->

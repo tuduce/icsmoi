@@ -8,6 +8,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="avares://icsmooi.Shared.Ui/Styles/Tokens.axaml" />
+                <ResourceInclude Source="avares://icsmooi.Shared.Ui/Styles/Icons.axaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

@@ -15,6 +15,7 @@
                 <ResourceInclude Source="avares://NodifyM.Avalonia/ResourceDictionaries/Dark.axaml" />
                 <ResourceInclude Source="avares://NodifyM.Avalonia/ResourceDictionaries/Brushes.axaml" />
                 <ResourceInclude Source="avares://icsmooi.Shared.Ui/Styles/Tokens.axaml" />
+                <ResourceInclude Source="avares://icsmooi.Shared.Ui/Styles/Icons.axaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

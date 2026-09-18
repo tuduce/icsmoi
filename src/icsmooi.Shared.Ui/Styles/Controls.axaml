@@ -20,4 +20,21 @@
     <Setter Property="Cursor" Value="Hand" />
   </Style>
 
+  <!-- Icon buttons (see Icons.axaml).
+       iconed: labeled pill whose first child is a BadgeIcon. The tight left padding makes the
+               26px badge concentric with the pill's rounded end:
+               badge center x = 1 (border) + 4 (padding) + 13 = 18 = half the 36px button height.
+       round:  icon-only circle (36x36) holding a bare Icon. -->
+  <Style Selector="Button.iconed">
+    <Setter Property="Padding" Value="4,4,16,4" />
+  </Style>
+
+  <Style Selector="Button.round">
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Width" Value="36" />
+    <Setter Property="Height" Value="36" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+  </Style>
+
 </Styles>
