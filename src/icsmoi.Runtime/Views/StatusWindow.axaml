@@ -1,0 +1,67 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:icsmoi.Runtime.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        d:DesignWidth="420" d:DesignHeight="340"
+        x:Class="icsmoi.Runtime.Views.StatusWindow"
+        x:DataType="vm:StatusWindowViewModel"
+        Icon="avares://icsmoi.Shared.Ui/Assets/icsmoi.ico"
+        Title="icsmoi Runtime"
+        Width="420" Height="340"
+        CanResize="False"
+        Background="{DynamicResource Icsmoi.Background}">
+
+    <StackPanel Margin="20" Spacing="12">
+        <StackPanel Orientation="Horizontal" Spacing="10">
+            <ContentControl Theme="{StaticResource Icsmoi.Wordmark}" Height="30" VerticalAlignment="Bottom" />
+            <TextBlock Text="Runtime" FontSize="13" VerticalAlignment="Bottom" Margin="0,0,0,2"
+                       Foreground="{DynamicResource Icsmoi.TextMuted}" />
+        </StackPanel>
+        <TextBlock Text="Background telemetry + force-feedback engine."
+                    Foreground="{DynamicResource Icsmoi.TextMuted}" TextWrapping="Wrap" />
+
+        <Border Background="{DynamicResource Icsmoi.Surface}" CornerRadius="{DynamicResource Icsmoi.NodeRadius}" Padding="14" Margin="0,8,0,0">
+            <StackPanel Spacing="8">
+                <DockPanel>
+                    <Button Classes="iconed" DockPanel.Dock="Right" Click="OnLoadProfileClicked"
+                            ToolTip.Tip="Load a saved .icsmoi.json profile">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <ContentControl Theme="{StaticResource Icsmoi.BadgeIcon}" Content="{StaticResource Icsmoi.Icon.Open}" />
+                            <TextBlock Text="Load Profile…" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                    <TextBlock Text="{Binding ProfileName}" FontWeight="Bold"
+                               Foreground="{DynamicResource Icsmoi.Text}" VerticalAlignment="Center" />
+                </DockPanel>
+
+                <TextBlock Text="{Binding SimConnectStatus}" Foreground="{DynamicResource Icsmoi.TextMuted}" FontSize="12" />
+                <TextBlock Text="{Binding EngineStatus}" Foreground="{DynamicResource Icsmoi.TextMuted}" FontSize="12" />
+
+                <Separator Margin="0,4" />
+
+                <DockPanel>
+                    <ToggleSwitch DockPanel.Dock="Right"
+                                  IsChecked="{Binding EffectsEnabled, Mode=TwoWay}"
+                                  OnContent="" OffContent=""
+                                  ToolTip.Tip="Enable real DirectInput hardware output — off by default" />
+                    <TextBlock Text="{Binding EffectsStatus}" FontWeight="Bold" VerticalAlignment="Center"
+                               Classes.enabled="{Binding EffectsEnabled}">
+                        <TextBlock.Styles>
+                            <Style Selector="TextBlock">
+                                <Setter Property="Foreground" Value="{DynamicResource Icsmoi.TextMuted}" />
+                            </Style>
+                            <Style Selector="TextBlock.enabled">
+                                <Setter Property="Foreground" Value="{DynamicResource Icsmoi.Warning}" />
+                            </Style>
+                        </TextBlock.Styles>
+                    </TextBlock>
+                </DockPanel>
+                <TextBlock Text="Effects stay off until you switch this on — loading a profile and running the engine only ever produces simulated readouts."
+                           Foreground="{DynamicResource Icsmoi.TextMuted}" FontSize="10" Opacity="0.8" TextWrapping="Wrap" />
+            </StackPanel>
+        </Border>
+    </StackPanel>
+
+</Window>

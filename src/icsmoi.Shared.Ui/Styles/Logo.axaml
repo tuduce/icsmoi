@@ -1,0 +1,81 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!--
+    icsmoi brand marks.
+
+    Wordmark: lowercase "icsmoi" in very round, heavy, monoline letters — stroke-only centrelines
+    drawn with a thick round-capped pen (same technique as Icons.axaml, so there is no font
+    dependency). The letters use Icsmoi.Text; the two round letters, "c" and "o", use
+    Icsmoi.Accent (afterburner orange), which carries the app's "force" color through the word.
+
+    Grid (logo units, canvas ~92 x 29): stroke 4.5, x-height (centreline) 13 from y=12 to y=25.
+    Dots are a separate, slightly heavier stroke (5.5). Thick strokes eat counters, so the letters
+    are widened rather than thinned: the 's' bowls (r 3.25) leave ~2-unit slits and the 'm' stems
+    are 9 apart (4.5 counters) — retune here if you change the stroke.
+
+    Spacing is OPTICAL, not geometric. Equal bounding-box gaps look uneven because letter shapes
+    differ: an open 'c' reads far looser than a straight stem next to a curve. Each pair was
+    measured as the mean horizontal space between the two silhouettes over the x-height band
+    (profile depth capped at 25% of x-height), and the letters were shifted so every pair has the
+    same ~5.0-unit optical gap. The nominal box-to-box gaps therefore differ on purpose: i-c 3.2,
+    c-s 0.2 (the c's box assumes a full circle but its right side is open), s-m 3.1, m-o 2.7,
+    o-i 3.1. If you retune a letter, redo the measurement for the pairs touching it (method
+    above) rather than nudging by eye.
+
+    Monogram: dark disc + orange ring + light 'i' stem + orange dot on a 64 x 64 grid. The app
+    icon (Assets/icsmoi.ico) is generated from the same primitives by tools/GenerateAppIcon.ps1 —
+    keep the two in sync.
+
+    Usage:
+      <ContentControl Theme="{StaticResource Icsmoi.Wordmark}" Height="22" />
+      <ContentControl Theme="{StaticResource Icsmoi.Monogram}" Height="32" />
+  -->
+
+  <ControlTheme x:Key="Icsmoi.Wordmark" TargetType="ContentControl">
+    <Setter Property="Height" Value="24" />
+    <Setter Property="IsHitTestVisible" Value="False" />
+    <Setter Property="Focusable" Value="False" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Viewbox>
+          <Canvas Width="91.86" Height="29">
+            <!-- i -->
+            <Path Data="M3.25 12 V25" Stroke="{DynamicResource Icsmoi.Text}" StrokeThickness="4.5" StrokeLineCap="Round" />
+            <!-- c (accent) -->
+            <Path Data="M22.44 14.32 A6.5 6.5 0 1 0 22.44 22.68" Stroke="{DynamicResource Icsmoi.Accent}" StrokeThickness="4.5" StrokeLineCap="Round" />
+            <!-- s -->
+            <Path Data="M34.73 13.625 A3.25 3.25 0 1 0 31.91 18.5 A3.25 3.25 0 1 1 29.1 23.375" Stroke="{DynamicResource Icsmoi.Text}" StrokeThickness="4.5" StrokeLineCap="Round" StrokeJoin="Round" />
+            <!-- m -->
+            <Path Data="M42.75 25 V16.5 A4.5 4.5 0 0 1 51.75 16.5 V25 M51.75 16.5 A4.5 4.5 0 0 1 60.75 16.5 V25" Stroke="{DynamicResource Icsmoi.Text}" StrokeThickness="4.5" StrokeLineCap="Round" StrokeJoin="Round" />
+            <!-- o (accent) -->
+            <Path Data="M67.98 18.5 A6.5 6.5 0 1 1 80.98 18.5 A6.5 6.5 0 1 1 67.98 18.5 Z" Stroke="{DynamicResource Icsmoi.Accent}" StrokeThickness="4.5" />
+            <!-- i -->
+            <Path Data="M88.61 12 V25" Stroke="{DynamicResource Icsmoi.Text}" StrokeThickness="4.5" StrokeLineCap="Round" />
+            <!-- i dots -->
+            <Path Data="M3.25 4.5 H3.26 M88.61 4.5 H88.62" Stroke="{DynamicResource Icsmoi.Text}" StrokeThickness="5.5" StrokeLineCap="Round" />
+          </Canvas>
+        </Viewbox>
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+
+  <ControlTheme x:Key="Icsmoi.Monogram" TargetType="ContentControl">
+    <Setter Property="Height" Value="32" />
+    <Setter Property="IsHitTestVisible" Value="False" />
+    <Setter Property="Focusable" Value="False" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Viewbox>
+          <Canvas Width="64" Height="64">
+            <Ellipse Canvas.Left="2" Canvas.Top="2" Width="60" Height="60"
+                     Fill="{DynamicResource Icsmoi.Background}"
+                     Stroke="{DynamicResource Icsmoi.Accent}" StrokeThickness="4" />
+            <Path Data="M32 30 V45" Stroke="{DynamicResource Icsmoi.Text}" StrokeThickness="9" StrokeLineCap="Round" />
+            <Path Data="M32 17.5 H32.01" Stroke="{DynamicResource Icsmoi.Accent}" StrokeThickness="10" StrokeLineCap="Round" />
+          </Canvas>
+        </Viewbox>
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+
+</ResourceDictionary>

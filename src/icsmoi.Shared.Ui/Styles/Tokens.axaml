@@ -1,0 +1,110 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!--
+    Shared design tokens for icsmoi.Editor and icsmoi.Runtime — merged into
+    both apps' App.axaml so they present one consistent look despite being
+    separate processes. A single dark palette (no light-theme variant): the
+    app's identity is the "Afterburner" look — graphite surfaces, afterburner
+    orange for "force" and steel blue for "air" — not an OS-theme-following one.
+
+    Also overrides a handful of NodifyM.Avalonia's own Dark.axaml color keys
+    (Node.*, NodifyEditor.BackgroundColor, GridLinesColor,
+    ItemContainer.SelectedColor) so the node canvas matches this palette
+    instead of NodifyM's generic charcoal default — everything else from
+    NodifyM's Dark/Brushes dictionaries (connector/connection colors,
+    selection rectangle, etc.) is kept as-is. Merge order matters: this file
+    must be merged *after* NodifyM's Dark.axaml/Brushes.axaml so these
+    overrides win.
+  -->
+
+  <!-- ── App chrome tokens ────────────────────────────────────────────── -->
+
+  <Color x:Key="Icsmoi.BackgroundColor">#101216</Color>
+  <Color x:Key="Icsmoi.SurfaceColor">#181B21</Color>
+  <Color x:Key="Icsmoi.SurfaceAltColor">#232831</Color>
+  <Color x:Key="Icsmoi.BorderColor">#313845</Color>
+  <Color x:Key="Icsmoi.AccentColor">#FF5A1F</Color>
+  <Color x:Key="Icsmoi.TextColor">#F4F5F7</Color>
+  <Color x:Key="Icsmoi.TextMutedColor">#9AA3B2</Color>
+  <Color x:Key="Icsmoi.SuccessColor">#2DD4BF</Color>
+  <Color x:Key="Icsmoi.WarningColor">#FACC15</Color>
+  <Color x:Key="Icsmoi.ErrorColor">#EF4444</Color>
+
+  <SolidColorBrush x:Key="Icsmoi.Background" Color="{DynamicResource Icsmoi.BackgroundColor}" />
+  <SolidColorBrush x:Key="Icsmoi.Surface" Color="{DynamicResource Icsmoi.SurfaceColor}" />
+  <SolidColorBrush x:Key="Icsmoi.SurfaceAlt" Color="{DynamicResource Icsmoi.SurfaceAltColor}" />
+  <SolidColorBrush x:Key="Icsmoi.Border" Color="{DynamicResource Icsmoi.BorderColor}" />
+  <SolidColorBrush x:Key="Icsmoi.Accent" Color="{DynamicResource Icsmoi.AccentColor}" />
+  <SolidColorBrush x:Key="Icsmoi.Text" Color="{DynamicResource Icsmoi.TextColor}" />
+  <SolidColorBrush x:Key="Icsmoi.TextMuted" Color="{DynamicResource Icsmoi.TextMutedColor}" />
+  <SolidColorBrush x:Key="Icsmoi.Success" Color="{DynamicResource Icsmoi.SuccessColor}" />
+  <SolidColorBrush x:Key="Icsmoi.Warning" Color="{DynamicResource Icsmoi.WarningColor}" />
+  <SolidColorBrush x:Key="Icsmoi.Error" Color="{DynamicResource Icsmoi.ErrorColor}" />
+
+  <!-- ── Per-node-category accents (header tint + used for palette glyphs) ─ -->
+  <!-- Input: SimConnect · MathLogic: Math/Compare/Logic/Select ·           -->
+  <!-- Shaping: Clamp/RangeMap/Curve · HardwareOutput: real DirectInput FX  -->
+
+  <Color x:Key="Icsmoi.Category.InputColor">#5B8DEF</Color>
+  <Color x:Key="Icsmoi.Category.MathLogicColor">#2DD4BF</Color>
+  <Color x:Key="Icsmoi.Category.ShapingColor">#FACC15</Color>
+  <Color x:Key="Icsmoi.Category.HardwareOutputColor">#FF5A1F</Color>
+
+  <SolidColorBrush x:Key="Icsmoi.Category.Input" Color="{DynamicResource Icsmoi.Category.InputColor}" />
+  <SolidColorBrush x:Key="Icsmoi.Category.MathLogic" Color="{DynamicResource Icsmoi.Category.MathLogicColor}" />
+  <SolidColorBrush x:Key="Icsmoi.Category.Shaping" Color="{DynamicResource Icsmoi.Category.ShapingColor}" />
+  <SolidColorBrush x:Key="Icsmoi.Category.HardwareOutput" Color="{DynamicResource Icsmoi.Category.HardwareOutputColor}" />
+
+  <!-- ── Shape tokens ─────────────────────────────────────────────────── -->
+
+  <CornerRadius x:Key="Icsmoi.PillRadius">999</CornerRadius>
+
+  <!-- Translucent light disc behind an icon in a button's rounded end (Icons.axaml BadgeIcon). -->
+  <!-- White-at-12% rather than a fixed color so it reads on both the resting and the orange  -->
+  <!-- hover background.                                                                     -->
+  <SolidColorBrush x:Key="Icsmoi.IconBadge" Color="#1FFFFFFF" />
+  <CornerRadius x:Key="Icsmoi.NodeRadius">12</CornerRadius>
+  <!-- Inner radii for a node's header/footer fills: NodeRadius minus the 2px node border,   -->
+  <!-- so the fill is concentric with the border/selection ring instead of overshooting it. -->
+  <CornerRadius x:Key="Icsmoi.NodeHeaderRadius">10,10,0,0</CornerRadius>
+  <CornerRadius x:Key="Icsmoi.NodeFooterRadius">0,0,10,10</CornerRadius>
+  <CornerRadius x:Key="Icsmoi.ChipRadius">8</CornerRadius>
+
+  <!-- ── Fluent Button state overrides ────────────────────────────────── -->
+  <!-- Fluent's Button template resolves these keys per pseudo-class, so      -->
+  <!-- overriding them (rather than setting Background on a style) keeps      -->
+  <!-- hover/pressed/disabled states working. Hover flips to the accent.      -->
+
+  <SolidColorBrush x:Key="ButtonBackground" Color="{DynamicResource Icsmoi.SurfaceAltColor}" />
+  <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="{DynamicResource Icsmoi.AccentColor}" />
+  <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#D94A15" />
+  <SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="{DynamicResource Icsmoi.SurfaceColor}" />
+  <SolidColorBrush x:Key="ButtonForeground" Color="{DynamicResource Icsmoi.TextColor}" />
+  <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="{DynamicResource Icsmoi.BackgroundColor}" />
+  <SolidColorBrush x:Key="ButtonForegroundPressed" Color="{DynamicResource Icsmoi.BackgroundColor}" />
+  <SolidColorBrush x:Key="ButtonForegroundDisabled" Color="{DynamicResource Icsmoi.TextMutedColor}" />
+  <SolidColorBrush x:Key="ButtonBorderBrush" Color="{DynamicResource Icsmoi.BorderColor}" />
+  <SolidColorBrush x:Key="ButtonBorderBrushPointerOver" Color="{DynamicResource Icsmoi.AccentColor}" />
+  <SolidColorBrush x:Key="ButtonBorderBrushPressed" Color="#D94A15" />
+  <SolidColorBrush x:Key="ButtonBorderBrushDisabled" Color="{DynamicResource Icsmoi.BorderColor}" />
+
+  <!-- ── NodifyM.Avalonia Dark.axaml overrides ────────────────────────────── -->
+
+  <Color x:Key="NodifyEditor.BackgroundColor">#0C0E11</Color>
+  <!-- NodifyM's LargeGridLine control does NOT read GridLinesColor (only the minimap border
+       does); it draws with its own Brush property (default Gainsboro) at 0.5px thickness,
+       which anti-aliases to ~25% coverage. So the *visible* line is roughly
+       background + 25% of (brush - background): the brush below is deliberately ~4x
+       brighter than the line you see. Applied via a controls|LargeGridLine style in
+       icsmoi.Editor/Styles/NodeStyles.axaml. Tune this one value to change the grid. -->
+  <Color x:Key="Icsmoi.GridLinesColor">#404A5D</Color>
+  <SolidColorBrush x:Key="Icsmoi.GridLines" Color="{DynamicResource Icsmoi.GridLinesColor}" />
+  <Color x:Key="GridLinesColor">#404A5D</Color>
+  <Color x:Key="ItemContainer.SelectedColor">#F4F5F7</Color>
+  <Color x:Key="Node.BackgroundColor">#181B21</Color>
+  <Color x:Key="Node.ContentColor">#181B21</Color>
+  <Color x:Key="Node.HeaderColor">#232831</Color>
+  <Color x:Key="Node.FooterColor">#232831</Color>
+  <Color x:Key="Node.BorderColor">#313845</Color>
+
+</ResourceDictionary>

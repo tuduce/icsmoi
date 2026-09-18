@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="12.0.5" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.1" />
+    <PackageReference Include="NCalc" Version="6.2.0" />
+    <PackageReference Include="NodifyM.Avalonia" Version="12.0.0" />
+    <PackageReference Include="Vortice.DirectInput" Version="3.8.3" />
+  </ItemGroup>
+
+  <!--
+    Vendored MSFS SimConnect client (from the MSFS SDK, proprietary/EULA-governed —
+    not on NuGet). Both icsmoi.Editor and icsmoi.Runtime pick up the native DLL
+    automatically via ProjectReference content propagation.
+  -->
+  <ItemGroup>
+    <Reference Include="Microsoft.FlightSimulator.SimConnect">
+      <HintPath>..\..\lib\SimConnect\Microsoft.FlightSimulator.SimConnect.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <None Include="..\..\lib\SimConnect\SimConnect.dll" Link="SimConnect.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

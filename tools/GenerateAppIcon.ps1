@@ -1,14 +1,14 @@
-# Generates src/icsmooi.Shared.Ui/Assets/icsmooi.ico — the icsmooi monogram (dark disc, orange ring,
+# Generates src/icsmoi.Shared.Ui/Assets/icsmoi.ico — the icsmoi monogram (dark disc, orange ring,
 # light 'i' stem, orange dot) at 16/24/32/48/64/128/256 px as a PNG-compressed multi-size .ico.
 #
-# The primitives mirror the Icsmooi.Monogram theme in src/icsmooi.Shared.Ui/Styles/Logo.axaml
+# The primitives mirror the Icsmoi.Monogram theme in src/icsmoi.Shared.Ui/Styles/Logo.axaml
 # (64 x 64 grid). Keep the two in sync. Colors mirror Tokens.axaml (Background/Text/Accent).
 #
 # Usage:  powershell -ExecutionPolicy Bypass -File tools/GenerateAppIcon.ps1
 
 Add-Type -AssemblyName System.Drawing
 
-$outPath = Join-Path $PSScriptRoot '..\src\icsmooi.Shared.Ui\Assets\icsmooi.ico'
+$outPath = Join-Path $PSScriptRoot '..\src\icsmoi.Shared.Ui\Assets\icsmoi.ico'
 $sizes   = 16, 24, 32, 48, 64, 128, 256
 
 $disc   = [System.Drawing.ColorTranslator]::FromHtml('#101216')

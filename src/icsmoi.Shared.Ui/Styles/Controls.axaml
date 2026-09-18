@@ -1,0 +1,40 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!--
+    Shared control styles for icsmoi.Editor and icsmoi.Runtime (no NodifyM
+    types here — Runtime must never reference the node canvas). Include after
+    <FluentTheme /> in each App.axaml.
+
+    Button: pill shape (half-round sides). Fluent's Button template binds its
+    ContentPresenter to CornerRadius, so a large radius clamps to a stadium
+    shape at any height. Only exact Button is matched — RepeatButton/ToggleButton
+    (used inside ComboBox, NumericUpDown, ToggleSwitch) keep their own shapes.
+    Colors come from the ButtonBackground*/ButtonForeground*/ButtonBorderBrush*
+    resource keys overridden in Tokens.axaml.
+  -->
+
+  <Style Selector="Button">
+    <Setter Property="CornerRadius" Value="{StaticResource Icsmoi.PillRadius}" />
+    <Setter Property="Padding" Value="14,6" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="Cursor" Value="Hand" />
+  </Style>
+
+  <!-- Icon buttons (see Icons.axaml).
+       iconed: labeled pill whose first child is a BadgeIcon. The tight left padding makes the
+               26px badge concentric with the pill's rounded end:
+               badge center x = 1 (border) + 4 (padding) + 13 = 18 = half the 36px button height.
+       round:  icon-only circle (36x36) holding a bare Icon. -->
+  <Style Selector="Button.iconed">
+    <Setter Property="Padding" Value="4,4,16,4" />
+  </Style>
+
+  <Style Selector="Button.round">
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Width" Value="36" />
+    <Setter Property="Height" Value="36" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+  </Style>
+
+</Styles>

@@ -1,0 +1,30 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="icsmoi.App"
+             xmlns:local="using:icsmoi"
+             RequestedThemeVariant="Dark">
+             <!-- icsmoi always uses its own dark graphite/afterburner palette — see icsmoi.Shared.Ui/Styles/Tokens.axaml — rather than following the OS theme. -->
+
+    <Application.DataTemplates>
+        <local:ViewLocator/>
+    </Application.DataTemplates>
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://NodifyM.Avalonia/ResourceDictionaries/Dark.axaml" />
+                <ResourceInclude Source="avares://NodifyM.Avalonia/ResourceDictionaries/Brushes.axaml" />
+                <ResourceInclude Source="avares://icsmoi.Shared.Ui/Styles/Tokens.axaml" />
+                <ResourceInclude Source="avares://icsmoi.Shared.Ui/Styles/Icons.axaml" />
+                <ResourceInclude Source="avares://icsmoi.Shared.Ui/Styles/Logo.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+
+    <Application.Styles>
+        <FluentTheme />
+        <StyleInclude Source="avares://NodifyM.Avalonia/Styles/ControlStyles.axaml" />
+        <StyleInclude Source="avares://icsmoi.Shared.Ui/Styles/Controls.axaml" />
+        <StyleInclude Source="avares://icsmoi.Editor/Styles/NodeStyles.axaml" />
+    </Application.Styles>
+</Application>
