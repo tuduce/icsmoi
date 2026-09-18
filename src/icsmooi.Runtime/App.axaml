@@ -9,6 +9,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="avares://icsmooi.Shared.Ui/Styles/Tokens.axaml" />
                 <ResourceInclude Source="avares://icsmooi.Shared.Ui/Styles/Icons.axaml" />
+                <ResourceInclude Source="avares://icsmooi.Shared.Ui/Styles/Logo.axaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
@@ -20,7 +21,7 @@
 
     <TrayIcon.Icons>
         <TrayIcons>
-            <TrayIcon Icon="/Assets/avalonia-logo.ico" ToolTipText="icsmooi Runtime">
+            <TrayIcon Icon="avares://icsmooi.Shared.Ui/Assets/icsmooi.ico" ToolTipText="icsmooi Runtime">
                 <TrayIcon.Menu>
                     <NativeMenu>
                         <NativeMenuItem Header="Show status" Click="OnShowStatusClicked" />

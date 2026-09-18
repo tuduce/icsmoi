@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <AvaloniaResource Include="Styles\**" />
+    <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
 
   <ItemGroup>

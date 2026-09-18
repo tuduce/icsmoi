@@ -7,15 +7,18 @@
         d:DesignWidth="420" d:DesignHeight="340"
         x:Class="icsmooi.Runtime.Views.StatusWindow"
         x:DataType="vm:StatusWindowViewModel"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="avares://icsmooi.Shared.Ui/Assets/icsmooi.ico"
         Title="icsmooi Runtime"
         Width="420" Height="340"
         CanResize="False"
         Background="{DynamicResource Icsmooi.Background}">
 
     <StackPanel Margin="20" Spacing="12">
-        <TextBlock Text="icsmooi Runtime" FontSize="18" FontWeight="Bold"
-                   Foreground="{DynamicResource Icsmooi.Text}" />
+        <StackPanel Orientation="Horizontal" Spacing="10">
+            <ContentControl Theme="{StaticResource Icsmooi.Wordmark}" Height="30" VerticalAlignment="Bottom" />
+            <TextBlock Text="Runtime" FontSize="13" VerticalAlignment="Bottom" Margin="0,0,0,2"
+                       Foreground="{DynamicResource Icsmooi.TextMuted}" />
+        </StackPanel>
         <TextBlock Text="Background telemetry + force-feedback engine."
                     Foreground="{DynamicResource Icsmooi.TextMuted}" TextWrapping="Wrap" />
 
