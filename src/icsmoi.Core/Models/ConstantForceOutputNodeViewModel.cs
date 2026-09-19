@@ -1,4 +1,3 @@
-using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.Text.Json.Serialization;
 
@@ -10,20 +9,8 @@ namespace icsmoi.Models;
 /// long-lived DirectInput effect per node instance and keeps it updated in
 /// place every tick — never recreated per tick.
 /// </summary>
-public partial class ConstantForceOutputNodeViewModel : NodeViewModel
+public partial class ConstantForceOutputNodeViewModel : HardwareOutputNodeViewModel
 {
-    /// <summary>Which physical FFB device this effect targets — null until the user picks one.</summary>
-    [ObservableProperty]
-    private Guid? _deviceInstanceGuid;
-
-    /// <summary>Index into the target device's cached FFB axis offsets (see <c>FfbDeviceManager.GetAxisOffsets</c>).</summary>
-    [ObservableProperty]
-    private int _axisIndex;
-
-    /// <summary>DirectInput per-effect gain (0-10000, master volume for this effect).</summary>
-    [ObservableProperty]
-    private int _gain = 10000;
-
     /// <summary>Last magnitude actually sent to hardware — runtime-only, never persisted.</summary>
     [JsonIgnore]
     [ObservableProperty]

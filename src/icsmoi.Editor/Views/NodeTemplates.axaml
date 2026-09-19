@@ -47,6 +47,68 @@
             Header="{Binding Title}" />
     </DataTemplate>
 
+    <!--
+        Input pin with a constant-value field beside it (hardware-output nodes).
+        The field edits PinViewModel.Value and is shown only while nothing is
+        wired into the pin — a link takes over the value (GraphEvaluator), so
+        the field hides until the link is removed. The field sits *beside* the
+        NodeInput rather than in its Header: NodifyM's Connector captures the
+        pointer for a connection drag on any press that reaches it.
+        The row keeps a fixed MinHeight so hiding/showing the field never moves
+        the pin (NodifyM only recomputes pin anchors on node move/resize).
+        Title columns are sized together via Grid.IsSharedSizeScope on the node's
+        input list (Styles/NodeStyles.axaml) so the fields line up.
+    -->
+    <DataTemplate x:Key="ValueInputPinTemplate"
+                  DataType="{x:Type models:PinViewModel}">
+        <Grid MinHeight="34">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" SharedSizeGroup="PinTitle" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <controls:NodeInput
+                VerticalAlignment="Center"
+                IsConnected="{Binding IsConnected}"
+                Anchor="{Binding Anchor, Mode=TwoWay}"
+                Header="{Binding Title}" />
+            <NumericUpDown Grid.Column="1" Classes="field" Width="84"
+                           Margin="6,0,0,0" VerticalAlignment="Center"
+                           IsVisible="{Binding !IsConnected}"
+                           Value="{Binding Value, Mode=TwoWay}"
+                           ToolTip.Tip="Constant value used while nothing is connected to this input" />
+        </Grid>
+    </DataTemplate>
+
+    <!-- Device / axis / gain block shared by all four hardware-output node types. -->
+    <DataTemplate x:Key="HardwareOutputSettingsTemplate"
+                  DataType="{x:Type models:HardwareOutputNodeViewModel}">
+        <StackPanel Spacing="6">
+            <StackPanel Spacing="2">
+                <TextBlock Text="Device" FontSize="10" Opacity="0.6" />
+                <ComboBox x:CompileBindings="False"
+                          ItemsSource="{Binding $parent[Window].DataContext.AvailableDevices}"
+                          SelectedValueBinding="{Binding InstanceGuid}"
+                          SelectedValue="{Binding DeviceInstanceGuid, Mode=TwoWay}"
+                          DisplayMemberBinding="{Binding ProductName}"
+                          MinWidth="140" PlaceholderText="(no device selected)" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <StackPanel Spacing="2">
+                    <TextBlock Text="Axis" FontSize="10" Opacity="0.6" />
+                    <NumericUpDown Classes="field" Width="60"
+                                   Value="{Binding AxisIndex, Mode=TwoWay}"
+                                   Minimum="0" Increment="1" />
+                </StackPanel>
+                <StackPanel Spacing="2">
+                    <TextBlock Text="Gain" FontSize="10" Opacity="0.6" />
+                    <NumericUpDown Classes="field" Width="72"
+                                   Value="{Binding Gain, Mode=TwoWay}"
+                                   Minimum="0" Maximum="10000" Increment="500" />
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </DataTemplate>
+
     <controls:NodeTemplateSelector x:Key="MainNodeTemplateSelector">
 
         <!-- SimConnect node -->
@@ -207,22 +269,10 @@
                 HeaderBrush="{DynamicResource Icsmoi.Category.HardwareOutput}"
                 Header="{Binding Name}"
                 Input="{Binding Inputs}"
-                InputConnectorTemplate="{StaticResource InputPinTemplate}">
-                <StackPanel Margin="6,4" Spacing="4">
-                    <TextBlock Text="Device" FontSize="10" Opacity="0.6" />
-                    <ComboBox x:CompileBindings="False"
-                              ItemsSource="{Binding $parent[Window].DataContext.AvailableDevices}"
-                              SelectedValueBinding="{Binding InstanceGuid}"
-                              SelectedValue="{Binding DeviceInstanceGuid, Mode=TwoWay}"
-                              DisplayMemberBinding="{Binding ProductName}"
-                              MinWidth="140" PlaceholderText="(no device selected)" />
-                    <TextBlock Text="Axis Index / Gain" FontSize="10" Opacity="0.6" />
-                    <StackPanel Orientation="Horizontal" Spacing="4">
-                        <NumericUpDown Value="{Binding AxisIndex, Mode=TwoWay}"
-                                       Minimum="0" Increment="1" Width="70" ShowButtonSpinner="False" />
-                        <NumericUpDown Value="{Binding Gain, Mode=TwoWay}"
-                                       Minimum="0" Maximum="10000" Increment="500" Width="90" ShowButtonSpinner="False" />
-                    </StackPanel>
+                InputConnectorTemplate="{StaticResource ValueInputPinTemplate}">
+                <StackPanel Spacing="8">
+                    <ContentControl Content="{Binding}"
+                                    ContentTemplate="{StaticResource HardwareOutputSettingsTemplate}" />
                     <Border Background="{DynamicResource Icsmoi.SurfaceAlt}" CornerRadius="{DynamicResource Icsmoi.ChipRadius}" Padding="8,3">
                         <TextBlock FontSize="11" FontFamily="Consolas,Monospace"
                                    Text="{Binding LastMagnitude, StringFormat='⚡ {0:F4}'}" />
@@ -239,26 +289,16 @@
                 HeaderBrush="{DynamicResource Icsmoi.Category.HardwareOutput}"
                 Header="{Binding Name}"
                 Input="{Binding Inputs}"
-                InputConnectorTemplate="{StaticResource InputPinTemplate}">
-                <StackPanel Margin="6,4" Spacing="4">
-                    <TextBlock Text="Kind" FontSize="10" Opacity="0.6" />
-                    <ComboBox ItemsSource="{x:Static models:ConditionOutputNodeViewModel.ConditionKinds}"
-                              SelectedItem="{Binding ConditionKind, Mode=TwoWay}"
-                              MinWidth="120" />
-                    <TextBlock Text="Device" FontSize="10" Opacity="0.6" />
-                    <ComboBox x:CompileBindings="False"
-                              ItemsSource="{Binding $parent[Window].DataContext.AvailableDevices}"
-                              SelectedValueBinding="{Binding InstanceGuid}"
-                              SelectedValue="{Binding DeviceInstanceGuid, Mode=TwoWay}"
-                              DisplayMemberBinding="{Binding ProductName}"
-                              MinWidth="140" PlaceholderText="(no device selected)" />
-                    <TextBlock Text="Axis Index / Gain" FontSize="10" Opacity="0.6" />
-                    <StackPanel Orientation="Horizontal" Spacing="4">
-                        <NumericUpDown Value="{Binding AxisIndex, Mode=TwoWay}"
-                                       Minimum="0" Increment="1" Width="70" ShowButtonSpinner="False" />
-                        <NumericUpDown Value="{Binding Gain, Mode=TwoWay}"
-                                       Minimum="0" Maximum="10000" Increment="500" Width="90" ShowButtonSpinner="False" />
+                InputConnectorTemplate="{StaticResource ValueInputPinTemplate}">
+                <StackPanel Spacing="8">
+                    <StackPanel Spacing="2">
+                        <TextBlock Text="Kind" FontSize="10" Opacity="0.6" />
+                        <ComboBox ItemsSource="{x:Static models:ConditionOutputNodeViewModel.ConditionKinds}"
+                                  SelectedItem="{Binding ConditionKind, Mode=TwoWay}"
+                                  MinWidth="140" />
                     </StackPanel>
+                    <ContentControl Content="{Binding}"
+                                    ContentTemplate="{StaticResource HardwareOutputSettingsTemplate}" />
                     <Border Background="{DynamicResource Icsmoi.SurfaceAlt}" CornerRadius="{DynamicResource Icsmoi.ChipRadius}" Padding="8,3">
                         <TextBlock FontSize="11" FontFamily="Consolas,Monospace"
                                    Text="{Binding LastPositiveCoefficient, StringFormat='⚡ {0:F4}'}" />
@@ -275,26 +315,16 @@
                 HeaderBrush="{DynamicResource Icsmoi.Category.HardwareOutput}"
                 Header="{Binding Name}"
                 Input="{Binding Inputs}"
-                InputConnectorTemplate="{StaticResource InputPinTemplate}">
-                <StackPanel Margin="6,4" Spacing="4">
-                    <TextBlock Text="Waveform" FontSize="10" Opacity="0.6" />
-                    <ComboBox ItemsSource="{x:Static models:PeriodicOutputNodeViewModel.Waveforms}"
-                              SelectedItem="{Binding Waveform, Mode=TwoWay}"
-                              MinWidth="120" />
-                    <TextBlock Text="Device" FontSize="10" Opacity="0.6" />
-                    <ComboBox x:CompileBindings="False"
-                              ItemsSource="{Binding $parent[Window].DataContext.AvailableDevices}"
-                              SelectedValueBinding="{Binding InstanceGuid}"
-                              SelectedValue="{Binding DeviceInstanceGuid, Mode=TwoWay}"
-                              DisplayMemberBinding="{Binding ProductName}"
-                              MinWidth="140" PlaceholderText="(no device selected)" />
-                    <TextBlock Text="Axis Index / Gain" FontSize="10" Opacity="0.6" />
-                    <StackPanel Orientation="Horizontal" Spacing="4">
-                        <NumericUpDown Value="{Binding AxisIndex, Mode=TwoWay}"
-                                       Minimum="0" Increment="1" Width="70" ShowButtonSpinner="False" />
-                        <NumericUpDown Value="{Binding Gain, Mode=TwoWay}"
-                                       Minimum="0" Maximum="10000" Increment="500" Width="90" ShowButtonSpinner="False" />
+                InputConnectorTemplate="{StaticResource ValueInputPinTemplate}">
+                <StackPanel Spacing="8">
+                    <StackPanel Spacing="2">
+                        <TextBlock Text="Waveform" FontSize="10" Opacity="0.6" />
+                        <ComboBox ItemsSource="{x:Static models:PeriodicOutputNodeViewModel.Waveforms}"
+                                  SelectedItem="{Binding Waveform, Mode=TwoWay}"
+                                  MinWidth="140" />
                     </StackPanel>
+                    <ContentControl Content="{Binding}"
+                                    ContentTemplate="{StaticResource HardwareOutputSettingsTemplate}" />
                     <Border Background="{DynamicResource Icsmoi.SurfaceAlt}" CornerRadius="{DynamicResource Icsmoi.ChipRadius}" Padding="8,3">
                         <TextBlock FontSize="11" FontFamily="Consolas,Monospace"
                                    Text="{Binding LastMagnitude, StringFormat='⚡ {0:F4}'}" />
@@ -311,22 +341,10 @@
                 HeaderBrush="{DynamicResource Icsmoi.Category.HardwareOutput}"
                 Header="{Binding Name}"
                 Input="{Binding Inputs}"
-                InputConnectorTemplate="{StaticResource InputPinTemplate}">
-                <StackPanel Margin="6,4" Spacing="4">
-                    <TextBlock Text="Device" FontSize="10" Opacity="0.6" />
-                    <ComboBox x:CompileBindings="False"
-                              ItemsSource="{Binding $parent[Window].DataContext.AvailableDevices}"
-                              SelectedValueBinding="{Binding InstanceGuid}"
-                              SelectedValue="{Binding DeviceInstanceGuid, Mode=TwoWay}"
-                              DisplayMemberBinding="{Binding ProductName}"
-                              MinWidth="140" PlaceholderText="(no device selected)" />
-                    <TextBlock Text="Axis Index / Gain" FontSize="10" Opacity="0.6" />
-                    <StackPanel Orientation="Horizontal" Spacing="4">
-                        <NumericUpDown Value="{Binding AxisIndex, Mode=TwoWay}"
-                                       Minimum="0" Increment="1" Width="70" ShowButtonSpinner="False" />
-                        <NumericUpDown Value="{Binding Gain, Mode=TwoWay}"
-                                       Minimum="0" Maximum="10000" Increment="500" Width="90" ShowButtonSpinner="False" />
-                    </StackPanel>
+                InputConnectorTemplate="{StaticResource ValueInputPinTemplate}">
+                <StackPanel Spacing="8">
+                    <ContentControl Content="{Binding}"
+                                    ContentTemplate="{StaticResource HardwareOutputSettingsTemplate}" />
                     <Border Background="{DynamicResource Icsmoi.SurfaceAlt}" CornerRadius="{DynamicResource Icsmoi.ChipRadius}" Padding="8,3">
                         <TextBlock FontSize="11" FontFamily="Consolas,Monospace"
                                    Text="{Binding LastStartMagnitude, StringFormat='⚡ {0:F4}'}" />

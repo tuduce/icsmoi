@@ -14,19 +14,10 @@ public enum Waveform { Sine, Square, Triangle, SawtoothUp, SawtoothDown }
 /// Periodic nodes with different Period/Phase (fed by Math/Select nodes
 /// instead of branching C#) reproduces that behavior visually.
 /// </summary>
-public partial class PeriodicOutputNodeViewModel : NodeViewModel
+public partial class PeriodicOutputNodeViewModel : HardwareOutputNodeViewModel
 {
     [ObservableProperty]
     private Waveform _waveform = Waveform.Sine;
-
-    [ObservableProperty]
-    private Guid? _deviceInstanceGuid;
-
-    [ObservableProperty]
-    private int _axisIndex;
-
-    [ObservableProperty]
-    private int _gain = 10000;
 
     [JsonIgnore]
     [ObservableProperty]
@@ -38,7 +29,8 @@ public partial class PeriodicOutputNodeViewModel : NodeViewModel
     {
         Name = "Periodic";
         Inputs.Add(new PinViewModel { Title = "Magnitude", IsInput = true });
-        Inputs.Add(new PinViewModel { Title = "Period", IsInput = true });
+        // A zero period is not a valid DirectInput periodic effect, so start at 10 Hz.
+        Inputs.Add(new PinViewModel { Title = "Period", IsInput = true, Value = 0.1 });
         Inputs.Add(new PinViewModel { Title = "Phase", IsInput = true });
         Inputs.Add(new PinViewModel { Title = "Offset", IsInput = true });
     }

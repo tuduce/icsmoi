@@ -74,6 +74,7 @@
               </Grid.ColumnDefinitions>
 
               <ItemsControl ItemsSource="{TemplateBinding Input}"
+                            Grid.IsSharedSizeScope="True"
                             VerticalAlignment="{TemplateBinding VerticalAlignment}"
                             ItemTemplate="{TemplateBinding InputConnectorTemplate}"
                             Focusable="False" />
@@ -132,6 +133,32 @@
   </Style>
   <Style Selector="controls|Node ContentPresenter#FooterContentPresenter">
     <Setter Property="HorizontalAlignment" Value="Center" />
+  </Style>
+
+  <!--
+    Compact numeric field used inside nodes (input-pin constants, axis/gain).
+    Fluent's NumericUpDown draws its border (all four sides, ControlCornerRadius)
+    on an inner ButtonSpinner (PART_Spinner) whose MinHeight comes from the theme,
+    not from the NumericUpDown — so the height has to be reduced on that part.
+    Forcing Height/MinHeight on the NumericUpDown alone clips the spinner and
+    cuts off its top/bottom border and rounded corners. The inner TextBox keeps
+    Fluent's Margin=-1 overlap of that border, so its own MinHeight must stay
+    below the spinner's.
+  -->
+  <Style Selector="NumericUpDown.field">
+    <Setter Property="ShowButtonSpinner" Value="False" />
+    <Setter Property="FormatString" Value="0.####" />
+    <Setter Property="Increment" Value="0.05" />
+    <Setter Property="FontSize" Value="11" />
+    <Setter Property="MinHeight" Value="26" />
+    <Style Selector="^ /template/ ButtonSpinner#PART_Spinner">
+      <Setter Property="MinHeight" Value="26" />
+    </Style>
+    <Style Selector="^ /template/ TextBox#PART_TextBox">
+      <Setter Property="MinHeight" Value="24" />
+      <Setter Property="Padding" Value="8,0" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
   </Style>
 
   <!-- Hover / selection rings (replace NodifyM's hard-coded LightBlue / Orange) -->

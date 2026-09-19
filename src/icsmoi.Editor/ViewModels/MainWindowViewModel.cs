@@ -41,20 +41,64 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     [ObservableProperty]
     private bool _engineRunning;
 
-    [ObservableProperty]
-    private string _engineStatus = "Engine: Stopped";
-
     // ── SimConnect telemetry (test-run only — the Editor never drives real
     // FFB hardware; see icsmoi.Runtime for that) ───────────────────────────
 
     private SimConnectTelemetryService? _simConnectService;
     private IntPtr _windowHandle;
 
+    /// <summary>The user has switched the sim connection on (it may still be connecting/retrying).</summary>
     [ObservableProperty]
     private bool _simConnectActive;
 
+    /// <summary>SimConnect's handshake has completed — telemetry is really flowing.</summary>
     [ObservableProperty]
-    private string _simConnectStatus = "Sim: Disconnected";
+    private bool _simConnected;
+
+    // ── Status line ──────────────────────────────────────────────────────────
+    // One fixed-size field in the toolbar showing only the *latest* message from
+    // any source (sim, engine, file). Sim/engine *state* is shown by their toolbar
+    // buttons' icon and tint, so a later message replacing an earlier one loses nothing.
+
+    [ObservableProperty]
+    private string _statusMessage = "Ready";
+
+    [ObservableProperty]
+    private bool _statusIsError;
+
+    private void SetStatus(string message, bool isError = false)
+    {
+        StatusMessage = message;
+        StatusIsError = isError;
+    }
+
+    // ── Profile name editing (toolbar) ───────────────────────────────────────
+
+    [ObservableProperty]
+    private bool _isEditingProfileName;
+
+    /// <summary>Text in the name box while editing; only written back to the profile on commit.</summary>
+    [ObservableProperty]
+    private string _profileNameDraft = "";
+
+    [RelayCommand]
+    private void BeginEditProfileName()
+    {
+        ProfileNameDraft = Profile.ProfileName;
+        IsEditingProfileName = true;
+    }
+
+    [RelayCommand]
+    private void CommitProfileName()
+    {
+        if (!IsEditingProfileName) return; // Enter, focus loss and the ✓ button can all fire — commit once
+        var name = ProfileNameDraft.Trim();
+        if (name.Length > 0) Profile.ProfileName = name; // an empty name keeps the old one
+        IsEditingProfileName = false;
+    }
+
+    [RelayCommand]
+    private void CancelEditProfileName() => IsEditingProfileName = false;
 
     // The serialisable profile � holds profile name and GUID-keyed connection records.
     [ObservableProperty]
@@ -76,14 +120,14 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
         {
             Engine.Stop();
             EngineRunning = false;
-            EngineStatus = "Engine: Stopped";
+            SetStatus("Engine: Stopped");
         }
         else
         {
             Engine.OutputsUpdated += OnEngineOutputsUpdated;
             Engine.Start(Profile);
             EngineRunning = true;
-            EngineStatus = "Engine: Running";
+            SetStatus("Engine: Running");
         }
     }
 
@@ -125,7 +169,8 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
             _simConnectService.Dispose();
             _simConnectService = null;
             SimConnectActive = false;
-            SimConnectStatus = "Sim: Disconnected";
+            SimConnected = false;
+            SetStatus("Sim: Disconnected");
         }
         else
         {
@@ -133,7 +178,7 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
             _simConnectService.StateChanged += OnSimConnectStateChanged;
             _simConnectService.Start();
             SimConnectActive = true;
-            SimConnectStatus = "Sim: Connecting…";
+            SetStatus("Sim: Connecting…");
         }
     }
 
@@ -142,12 +187,17 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     {
         Dispatcher.UIThread.Post(() =>
         {
-            SimConnectStatus = state switch
+            // A state change queued just before the user disconnected must not
+            // resurrect a "Connected" status/tint after the fact.
+            if (!SimConnectActive) return;
+
+            SimConnected = state == SimConnectionState.Connected;
+            SetStatus(state switch
             {
                 SimConnectionState.Connected => "Sim: Connected",
                 SimConnectionState.Connecting => "Sim: Connecting…",
                 _ => "Sim: Disconnected (retrying…)",
-            };
+            });
         });
     }
 
@@ -343,10 +393,6 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     [ObservableProperty]
     private string? _currentFilePath;
 
-    /// <summary>Short result of the last save/load (empty until one happens).</summary>
-    [ObservableProperty]
-    private string _fileStatus = "";
-
     /// <summary>Default file name offered by the Save dialog, derived from the profile name.</summary>
     public string SuggestedFileName
     {
@@ -365,11 +411,11 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
         {
             await _serializer.SaveAsync(Profile, path);
             CurrentFilePath = path;
-            FileStatus = $"Saved {Path.GetFileName(path)}";
+            SetStatus($"Saved {Path.GetFileName(path)}");
         }
         catch (Exception ex)
         {
-            FileStatus = $"Save failed: {ex.Message}";
+            SetStatus($"Save failed: {ex.Message}", isError: true);
         }
     }
 
@@ -379,13 +425,13 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
         {
             LoadProfile(await _serializer.LoadAsync(path));
             CurrentFilePath = path;
-            FileStatus = $"Loaded {Path.GetFileName(path)}";
+            SetStatus($"Loaded {Path.GetFileName(path)}");
         }
         catch (Exception ex)
         {
             // Arbitrary files can now be picked, so a wrong/older/corrupt file is expected
             // (e.g. a profile still containing the removed "FFB Output" node).
-            FileStatus = $"Load failed: {ex.Message}";
+            SetStatus($"Load failed: {ex.Message}", isError: true);
         }
     }
 
@@ -402,11 +448,18 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
 
     private void LoadProfile(FfbProfile loaded)
     {
+        IsEditingProfileName = false; // a half-typed name belongs to the profile being replaced
         Nodes.Clear();
         Connections.Clear();
         Profile = loaded;
 
-        foreach (var node in loaded.Nodes) Nodes.Add(node);
+        foreach (var node in loaded.Nodes)
+        {
+            // IsConnected is persisted with each pin, but the connections below are the
+            // source of truth — a stale flag would wrongly hide an input pin's value field.
+            foreach (var pin in node.Inputs.Concat(node.Outputs)) pin.IsConnected = false;
+            Nodes.Add(node);
+        }
 
         var nodeById = loaded.Nodes.ToDictionary(n => n.Id);
         foreach (var conn in loaded.Connections)

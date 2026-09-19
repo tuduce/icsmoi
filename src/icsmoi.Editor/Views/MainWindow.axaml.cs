@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
+using Avalonia.Threading;
 using icsmoi.ViewModels;
 
 namespace icsmoi.Views;
@@ -26,6 +27,45 @@ public partial class MainWindow : Window
             var handle = TryGetPlatformHandle()?.Handle ?? IntPtr.Zero;
             vm.AttachWindowHandle(handle);
         }
+    }
+
+    // ── Profile name editing ────────────────────────────────────────────────
+
+    private void OnEditProfileNameClicked(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is not MainWindowViewModel vm) return;
+
+        vm.BeginEditProfileNameCommand.Execute(null);
+        // The TextBox only becomes visible once the binding above has propagated,
+        // so focus it after layout rather than right now.
+        Dispatcher.UIThread.Post(() =>
+        {
+            ProfileNameBox.Focus();
+            ProfileNameBox.SelectAll();
+        }, DispatcherPriority.Input);
+    }
+
+    private void OnProfileNameKeyDown(object? sender, KeyEventArgs e)
+    {
+        if (DataContext is not MainWindowViewModel vm) return;
+
+        if (e.Key == Key.Enter)
+        {
+            vm.CommitProfileNameCommand.Execute(null);
+            e.Handled = true;
+        }
+        else if (e.Key == Key.Escape)
+        {
+            vm.CancelEditProfileNameCommand.Execute(null);
+            e.Handled = true;
+        }
+    }
+
+    // Clicking anywhere else commits (the command ignores this if Enter/Esc already closed the editor).
+    private void OnProfileNameLostFocus(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is MainWindowViewModel vm)
+            vm.CommitProfileNameCommand.Execute(null);
     }
 
     // ── Profile open/save via the OS file pickers ───────────────────────────

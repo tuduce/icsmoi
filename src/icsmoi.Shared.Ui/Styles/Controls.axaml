@@ -37,4 +37,28 @@
     <Setter Property="VerticalContentAlignment" Value="Center" />
   </Style>
 
+  <!-- compact: small borderless round icon button for inline actions beside text (e.g. edit
+       next to the profile name). Transparent until hovered — Fluent's :pointerover styling
+       (accent fill) still applies because it targets the template's ContentPresenter. -->
+  <Style Selector="Button.round.compact">
+    <Setter Property="Width" Value="28" />
+    <Setter Property="Height" Value="28" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+  </Style>
+
+  <!-- State tints for round toggle buttons whose icon already flips with the state (e.g. the
+       Editor's sim/engine buttons): on = running/connected, pending = requested but not there
+       yet. Dark glyph on the fill, like the hover state, for contrast. -->
+  <Style Selector="Button.round.on">
+    <Setter Property="Background" Value="{DynamicResource Icsmoi.Success}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Icsmoi.Success}" />
+    <Setter Property="Foreground" Value="{DynamicResource Icsmoi.Background}" />
+  </Style>
+  <Style Selector="Button.round.pending">
+    <Setter Property="Background" Value="{DynamicResource Icsmoi.Warning}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Icsmoi.Warning}" />
+    <Setter Property="Foreground" Value="{DynamicResource Icsmoi.Background}" />
+  </Style>
+
 </Styles>

@@ -15,19 +15,10 @@ public enum ConditionKind { Spring, Damper, Inertia, Friction }
 /// spring: the coefficient inputs are normally fed by a Curve or Math node
 /// instead of hardcoded C#.
 /// </summary>
-public partial class ConditionOutputNodeViewModel : NodeViewModel
+public partial class ConditionOutputNodeViewModel : HardwareOutputNodeViewModel
 {
     [ObservableProperty]
     private ConditionKind _conditionKind = ConditionKind.Spring;
-
-    [ObservableProperty]
-    private Guid? _deviceInstanceGuid;
-
-    [ObservableProperty]
-    private int _axisIndex;
-
-    [ObservableProperty]
-    private int _gain = 10000;
 
     [JsonIgnore]
     [ObservableProperty]
@@ -42,6 +33,7 @@ public partial class ConditionOutputNodeViewModel : NodeViewModel
         Inputs.Add(new PinViewModel { Title = "NegativeCoefficient", IsInput = true });
         Inputs.Add(new PinViewModel { Title = "Offset", IsInput = true });
         Inputs.Add(new PinViewModel { Title = "DeadBand", IsInput = true });
-        Inputs.Add(new PinViewModel { Title = "Saturation", IsInput = true });
+        // Full saturation, so a coefficient alone (constant or wired) already produces force.
+        Inputs.Add(new PinViewModel { Title = "Saturation", IsInput = true, Value = 1.0 });
     }
 }

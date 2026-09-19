@@ -99,12 +99,18 @@ public sealed class GraphEvaluator
         }
 
         // ── 5.  Initialise wire-value table ──────────────────────────────────
+        //   An input pin starts at its own constant (PinViewModel.Value); a wired
+        //   input is overwritten by its source's output when that node propagates.
 
         var wireValues = new Dictionary<Guid, double>(
             nodes.Sum(n => n.Inputs.Count + n.Outputs.Count));
         foreach (var node in nodes)
-            foreach (var pin in node.Inputs.Concat(node.Outputs))
+        {
+            foreach (var pin in node.Inputs)
+                wireValues[pin.Id] = pin.Value;
+            foreach (var pin in node.Outputs)
                 wireValues[pin.Id] = 0.0;
+        }
 
         // ── 6.  Evaluate nodes in topological order ───────────────────────────
 
