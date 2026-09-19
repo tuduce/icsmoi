@@ -29,6 +29,10 @@ public partial class MainWindow : Window
         {
             var handle = TryGetPlatformHandle()?.Handle ?? IntPtr.Zero;
             vm.AttachWindowHandle(handle);
+
+            // Opened by the Runtime's Edit button: load that profile (errors show in the status field).
+            if (vm.StartupProfilePath is { } path)
+                _ = vm.LoadFromPathAsync(path);
         }
     }
 
@@ -111,10 +115,24 @@ public partial class MainWindow : Window
         return await StorageProvider.TryGetWellKnownFolderAsync(WellKnownFolder.Documents);
     }
 
+    // Save: straight over the profile's own file once it has one (so a profile opened from the Runtime
+    // is saved where the Runtime will pick it up); the first save of a new profile is a Save As.
     private async void OnSaveClicked(object? sender, RoutedEventArgs e)
     {
         if (DataContext is not MainWindowViewModel vm) return;
 
+        if (!await vm.TrySaveInPlaceAsync())
+            await SaveAsAsync(vm);
+    }
+
+    private async void OnSaveAsClicked(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is MainWindowViewModel vm)
+            await SaveAsAsync(vm);
+    }
+
+    private async System.Threading.Tasks.Task SaveAsAsync(MainWindowViewModel vm)
+    {
         var file = await StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
             Title = "Save icsmoi profile",

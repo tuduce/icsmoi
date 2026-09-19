@@ -4,40 +4,216 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        d:DesignWidth="420" d:DesignHeight="340"
+        d:DesignWidth="460" d:DesignHeight="640"
         x:Class="icsmoi.Runtime.Views.StatusWindow"
         x:DataType="vm:StatusWindowViewModel"
         Icon="avares://icsmoi.Shared.Ui/Assets/icsmoi.ico"
         Title="icsmoi Runtime"
-        Width="420" Height="340"
+        Width="460" SizeToContent="Height"
         CanResize="False"
         Background="{DynamicResource Icsmoi.Background}">
 
-    <StackPanel Margin="20" Spacing="12">
-        <StackPanel Orientation="Horizontal" Spacing="10">
-            <ContentControl Theme="{StaticResource Icsmoi.Wordmark}" Height="30" VerticalAlignment="Bottom" />
-            <TextBlock Text="Runtime" FontSize="13" VerticalAlignment="Bottom" Margin="0,0,0,2"
-                       Foreground="{DynamicResource Icsmoi.TextMuted}" />
+    <Window.Styles>
+        <!-- Profile slot cards. Colors, radii and pills all come from the shared tokens/controls so the
+             window reads like the Editor: graphite surface, NodeRadius corners, afterburner-orange for "active". -->
+        <Style Selector="Border.panel">
+            <Setter Property="Background" Value="{DynamicResource Icsmoi.Surface}" />
+            <Setter Property="CornerRadius" Value="{DynamicResource Icsmoi.NodeRadius}" />
+            <Setter Property="Padding" Value="14" />
+        </Style>
+
+        <Style Selector="Border.slot">
+            <Setter Property="Background" Value="{DynamicResource Icsmoi.Surface}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Icsmoi.Border}" />
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="CornerRadius" Value="{DynamicResource Icsmoi.NodeRadius}" />
+            <Setter Property="Padding" Value="14,0" />
+            <Setter Property="Height" Value="64" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+        <Style Selector="Border.slot:pointerover">
+            <Setter Property="BorderBrush" Value="{DynamicResource Icsmoi.TextMuted}" />
+        </Style>
+        <Style Selector="Border.slot.active">
+            <Setter Property="Background" Value="{DynamicResource Icsmoi.SurfaceAlt}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Icsmoi.Accent}" />
+        </Style>
+        <Style Selector="Border.slot.empty">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Cursor" Value="Arrow" />
+        </Style>
+        <Style Selector="Border.slot.empty:pointerover">
+            <Setter Property="BorderBrush" Value="{DynamicResource Icsmoi.Border}" />
+        </Style>
+
+        <!-- Radio dot: hollow ring, filled orange when the slot is the one running. -->
+        <Style Selector="Border.radio">
+            <Setter Property="Width" Value="18" />
+            <Setter Property="Height" Value="18" />
+            <Setter Property="CornerRadius" Value="9" />
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Icsmoi.TextMuted}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Border.radio.on">
+            <Setter Property="BorderBrush" Value="{DynamicResource Icsmoi.Accent}" />
+            <Setter Property="Background" Value="{DynamicResource Icsmoi.Accent}" />
+        </Style>
+
+        <!-- Sim status dot -->
+        <Style Selector="Ellipse.dot">
+            <Setter Property="Width" Value="8" />
+            <Setter Property="Height" Value="8" />
+            <Setter Property="Fill" Value="{DynamicResource Icsmoi.TextMuted}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Ellipse.dot.connecting">
+            <Setter Property="Fill" Value="{DynamicResource Icsmoi.Warning}" />
+        </Style>
+        <Style Selector="Ellipse.dot.connected">
+            <Setter Property="Fill" Value="{DynamicResource Icsmoi.Success}" />
+        </Style>
+
+        <Style Selector="TextBlock.caption">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="LetterSpacing" Value="1.5" />
+            <Setter Property="Foreground" Value="{DynamicResource Icsmoi.TextMuted}" />
+        </Style>
+    </Window.Styles>
+
+    <StackPanel Margin="20" Spacing="14">
+
+        <!-- Header: wordmark + sim state -->
+        <DockPanel>
+            <Border DockPanel.Dock="Right" Classes="panel" Padding="12,6" CornerRadius="{DynamicResource Icsmoi.PillRadius}"
+                    VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Ellipse Classes="dot" Classes.connecting="{Binding SimConnecting}" Classes.connected="{Binding SimConnected}" />
+                    <TextBlock Text="{Binding SimStatusText}" FontSize="12" Foreground="{DynamicResource Icsmoi.Text}" />
+                </StackPanel>
+            </Border>
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <ContentControl Theme="{StaticResource Icsmoi.Wordmark}" Height="30" VerticalAlignment="Bottom" />
+                <TextBlock Text="Runtime" FontSize="13" VerticalAlignment="Bottom" Margin="0,0,0,2"
+                           Foreground="{DynamicResource Icsmoi.TextMuted}" />
+            </StackPanel>
+        </DockPanel>
+
+        <!-- Aircraft currently loaded in the sim -->
+        <Border Classes="panel" Padding="12,10">
+            <DockPanel>
+                <ContentControl DockPanel.Dock="Left" Theme="{StaticResource Icsmoi.BadgeIcon}"
+                                Content="{StaticResource Icsmoi.Icon.Plane}" Margin="0,0,12,0" />
+                <StackPanel VerticalAlignment="Center" Spacing="1">
+                    <TextBlock Classes="caption" Text="AIRCRAFT" />
+                    <TextBlock Text="{Binding AircraftDisplay}" TextTrimming="CharacterEllipsis"
+                               ToolTip.Tip="{Binding AircraftDisplay}"
+                               Classes.muted="{Binding !HasAircraft}"
+                               FontWeight="SemiBold" Foreground="{DynamicResource Icsmoi.Text}">
+                        <TextBlock.Styles>
+                            <Style Selector="TextBlock.muted">
+                                <Setter Property="Foreground" Value="{DynamicResource Icsmoi.TextMuted}" />
+                                <Setter Property="FontWeight" Value="Normal" />
+                            </Style>
+                        </TextBlock.Styles>
+                    </TextBlock>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- This aircraft is tied to a profile that isn't loaded: told, not overridden -->
+        <Border Classes="panel" IsVisible="{Binding HasAircraftWarning}" Padding="12,10"
+                BorderThickness="1" BorderBrush="{DynamicResource Icsmoi.Warning}">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <ContentControl Theme="{StaticResource Icsmoi.Icon}" Content="{StaticResource Icsmoi.Icon.Warning}"
+                                Foreground="{DynamicResource Icsmoi.Warning}" VerticalAlignment="Top" Margin="0,2,10,0" />
+                <TextBlock Grid.Column="1" Text="{Binding AircraftWarning}" TextWrapping="Wrap" FontSize="12"
+                           Foreground="{DynamicResource Icsmoi.Text}" VerticalAlignment="Center" />
+                <Button Grid.Column="2" Classes="small" Content="Load it" Margin="12,0,0,0" VerticalAlignment="Center"
+                        Command="{Binding LoadMissingProfileCommand}"
+                        ToolTip.Tip="Load that profile into a free slot and switch to it" />
+            </Grid>
+        </Border>
+
+        <!-- Profile slots -->
+        <StackPanel Spacing="8">
+            <TextBlock Classes="caption" Text="PROFILES" />
+
+            <ItemsControl ItemsSource="{Binding Slots}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Spacing="8" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ProfileSlotViewModel">
+                        <Panel>
+                            <!-- A profile lives here: click the card to run it -->
+                            <Border Classes="slot" Classes.active="{Binding IsActive}" IsVisible="{Binding !IsEmpty}"
+                                    PointerPressed="OnSlotPressed">
+                                <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
+                                    <Border Classes="radio" Classes.on="{Binding IsActive}" Margin="0,0,14,0" />
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"
+                                                   Foreground="{DynamicResource Icsmoi.Text}" />
+                                        <TextBlock Text="{Binding Details}" FontSize="11" TextTrimming="CharacterEllipsis"
+                                                   ToolTip.Tip="{Binding FilePath}"
+                                                   Classes.error="{Binding HasError}">
+                                            <TextBlock.Styles>
+                                                <Style Selector="TextBlock">
+                                                    <Setter Property="Foreground" Value="{DynamicResource Icsmoi.TextMuted}" />
+                                                </Style>
+                                                <Style Selector="TextBlock.error">
+                                                    <Setter Property="Foreground" Value="{DynamicResource Icsmoi.Error}" />
+                                                </Style>
+                                            </TextBlock.Styles>
+                                        </TextBlock>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="2" VerticalAlignment="Center">
+                                        <Button Classes="round compact" Command="{Binding EditCommand}"
+                                                ToolTip.Tip="Edit this profile in the Editor">
+                                            <ContentControl Theme="{StaticResource Icsmoi.Icon}" Content="{StaticResource Icsmoi.Icon.Edit}" />
+                                        </Button>
+                                        <Button Classes="round compact" Command="{Binding LoadCommand}"
+                                                ToolTip.Tip="Replace with another profile file…">
+                                            <ContentControl Theme="{StaticResource Icsmoi.Icon}" Content="{StaticResource Icsmoi.Icon.Open}" />
+                                        </Button>
+                                        <Button Classes="round compact" Command="{Binding ClearCommand}"
+                                                ToolTip.Tip="Empty this slot">
+                                            <ContentControl Theme="{StaticResource Icsmoi.Icon}" Content="{StaticResource Icsmoi.Icon.Close}" />
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <!-- Free slot -->
+                            <Border Classes="slot empty" IsVisible="{Binding IsEmpty}">
+                                <DockPanel VerticalAlignment="Center">
+                                    <Button Classes="iconed" DockPanel.Dock="Right" Command="{Binding LoadCommand}"
+                                            ToolTip.Tip="Load a saved .icsmoi.json profile into this slot">
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
+                                            <ContentControl Theme="{StaticResource Icsmoi.BadgeIcon}" Content="{StaticResource Icsmoi.Icon.Open}" />
+                                            <TextBlock Text="Load profile…" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </Button>
+                                    <TextBlock Text="Empty slot" Foreground="{DynamicResource Icsmoi.TextMuted}" VerticalAlignment="Center" />
+                                </DockPanel>
+                            </Border>
+                        </Panel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <TextBlock Text="{Binding SlotMessage}" IsVisible="{Binding HasSlotMessage}" TextWrapping="Wrap" FontSize="12"
+                       Foreground="{DynamicResource Icsmoi.Error}" />
         </StackPanel>
-        <TextBlock Text="Background telemetry + force-feedback engine."
-                    Foreground="{DynamicResource Icsmoi.TextMuted}" TextWrapping="Wrap" />
 
-        <Border Background="{DynamicResource Icsmoi.Surface}" CornerRadius="{DynamicResource Icsmoi.NodeRadius}" Padding="14" Margin="0,8,0,0">
+        <!-- Engine + the hardware safety gate -->
+        <Border Classes="panel">
             <StackPanel Spacing="8">
-                <DockPanel>
-                    <Button Classes="iconed" DockPanel.Dock="Right" Click="OnLoadProfileClicked"
-                            ToolTip.Tip="Load a saved .icsmoi.json profile">
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <ContentControl Theme="{StaticResource Icsmoi.BadgeIcon}" Content="{StaticResource Icsmoi.Icon.Open}" />
-                            <TextBlock Text="Load Profile…" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
-                    <TextBlock Text="{Binding ProfileName}" FontWeight="Bold"
-                               Foreground="{DynamicResource Icsmoi.Text}" VerticalAlignment="Center" />
-                </DockPanel>
-
-                <TextBlock Text="{Binding SimConnectStatus}" Foreground="{DynamicResource Icsmoi.TextMuted}" FontSize="12" />
-                <TextBlock Text="{Binding EngineStatus}" Foreground="{DynamicResource Icsmoi.TextMuted}" FontSize="12" />
+                <TextBlock Text="{Binding EngineStatus}" Foreground="{DynamicResource Icsmoi.TextMuted}" FontSize="12"
+                           TextTrimming="CharacterEllipsis" />
 
                 <Separator Margin="0,4" />
 
@@ -58,7 +234,7 @@
                         </TextBlock.Styles>
                     </TextBlock>
                 </DockPanel>
-                <TextBlock Text="Effects stay off until you switch this on — loading a profile and running the engine only ever produces simulated readouts."
+                <TextBlock Text="Effects stay off until you switch this on — loading a profile and running the engine only ever produces simulated readouts. Switching profile never changes this switch."
                            Foreground="{DynamicResource Icsmoi.TextMuted}" FontSize="10" Opacity="0.8" TextWrapping="Wrap" />
             </StackPanel>
         </Border>

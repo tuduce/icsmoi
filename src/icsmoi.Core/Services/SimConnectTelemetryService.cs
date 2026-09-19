@@ -38,13 +38,22 @@ public sealed class SimConnectTelemetryService : IDisposable
     // looks identical to "still connecting" forever instead of retrying.
     private static readonly TimeSpan ConnectTimeout = TimeSpan.FromSeconds(5);
 
-    private enum DataDefinition { Telemetry }
-    private enum DataRequest { Telemetry }
+    private enum DataDefinition { Telemetry, Aircraft }
+    private enum DataRequest { Telemetry, Aircraft }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     private unsafe struct TelemetryData
     {
         public fixed double Values[SimVariableCatalog.Count];
+    }
+
+    // A string can't live in TelemetryData's all-double buffer, so the aircraft title has its own
+    // definition/request — same ByValTStr pattern as the sibling TDX projects.
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]
+    private struct AircraftInfo
+    {
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
+        public string Title;
     }
 
     private readonly ConcurrentDictionary<string, double> _simData;
@@ -62,6 +71,20 @@ public sealed class SimConnectTelemetryService : IDisposable
 
     /// <summary>Fired on this service's own background thread on every state transition.</summary>
     public event Action<SimConnectionState>? StateChanged;
+
+    private volatile string? _aircraftTitle;
+
+    /// <summary>
+    /// SimConnect <c>TITLE</c> of the user's aircraft (the aircraft.cfg title, e.g. "Cessna 172 Skyhawk G1000 Asobo"),
+    /// or <c>null</c> while not connected / not yet reported. Safe to read from any thread.
+    /// </summary>
+    public string? AircraftTitle => _aircraftTitle;
+
+    /// <summary>
+    /// Fired on this service's own background thread when <see cref="AircraftTitle"/> changes — including
+    /// to <c>null</c> when the sim disconnects.
+    /// </summary>
+    public event Action<string?>? AircraftChanged;
 
     /// <param name="simData">Written into on every telemetry update — pass <see cref="Engine.FfbEngineService.SimData"/>.</param>
     /// <param name="windowHandle">A real native window handle. SimConnect's constructor requires one even though
@@ -176,17 +199,39 @@ public sealed class SimConnectTelemetryService : IDisposable
         sender.RequestDataOnSimObject(DataRequest.Telemetry, DataDefinition.Telemetry,
             SimConnect.SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD.VISUAL_FRAME, 0, 0, 0, 0);
 
+        // Aircraft title: checked once a second, but only delivered when it actually changed.
+        sender.AddToDataDefinition(DataDefinition.Aircraft, "TITLE", null,
+            SIMCONNECT_DATATYPE.STRING256, 0f, SimConnect.SIMCONNECT_UNUSED);
+        sender.RegisterDataDefineStruct<AircraftInfo>(DataDefinition.Aircraft);
+        sender.RequestDataOnSimObject(DataRequest.Aircraft, DataDefinition.Aircraft,
+            SimConnect.SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD.SECOND,
+            SIMCONNECT_DATA_REQUEST_FLAG.CHANGED, 0, 0, 0);
+
         SetState(SimConnectionState.Connected);
     }
 
     private unsafe void OnRecvSimobjectData(SimConnect sender, SIMCONNECT_RECV_SIMOBJECT_DATA data)
     {
+        if (data.dwRequestID == (uint)DataRequest.Aircraft)
+        {
+            var title = ((AircraftInfo)data.dwData[0]).Title?.Trim();
+            SetAircraftTitle(string.IsNullOrEmpty(title) ? null : title);
+            return;
+        }
+
         if (data.dwRequestID != (uint)DataRequest.Telemetry) return;
 
         var telemetry = (TelemetryData)data.dwData[0];
         var variables = SimVariableCatalog.KnownVariables;
         for (var i = 0; i < variables.Count; i++)
             _simData[variables[i].Name] = telemetry.Values[i];
+    }
+
+    private void SetAircraftTitle(string? title)
+    {
+        if (string.Equals(_aircraftTitle, title, StringComparison.Ordinal)) return;
+        _aircraftTitle = title;
+        AircraftChanged?.Invoke(title);
     }
 
     private void OnRecvQuit(SimConnect sender, SIMCONNECT_RECV data) => Disconnect();
@@ -203,6 +248,7 @@ public sealed class SimConnectTelemetryService : IDisposable
             _simConnect.Dispose();
             _simConnect = null;
         }
+        SetAircraftTitle(null); // no sim, no aircraft
         SetState(SimConnectionState.Disconnected);
     }
 

@@ -21,5 +21,18 @@
   <ItemGroup>
     <ProjectReference Include="..\icsmoi.Core\icsmoi.Core.csproj" />
     <ProjectReference Include="..\icsmoi.Shared.Ui\icsmoi.Shared.Ui.csproj" />
+    <!-- Build-order only: the Runtime launches the Editor as a separate process (its slots' Edit buttons),
+         so the Editor is built first and copied next to it below. Nothing from it is referenced in code. -->
+    <ProjectReference Include="..\icsmoi.Editor\icsmoi.Editor.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
+
+  <!-- Ship the Editor in <Runtime folder>\Editor so EditorLauncher can always find it. -->
+  <Target Name="BundleEditor" AfterTargets="Build">
+    <ItemGroup>
+      <EditorOutputFiles Include="..\icsmoi.Editor\bin\$(Configuration)\$(TargetFramework)\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(EditorOutputFiles)"
+          DestinationFiles="@(EditorOutputFiles->'$(OutDir)Editor\%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true" />
+  </Target>
 </Project>

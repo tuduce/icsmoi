@@ -26,15 +26,29 @@ public sealed class ProfileSerializerService
         if (!string.IsNullOrEmpty(directory))
             Directory.CreateDirectory(directory);
 
-        await using var stream = new FileStream(
-            filePath,
-            FileMode.Create,
-            FileAccess.Write,
-            FileShare.None,
-            bufferSize: 4096,
-            useAsync: true);
+        // Write beside the target, then swap it in: the Runtime polls saved profiles and hot-reloads
+        // them, so it must never see a half-written file.
+        var tempPath = filePath + ".tmp";
+        try
+        {
+            await using (var stream = new FileStream(
+                tempPath,
+                FileMode.Create,
+                FileAccess.Write,
+                FileShare.None,
+                bufferSize: 4096,
+                useAsync: true))
+            {
+                await JsonSerializer.SerializeAsync(stream, profile, _options);
+            }
 
-        await JsonSerializer.SerializeAsync(stream, profile, _options);
+            File.Move(tempPath, filePath, overwrite: true);
+        }
+        catch
+        {
+            try { File.Delete(tempPath); } catch { /* the original error matters more */ }
+            throw;
+        }
     }
 
     public async Task<FfbProfile> LoadAsync(string filePath)

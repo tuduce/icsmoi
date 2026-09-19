@@ -22,10 +22,20 @@ public partial class App : Application
         {
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel(),
+                DataContext = new MainWindowViewModel { StartupProfilePath = ParseProfileArgument(desktop.Args) },
             };
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    // The Runtime opens this app on a specific profile as `icsmoi.Editor.exe --profile "<path>"`.
+    private static string? ParseProfileArgument(string[]? args)
+    {
+        if (args is null) return null;
+        for (var i = 0; i < args.Length - 1; i++)
+            if (string.Equals(args[i], "--profile", System.StringComparison.OrdinalIgnoreCase))
+                return args[i + 1];
+        return null;
     }
 }

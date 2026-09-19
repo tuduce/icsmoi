@@ -575,6 +575,20 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
         }
     }
 
+    /// <summary>Profile to open once the window is up (set from the Runtime's <c>--profile</c> argument).</summary>
+    public string? StartupProfilePath { get; set; }
+
+    /// <summary>
+    /// Saves over <see cref="CurrentFilePath"/> without a dialog. Returns <c>false</c> when the profile has no
+    /// file yet, so the caller can fall back to Save As.
+    /// </summary>
+    public async Task<bool> TrySaveInPlaceAsync()
+    {
+        if (CurrentFilePath is not { } path) return false;
+        await SaveToPathAsync(path);
+        return true;
+    }
+
     public async Task SaveToPathAsync(string path)
     {
         path = NormalizeProfilePath(path);
