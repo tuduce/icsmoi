@@ -26,6 +26,11 @@ public partial class ConditionOutputNodeViewModel : HardwareOutputNodeViewModel
 
     public static readonly ConditionKind[] ConditionKinds = Enum.GetValues<ConditionKind>();
 
+    // Conditions are per-axis (one condition on each axis) — a direction doesn't apply.
+    // ([JsonIgnore] is not inherited by an override, so it is repeated here.)
+    [JsonIgnore]
+    public override bool SupportsDirection => false;
+
     public ConditionOutputNodeViewModel()
     {
         Name = "Condition";

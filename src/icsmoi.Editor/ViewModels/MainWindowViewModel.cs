@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -38,9 +40,47 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
         AvailableJoysticks.Clear();
         foreach (var device in JoystickDevices.EnumerateDevices())
             AvailableJoysticks.Add(device);
+
+        foreach (var node in Nodes.OfType<HardwareOutputNodeViewModel>())
+            UpdateAxisChoices(node);
     }
 
     public ObservableCollection<InputDeviceInfo> AvailableJoysticks { get; } = [];
+
+    // ── Hardware-output axis dropdowns ───────────────────────────────────────
+    // Each hardware-output node's dropdown lists "All axes" plus the force axes of *its* device, so
+    // the choices have to follow the node's device: they're refreshed when a node is added/loaded,
+    // when its device changes, and when the device list is re-read.
+
+    private void OnNodesCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.OldItems is not null)
+            foreach (var node in e.OldItems.OfType<HardwareOutputNodeViewModel>())
+                node.PropertyChanged -= OnHardwareNodePropertyChanged;
+
+        if (e.NewItems is not null)
+            foreach (var node in e.NewItems.OfType<HardwareOutputNodeViewModel>())
+            {
+                node.PropertyChanged += OnHardwareNodePropertyChanged;
+                UpdateAxisChoices(node);
+            }
+    }
+
+    private void OnHardwareNodePropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(HardwareOutputNodeViewModel.DeviceInstanceGuid) && sender is HardwareOutputNodeViewModel node)
+            UpdateAxisChoices(node);
+    }
+
+    private void UpdateAxisChoices(HardwareOutputNodeViewModel node)
+    {
+        var axes = AvailableDevices.FirstOrDefault(d => d.InstanceGuid == node.DeviceInstanceGuid)?.Axes ?? [];
+        node.AxisChoices =
+        [
+            new AxisChoice(HardwareOutputNodeViewModel.AllAxes, "All axes"),
+            .. axes.Select((axis, index) => new AxisChoice(index, axis.Name)),
+        ];
+    }
 
     // ── Evaluation engine ────────────────────────────────────────────────────
 
@@ -114,9 +154,10 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
 
     public MainWindowViewModel()
     {
+        RefreshDevices(); // before seeding, so the initial nodes' axis dropdowns can be filled
+        Nodes.CollectionChanged += OnNodesCollectionChanged;
         // Seed the NodifyEditor Nodes collection from the initial profile
         foreach (var node in _profile.Nodes) Nodes.Add(node);
-        RefreshDevices();
     }
 
     // ── Engine commands ──────────────────────────────────────────────────────

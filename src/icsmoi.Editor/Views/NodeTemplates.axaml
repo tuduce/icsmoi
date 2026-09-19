@@ -115,7 +115,7 @@
         </StackPanel>
     </DataTemplate>
 
-    <!-- Device / axis / gain block shared by all four hardware-output node types. -->
+    <!-- Device / axis / gain (+ direction) block shared by all four hardware-output node types. -->
     <DataTemplate x:Key="HardwareOutputSettingsTemplate"
                   DataType="{x:Type models:HardwareOutputNodeViewModel}">
         <StackPanel Spacing="6">
@@ -131,15 +131,37 @@
             <StackPanel Orientation="Horizontal" Spacing="8">
                 <StackPanel Spacing="2">
                     <TextBlock Text="Axis" FontSize="10" Opacity="0.6" />
-                    <NumericUpDown Classes="field" Width="60"
-                                   Value="{Binding AxisIndex, Mode=TwoWay}"
-                                   Minimum="0" Increment="1" />
+                    <!-- "All axes" plus the selected device's force axes (HardwareOutputNodeViewModel.AxisChoices,
+                         filled in by the Editor). Bound via SelectedItem (SelectedAxis), not SelectedValue — see
+                         SelectedAxis for why. Item type isn't known to the compiler, hence reflection bindings. -->
+                    <ComboBox x:CompileBindings="False"
+                              ItemsSource="{Binding AxisChoices}"
+                              SelectedItem="{Binding SelectedAxis, Mode=TwoWay}"
+                              DisplayMemberBinding="{Binding Name}"
+                              Width="118"
+                              ToolTip.Tip="Which force axis the effect drives — or every axis, in a direction you choose" />
                 </StackPanel>
                 <StackPanel Spacing="2">
                     <TextBlock Text="Gain" FontSize="10" Opacity="0.6" />
                     <NumericUpDown Classes="field" Width="72"
                                    Value="{Binding Gain, Mode=TwoWay}"
                                    Minimum="0" Maximum="10000" Increment="500" />
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Direction: only for "All axes" on effects a direction applies to (not Conditions). The dial
+                 and the degrees field edit the same value; 0° = forward (away from the pilot), clockwise. -->
+            <StackPanel Spacing="2" IsVisible="{Binding ShowsDirection}">
+                <TextBlock Text="Direction" FontSize="10" Opacity="0.6" />
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <views:DirectionDialControl Angle="{Binding DirectionDegrees, Mode=TwoWay}"
+                        ToolTip.Tip="Direction the force pushes the stick — drag the dot (Shift snaps to 15°). Up = forward, away from the pilot." />
+                    <StackPanel VerticalAlignment="Center" Spacing="6">
+                        <NumericUpDown Classes="field" Width="84"
+                                       Value="{Binding DirectionDegrees, Mode=TwoWay}"
+                                       Minimum="0" Maximum="360" Increment="5" FormatString="0.#°" />
+                        <TextBlock Text="0° = forward" FontSize="10" Opacity="0.6" />
+                    </StackPanel>
                 </StackPanel>
             </StackPanel>
         </StackPanel>

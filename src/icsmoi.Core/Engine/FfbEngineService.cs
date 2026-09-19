@@ -100,30 +100,46 @@ public sealed class FfbEngineService : IDisposable
 
     // ── Timer callback ────────────────────────────────────────────────────────
 
+    // 1 while a tick is in flight. System.Threading.Timer fires its callback on the thread pool every
+    // period *whether or not the previous call has returned*, so a tick slower than the period — a real
+    // force-feedback device call takes ~16 ms against this 10 ms period — used to pile up dozens of
+    // concurrent ticks. They raced each other: each saw "no effect yet" and created one (13 effects in
+    // 5 s, orphans left playing and adding up) and hammered the same USB device. A tick that finds
+    // another still running now just skips; the next one reads the newest values anyway.
+    private int _tickRunning;
+
     private void Tick(object? _)
     {
         if (!IsRunning) return;
+        if (Interlocked.Exchange(ref _tickRunning, 1) == 1) return;
 
-        var snap = _snapshot;
-        if (snap is null) return;
-
-        NodeOutputResult? result;
         try
         {
-            result = _evaluator.Evaluate(snap.Nodes, snap.Connections, SimData);
-        }
-        catch (Exception ex) when (ex is InvalidOperationException or ArgumentException or IndexOutOfRangeException)
-        {
-            // The Editor can add/remove a node's pins (Joystick Input rows) on the UI thread while
-            // this tick enumerates them. An exception escaping a Timer callback would take the whole
-            // process down, so treat a mid-edit graph like a cyclic one: skip this tick.
-            return;
-        }
-        if (result is null) return; // Cycle — skip tick
+            var snap = _snapshot;
+            if (snap is null) return;
 
-        // Fired on this timer thread — callers marshal to their own UI thread if needed.
-        OutputsUpdated?.Invoke(result.Magnitudes);
-        HardwareOutputsUpdated?.Invoke(result.EffectParams);
+            NodeOutputResult? result;
+            try
+            {
+                result = _evaluator.Evaluate(snap.Nodes, snap.Connections, SimData);
+            }
+            catch (Exception ex) when (ex is InvalidOperationException or ArgumentException or IndexOutOfRangeException)
+            {
+                // The Editor can add/remove a node's pins (Joystick Input rows) on the UI thread while
+                // this tick enumerates them. An exception escaping a Timer callback would take the whole
+                // process down, so treat a mid-edit graph like a cyclic one: skip this tick.
+                return;
+            }
+            if (result is null) return; // Cycle — skip tick
+
+            // Fired on this timer thread — callers marshal to their own UI thread if needed.
+            OutputsUpdated?.Invoke(result.Magnitudes);
+            HardwareOutputsUpdated?.Invoke(result.EffectParams);
+        }
+        finally
+        {
+            Volatile.Write(ref _tickRunning, 0);
+        }
     }
 
     // ── Private snapshot record ───────────────────────────────────────────────

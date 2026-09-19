@@ -103,14 +103,48 @@ public sealed partial class StatusWindowViewModel : ObservableObject, IDisposabl
     {
         if (value)
         {
-            _effectManager = new FfbEffectManager(new FfbDeviceManager(), _windowHandle);
+            var manager = new FfbEffectManager(new FfbDeviceManager(), _windowHandle);
+            manager.EffectFailed += OnEffectFailed;
+            _effectManager = manager;
             EffectsStatus = "Effects: Enabled";
         }
         else
         {
-            _effectManager?.Dispose();
+            // Order matters: hide the manager from new ticks first, stop listening to it, only then dispose.
+            var manager = _effectManager;
             _effectManager = null;
+            if (manager is not null) manager.EffectFailed -= OnEffectFailed;
+            manager?.Dispose();
             EffectsStatus = "Effects: Disabled";
+        }
+    }
+
+    // Fired on the engine's timer thread when one node's effect can't be created/updated (device
+    // unavailable, parameters the driver rejected…). The manager has already torn that effect down and
+    // will retry in a few seconds; the rest keeps running — this just makes the failure visible.
+    private void OnEffectFailed(HardwareOutputNodeViewModel node, Exception error)
+    {
+        LogError($"effect '{node.Name}' ({node.Id})", error);
+        Dispatcher.UIThread.Post(() =>
+        {
+            // The switch may have been turned off since this was raised — don't overwrite "Disabled".
+            if (_effectManager is null) return;
+            EffectsStatus = $"Effects: {node.Name} failed — {error.GetType().Name}: {error.Message.Trim()}";
+        });
+    }
+
+    /// <summary>Appends the full exception to %LOCALAPPDATA%\icsmoi\runtime-errors.log (the status line only fits a fragment).</summary>
+    private static void LogError(string what, Exception error)
+    {
+        try
+        {
+            var dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "icsmoi");
+            Directory.CreateDirectory(dir);
+            File.AppendAllText(Path.Combine(dir, "runtime-errors.log"), $"{DateTime.Now:s}  {what}\n{error}\n\n");
+        }
+        catch
+        {
+            // logging must never be the thing that fails
         }
     }
 
