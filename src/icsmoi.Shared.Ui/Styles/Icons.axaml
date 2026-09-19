@@ -39,6 +39,12 @@
   <!-- Broadcast: dot + two pairs of arcs -->
   <StreamGeometry x:Key="Icsmoi.Icon.SimConnect">M10.5 12 A1.5 1.5 0 1 1 13.5 12 A1.5 1.5 0 1 1 10.5 12 Z M7.8 7.8 A6 6 0 0 0 7.8 16.2 M16.2 7.8 A6 6 0 0 1 16.2 16.2 M5 5 A10 10 0 0 0 5 19 M19 5 A10 10 0 0 1 19 19</StreamGeometry>
 
+  <!-- Joystick: ball on a shaft over a base -->
+  <StreamGeometry x:Key="Icsmoi.Icon.Joystick">M9 6.5 A3 3 0 1 1 15 6.5 A3 3 0 1 1 9 6.5 Z M12 9.5 V15 M5.5 15 H18.5 V19 A1 1 0 0 1 17.5 20 H6.5 A1 1 0 0 1 5.5 19 Z</StreamGeometry>
+  <!-- Plus / close (x) -->
+  <StreamGeometry x:Key="Icsmoi.Icon.Plus">M12 5 V19 M5 12 H19</StreamGeometry>
+  <StreamGeometry x:Key="Icsmoi.Icon.Close">M6.5 6.5 L17.5 17.5 M17.5 6.5 L6.5 17.5</StreamGeometry>
+
   <!-- ── Node palette: Logic & Math ───────────────────────────────────────── -->
   <StreamGeometry x:Key="Icsmoi.Icon.Math">M17.5 5.5 H6.5 L12.5 12 L6.5 18.5 H17.5</StreamGeometry>
   <!-- Greater-or-equal -->

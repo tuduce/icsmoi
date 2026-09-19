@@ -48,7 +48,8 @@
     </DataTemplate>
 
     <!--
-        Input pin with a constant-value field beside it (hardware-output nodes).
+        Input pin with a constant-value field beside it (every node with input pins except Math,
+        whose constants go in its expression — it uses the plain InputPinTemplate).
         The field edits PinViewModel.Value and is shown only while nothing is
         wired into the pin — a link takes over the value (GraphEvaluator), so
         the field hides until the link is removed. The field sits *beside* the
@@ -77,6 +78,41 @@
                            Value="{Binding Value, Mode=TwoWay}"
                            ToolTip.Tip="Constant value used while nothing is connected to this input" />
         </Grid>
+    </DataTemplate>
+
+    <!--
+        One row of a Joystick Input node: [click-to-capture field] [remove] ○.
+        Lives in the *output* pin template so each binding sits beside its own connector. The two
+        buttons reach the window's view-model (add/remove/capture edit the graph, so they can't live
+        on the pin) through reflection bindings, hence x:CompileBindings="False" on just those two —
+        the NodeOutput keeps compiled bindings. The row has a fixed MinHeight for the same
+        anchor-stability reason as ValueInputPinTemplate.
+    -->
+    <DataTemplate x:Key="JoystickOutputPinTemplate"
+                  DataType="{x:Type models:JoystickPinViewModel}">
+        <StackPanel Orientation="Horizontal" Spacing="4" MinHeight="34">
+            <Button Classes="capture" Classes.listening="{Binding IsListening}"
+                    x:CompileBindings="False"
+                    Command="{Binding $parent[Window].DataContext.BeginJoystickCaptureCommand}"
+                    CommandParameter="{Binding}"
+                    ToolTip.Tip="Click, then move an axis / slider or press a button on the joystick (click again to cancel)">
+                <TextBlock Text="{Binding DisplayText}" TextTrimming="CharacterEllipsis"
+                           VerticalAlignment="Center" />
+            </Button>
+            <Button Classes="round compact" VerticalAlignment="Center"
+                    x:CompileBindings="False"
+                    Command="{Binding $parent[Window].DataContext.RemoveJoystickInputCommand}"
+                    CommandParameter="{Binding}"
+                    ToolTip.Tip="Remove this input">
+                <ContentControl Theme="{StaticResource Icsmoi.Icon}" Content="{StaticResource Icsmoi.Icon.Close}" />
+            </Button>
+            <controls:NodeOutput
+                VerticalAlignment="Center"
+                Background="Transparent"
+                IsConnected="{Binding IsConnected}"
+                Anchor="{Binding Anchor, Mode=TwoWay}"
+                Header="" />
+        </StackPanel>
     </DataTemplate>
 
     <!-- Device / axis / gain block shared by all four hardware-output node types. -->
@@ -130,7 +166,40 @@
             </controls:Node>
         </DataTemplate>
 
+        <!-- Joystick Input node: pick a joystick, then add axis/button rows (one output pin each) -->
+        <DataTemplate DataType="{x:Type models:JoystickInputNodeViewModel}">
+            <controls:Node
+                Location="{Binding Location, Mode=TwoWay}"
+                IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                HeaderBrush="{DynamicResource Icsmoi.Category.Input}"
+                Header="{Binding Name}"
+                Output="{Binding Outputs}"
+                OutputConnectorTemplate="{StaticResource JoystickOutputPinTemplate}">
+                <StackPanel Margin="6,4" Spacing="8">
+                    <StackPanel Spacing="2">
+                        <TextBlock Text="Joystick" FontSize="10" Opacity="0.6" />
+                        <ComboBox x:CompileBindings="False"
+                                  ItemsSource="{Binding $parent[Window].DataContext.AvailableJoysticks}"
+                                  SelectedValueBinding="{Binding InstanceGuid}"
+                                  SelectedValue="{Binding DeviceInstanceGuid, Mode=TwoWay}"
+                                  DisplayMemberBinding="{Binding ProductName}"
+                                  MinWidth="200" PlaceholderText="(no joystick selected)" />
+                    </StackPanel>
+                    <Button Classes="small" HorizontalAlignment="Left" x:CompileBindings="False"
+                            Command="{Binding $parent[Window].DataContext.AddJoystickInputCommand}"
+                            CommandParameter="{Binding}"
+                            ToolTip.Tip="Add another axis / slider / button output">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <ContentControl Theme="{StaticResource Icsmoi.Icon}" Content="{StaticResource Icsmoi.Icon.Plus}" />
+                            <TextBlock Text="Add input" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </controls:Node>
+        </DataTemplate>
+
         <!-- Math compute node -->
+        <!-- Plain pins on purpose: a constant belongs in the expression itself ([A] + 2), so no value fields here. -->
         <DataTemplate DataType="{x:Type models:MathNodeViewModel}">
             <controls:Node
                 Location="{Binding Location, Mode=TwoWay}"
@@ -158,7 +227,7 @@
                 Header="{Binding Name}"
                 Input="{Binding Inputs}"
                 Output="{Binding Outputs}"
-                InputConnectorTemplate="{StaticResource InputPinTemplate}"
+                InputConnectorTemplate="{StaticResource ValueInputPinTemplate}"
                 OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
                 <StackPanel Margin="6,4" Spacing="4">
                     <TextBlock Text="Operator" FontSize="10" Opacity="0.6" />
@@ -178,7 +247,7 @@
                 Header="{Binding Name}"
                 Input="{Binding Inputs}"
                 Output="{Binding Outputs}"
-                InputConnectorTemplate="{StaticResource InputPinTemplate}"
+                InputConnectorTemplate="{StaticResource ValueInputPinTemplate}"
                 OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
                 <StackPanel Margin="6,4" Spacing="4">
                     <TextBlock Text="Operator" FontSize="10" Opacity="0.6" />
@@ -198,7 +267,7 @@
                 Header="{Binding Name}"
                 Input="{Binding Inputs}"
                 Output="{Binding Outputs}"
-                InputConnectorTemplate="{StaticResource InputPinTemplate}"
+                InputConnectorTemplate="{StaticResource ValueInputPinTemplate}"
                 OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
                 <StackPanel Margin="6,4" Spacing="4">
                     <TextBlock Text="IfTrue when Condition ≠ 0" FontSize="10"
@@ -216,7 +285,7 @@
                 Header="{Binding Name}"
                 Input="{Binding Inputs}"
                 Output="{Binding Outputs}"
-                InputConnectorTemplate="{StaticResource InputPinTemplate}"
+                InputConnectorTemplate="{StaticResource ValueInputPinTemplate}"
                 OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
                 <StackPanel Margin="6,4" Spacing="4">
                     <TextBlock Text="Clamp(Value, Min, Max)" FontSize="10"
@@ -234,7 +303,7 @@
                 Header="{Binding Name}"
                 Input="{Binding Inputs}"
                 Output="{Binding Outputs}"
-                InputConnectorTemplate="{StaticResource InputPinTemplate}"
+                InputConnectorTemplate="{StaticResource ValueInputPinTemplate}"
                 OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
                 <StackPanel Margin="6,4" Spacing="4">
                     <CheckBox IsChecked="{Binding Clamp, Mode=TwoWay}"
@@ -252,7 +321,7 @@
                 Header="{Binding Name}"
                 Input="{Binding Inputs}"
                 Output="{Binding Outputs}"
-                InputConnectorTemplate="{StaticResource InputPinTemplate}"
+                InputConnectorTemplate="{StaticResource ValueInputPinTemplate}"
                 OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
                 <StackPanel Margin="6,4" Spacing="4">
                     <views:CurveEditorControl Points="{Binding Points}"

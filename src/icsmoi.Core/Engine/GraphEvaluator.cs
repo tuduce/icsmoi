@@ -127,6 +127,10 @@ public sealed class GraphEvaluator
                     EvalSimConnect(sc, simData, wireValues);
                     break;
 
+                case JoystickInputNodeViewModel joystick:
+                    EvalJoystick(joystick, simData, wireValues);
+                    break;
+
                 case MathNodeViewModel math:
                     EvalMath(math, wireValues);
                     break;
@@ -214,6 +218,25 @@ public sealed class GraphEvaluator
         var outPin = node.Outputs.FirstOrDefault();
         if (outPin is not null)
             wireValues[outPin.Id] = value;
+    }
+
+    private static void EvalJoystick(
+        JoystickInputNodeViewModel node,
+        IReadOnlyDictionary<string, double> simData,
+        Dictionary<Guid, double> wireValues)
+    {
+        var device = node.DeviceInstanceGuid;
+
+        foreach (var pin in node.Outputs)
+        {
+            // Unassigned pins and a node with no device read 0; so does a device that is unplugged
+            // (JoystickInputService zeroes a device's keys when it loses it).
+            var value = device is { } d && pin is JoystickPinViewModel { Kind: not JoystickInputKind.None } joystickPin
+                && simData.TryGetValue(JoystickInputKey.For(d, joystickPin.Kind, joystickPin.Index), out var v)
+                ? v
+                : 0.0;
+            wireValues[pin.Id] = value;
+        }
     }
 
     private static void EvalMath(

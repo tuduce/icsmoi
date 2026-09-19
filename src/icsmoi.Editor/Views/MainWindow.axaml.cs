@@ -1,11 +1,14 @@
 using System;
 using System.IO;
+using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using icsmoi.ViewModels;
+using NodifyM.Avalonia.Controls;
 
 namespace icsmoi.Views;
 
@@ -27,6 +30,32 @@ public partial class MainWindow : Window
             var handle = TryGetPlatformHandle()?.Handle ?? IntPtr.Zero;
             vm.AttachWindowHandle(handle);
         }
+    }
+
+    // ── Pin anchors after a node's pins change ──────────────────────────────
+    // NodifyM only recomputes a connector's anchor (where its wire attaches) when the node moves or
+    // its size changes. Removing a Joystick Input row moves the pins below it up; if the node's size
+    // happens not to change (its body is taller than the pin column) their wires would keep pointing
+    // at the old spots. So after such an edit, once layout has settled, re-measure every connector.
+
+    private MainWindowViewModel? _subscribedViewModel;
+
+    protected override void OnDataContextChanged(EventArgs e)
+    {
+        base.OnDataContextChanged(e);
+
+        if (_subscribedViewModel is not null) _subscribedViewModel.PinLayoutChanged -= OnPinLayoutChanged;
+        _subscribedViewModel = DataContext as MainWindowViewModel;
+        if (_subscribedViewModel is not null) _subscribedViewModel.PinLayoutChanged += OnPinLayoutChanged;
+    }
+
+    private void OnPinLayoutChanged()
+    {
+        Dispatcher.UIThread.Post(() =>
+        {
+            foreach (var connector in Editor.GetVisualDescendants().OfType<Connector>())
+                connector.UpdateAnchor();
+        }, DispatcherPriority.Background); // below Layout/Render, so positions are final
     }
 
     // ── Profile name editing ────────────────────────────────────────────────

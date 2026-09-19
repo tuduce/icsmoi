@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -32,7 +33,14 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
         AvailableDevices.Clear();
         foreach (var device in _deviceManager.EnumerateDevices())
             AvailableDevices.Add(device);
+
+        // Joystick Input nodes read *any* game controller, not just force-feedback ones.
+        AvailableJoysticks.Clear();
+        foreach (var device in JoystickDevices.EnumerateDevices())
+            AvailableJoysticks.Add(device);
     }
+
+    public ObservableCollection<InputDeviceInfo> AvailableJoysticks { get; } = [];
 
     // ── Evaluation engine ────────────────────────────────────────────────────
 
@@ -119,16 +127,47 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
         if (EngineRunning)
         {
             Engine.Stop();
+            StopJoystickInput();
             EngineRunning = false;
             SetStatus("Engine: Stopped");
         }
         else
         {
+            StartJoystickInput();
             Engine.OutputsUpdated += OnEngineOutputsUpdated;
             Engine.Start(Profile);
             EngineRunning = true;
             SetStatus("Engine: Running");
         }
+    }
+
+    // ── Joystick input (read-only test-run, alongside the engine) ────────────
+    // Joysticks are only polled while the engine runs, like SimConnect telemetry is only
+    // live while connected. Reading a stick is harmless — the Editor's no-hardware-*output*
+    // rule is about force feedback.
+
+    private JoystickInputService? _joystickService;
+    private DispatcherTimer? _joystickTrackingTimer;
+
+    private void StartJoystickInput()
+    {
+        _joystickService = new JoystickInputService(Engine.SimData, _windowHandle);
+        _joystickService.SetTrackedDevices(JoystickInputService.DevicesUsedBy(Nodes.OfType<NodeViewModel>()));
+        _joystickService.Start();
+
+        // The poll thread must not touch the (UI-thread) node graph, so re-derive the set of
+        // devices in use here whenever it might have changed (node added/removed, device picked).
+        _joystickTrackingTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(500), DispatcherPriority.Background,
+            (_, _) => _joystickService?.SetTrackedDevices(JoystickInputService.DevicesUsedBy(Nodes.OfType<NodeViewModel>())));
+        _joystickTrackingTimer.Start();
+    }
+
+    private void StopJoystickInput()
+    {
+        _joystickTrackingTimer?.Stop();
+        _joystickTrackingTimer = null;
+        _joystickService?.Dispose();
+        _joystickService = null;
     }
 
     // FfbEngineService fires this on its own timer thread — marshal to the UI thread
@@ -211,6 +250,97 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
         node.IsSelected = true;
         Nodes.Add(node);
         Profile.Nodes.Add(node);
+    }
+
+    [RelayCommand]
+    private void AddJoystickInputNode()
+    {
+        DeselectAll();
+        var node = new JoystickInputNodeViewModel { X = 60, Y = 300 };
+        node.IsSelected = true;
+        Nodes.Add(node);
+        Profile.Nodes.Add(node);
+    }
+
+    // -- Joystick Input node: rows are pins, so adding/removing one is a graph edit (the
+    // dual-update rule: a removed pin's connections must go from both Connections and Profile).
+
+    /// <summary>Raised after a Joystick node's pins change, so the view can re-measure pin anchors (see MainWindow.axaml.cs).</summary>
+    public event Action? PinLayoutChanged;
+
+    [RelayCommand]
+    private void AddJoystickInput(JoystickInputNodeViewModel node)
+    {
+        node.Outputs.Add(new JoystickPinViewModel());
+        PinLayoutChanged?.Invoke();
+    }
+
+    [RelayCommand]
+    private void RemoveJoystickInput(JoystickPinViewModel pin)
+    {
+        var node = Nodes.OfType<JoystickInputNodeViewModel>().FirstOrDefault(n => n.Outputs.Contains(pin));
+        if (node is null) return;
+
+        if (ReferenceEquals(_capturingPin, pin)) _captureCts?.Cancel();
+        DisconnectConnector(pin);
+        node.Outputs.Remove(pin);
+        PinLayoutChanged?.Invoke();
+    }
+
+    private static readonly TimeSpan CaptureTimeout = TimeSpan.FromSeconds(15);
+    private CancellationTokenSource? _captureCts;
+    private JoystickPinViewModel? _capturingPin;
+
+    /// <summary>
+    /// Click an input field, then move an axis/slider or press a button on the node's joystick:
+    /// whichever the user actuates first is bound to that pin. Clicking the field again cancels.
+    /// </summary>
+    [RelayCommand(AllowConcurrentExecutions = true)]
+    private async Task BeginJoystickCapture(JoystickPinViewModel pin)
+    {
+        if (ReferenceEquals(_capturingPin, pin)) { _captureCts?.Cancel(); return; }
+        _captureCts?.Cancel(); // switching to another field abandons the previous capture
+
+        var node = Nodes.OfType<JoystickInputNodeViewModel>().FirstOrDefault(n => n.Outputs.Contains(pin));
+        if (node?.DeviceInstanceGuid is not { } device)
+        {
+            SetStatus("Pick a joystick in the node first", isError: true);
+            return;
+        }
+
+        using var cts = new CancellationTokenSource(CaptureTimeout);
+        _captureCts = cts;
+        _capturingPin = pin;
+        pin.IsListening = true;
+        SetStatus("Move an axis or press a button…");
+
+        try
+        {
+            var handle = _windowHandle;
+            var input = await Task.Run(() => JoystickDevices.Capture(device, handle, cts.Token));
+            if (input is { } captured)
+            {
+                pin.Assign(captured.Kind, captured.Index);
+                SetStatus($"Assigned {pin.Title}");
+            }
+            else if (ReferenceEquals(_capturingPin, pin)) // not superseded by a newer capture
+            {
+                SetStatus("Input assignment cancelled");
+            }
+        }
+        catch (Exception ex)
+        {
+            SetStatus($"Couldn't read the joystick: {ex.Message}", isError: true);
+        }
+        finally
+        {
+            pin.IsListening = false;
+            if (ReferenceEquals(_capturingPin, pin))
+            {
+                _capturingPin = null;
+                _captureCts = null;
+            }
+        }
     }
 
     [RelayCommand]
@@ -449,6 +579,7 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     private void LoadProfile(FfbProfile loaded)
     {
         IsEditingProfileName = false; // a half-typed name belongs to the profile being replaced
+        _captureCts?.Cancel();        // as does a pending joystick input assignment
         Nodes.Clear();
         Connections.Clear();
         Profile = loaded;
@@ -480,7 +611,7 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
         var p = new FfbProfile { ProfileName = "My Profile" };
         p.Nodes.Add(new SimConnectNodeViewModel { X = 60,  Y = 150 });
         p.Nodes.Add(new MathNodeViewModel       { X = 340, Y = 150 });
-        p.Nodes.Add(new ConstantForceOutputNodeViewModel { X = 640, Y = 150 });
+        p.Nodes.Add(new ConstantForceOutputNodeViewModel { X = 720, Y = 150 }); // clear of the Math node, which now carries A/B fields
         return p;
     }
 

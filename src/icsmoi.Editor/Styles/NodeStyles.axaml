@@ -161,6 +161,36 @@
     </Style>
   </Style>
 
+  <!--
+    Click-to-capture input field (Joystick Input node rows): a Button that *looks* like the numeric
+    fields above — same fill/border/corner radius, left-aligned text. Hover only outlines it in the
+    accent (a stock Button would flood-fill accent with dark text); while it is waiting for a joystick
+    input (.listening) it keeps the accent outline and accent text.
+  -->
+  <Style Selector="Button.capture">
+    <Style.Resources>
+      <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="{DynamicResource Icsmoi.SurfaceAltColor}" />
+      <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="{DynamicResource Icsmoi.TextColor}" />
+      <SolidColorBrush x:Key="ButtonBorderBrushPointerOver" Color="{DynamicResource Icsmoi.AccentColor}" />
+      <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="{DynamicResource Icsmoi.SurfaceAltColor}" />
+      <SolidColorBrush x:Key="ButtonForegroundPressed" Color="{DynamicResource Icsmoi.TextColor}" />
+      <SolidColorBrush x:Key="ButtonBorderBrushPressed" Color="{DynamicResource Icsmoi.AccentColor}" />
+    </Style.Resources>
+    <Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
+    <Setter Property="Background" Value="{DynamicResource TextControlBackground}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource TextControlBorderBrush}" />
+    <Setter Property="Height" Value="26" />
+    <Setter Property="Width" Value="170" />
+    <Setter Property="Padding" Value="8,0" />
+    <Setter Property="FontSize" Value="11" />
+    <Setter Property="HorizontalContentAlignment" Value="Left" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+  </Style>
+  <Style Selector="Button.capture.listening">
+    <Setter Property="BorderBrush" Value="{DynamicResource Icsmoi.Accent}" />
+    <Setter Property="Foreground" Value="{DynamicResource Icsmoi.Accent}" />
+  </Style>
+
   <!-- Hover / selection rings (replace NodifyM's hard-coded LightBlue / Orange) -->
   <Style Selector="controls|Node[IsSelected=False]:pointerover">
     <Setter Property="BorderBrush" Value="{DynamicResource Icsmoi.Category.Input}" />

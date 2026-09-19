@@ -9,7 +9,9 @@ namespace icsmoi.Models;
 /// <summary>
 /// A single connector pin on a node.
 /// Extends ConnectorViewModelBase to satisfy NodifyM.Avalonia's connection machinery.
+/// Plain pins serialize without a type tag; pin subclasses that carry their own state are registered here.
 /// </summary>
+[JsonDerivedType(typeof(JoystickPinViewModel), "joystick")]
 public partial class PinViewModel : ConnectorViewModelBase
 {
     public Guid Id { get; set; } = Guid.NewGuid();

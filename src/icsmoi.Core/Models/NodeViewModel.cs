@@ -8,6 +8,7 @@ using NodifyM.Avalonia.ViewModelBase;
 namespace icsmoi.Models;
 
 [JsonDerivedType(typeof(SimConnectNodeViewModel), "simconnect")]
+[JsonDerivedType(typeof(JoystickInputNodeViewModel), "joystick")]
 [JsonDerivedType(typeof(MathNodeViewModel), "math")]
 [JsonDerivedType(typeof(ComparisonNodeViewModel), "comparison")]
 [JsonDerivedType(typeof(LogicNodeViewModel), "logic")]

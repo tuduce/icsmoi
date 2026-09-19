@@ -159,6 +159,16 @@
                         </StackPanel>
                     </Button>
 
+                    <Button Classes="iconed" Command="{Binding AddJoystickInputNodeCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            ToolTip.Tip="Axes, sliders and buttons of any joystick (force feedback not required)">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <ContentControl Theme="{StaticResource Icsmoi.BadgeIcon}" Content="{StaticResource Icsmoi.Icon.Joystick}" />
+                            <TextBlock Text="Joystick Input" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+
                     <TextBlock Text="LOGIC &amp; MATH" FontSize="10" FontWeight="Bold"
                                Foreground="{DynamicResource Icsmoi.Category.MathLogic}"
                                LetterSpacing="1" Margin="0,6,0,0" />

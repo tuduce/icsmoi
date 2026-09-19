@@ -31,6 +31,7 @@ public sealed partial class StatusWindowViewModel : ObservableObject, IDisposabl
     private readonly RuntimeSettingsService _settings = new();
 
     private SimConnectTelemetryService? _simConnectService;
+    private JoystickInputService? _joystickService;
     private volatile FfbEffectManager? _effectManager;
     private IntPtr _windowHandle;
     private FfbProfile? _profile;
@@ -82,6 +83,13 @@ public sealed partial class StatusWindowViewModel : ObservableObject, IDisposabl
         _simConnectService = new SimConnectTelemetryService(_engine.SimData, _windowHandle);
         _simConnectService.StateChanged += OnSimConnectStateChanged;
         _simConnectService.Start();
+
+        // Joystick Input nodes: read-only polling of whichever joysticks the profile uses.
+        // Independent of the Effects gate below — it never drives hardware.
+        _joystickService?.Dispose();
+        _joystickService = new JoystickInputService(_engine.SimData, _windowHandle);
+        _joystickService.SetTrackedDevices(JoystickInputService.DevicesUsedBy(_profile.Nodes));
+        _joystickService.Start();
 
         _engine.OutputsUpdated -= OnEngineOutputsUpdated;
         _engine.OutputsUpdated += OnEngineOutputsUpdated;
@@ -142,6 +150,7 @@ public sealed partial class StatusWindowViewModel : ObservableObject, IDisposabl
         _engine.Stop();
         _engine.Dispose();
         _simConnectService?.Dispose();
+        _joystickService?.Dispose();
         _effectManager?.Dispose();
     }
 }

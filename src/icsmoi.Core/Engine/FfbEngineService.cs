@@ -107,7 +107,18 @@ public sealed class FfbEngineService : IDisposable
         var snap = _snapshot;
         if (snap is null) return;
 
-        var result = _evaluator.Evaluate(snap.Nodes, snap.Connections, SimData);
+        NodeOutputResult? result;
+        try
+        {
+            result = _evaluator.Evaluate(snap.Nodes, snap.Connections, SimData);
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or ArgumentException or IndexOutOfRangeException)
+        {
+            // The Editor can add/remove a node's pins (Joystick Input rows) on the UI thread while
+            // this tick enumerates them. An exception escaping a Timer callback would take the whole
+            // process down, so treat a mid-edit graph like a cyclic one: skip this tick.
+            return;
+        }
         if (result is null) return; // Cycle — skip tick
 
         // Fired on this timer thread — callers marshal to their own UI thread if needed.

@@ -37,6 +37,13 @@
     <Setter Property="VerticalContentAlignment" Value="Center" />
   </Style>
 
+  <!-- small: short labeled pill for in-node actions (e.g. "Add input"). -->
+  <Style Selector="Button.small">
+    <Setter Property="Height" Value="26" />
+    <Setter Property="Padding" Value="10,0" />
+    <Setter Property="FontSize" Value="11" />
+  </Style>
+
   <!-- compact: small borderless round icon button for inline actions beside text (e.g. edit
        next to the profile name). Transparent until hovered — Fluent's :pointerover styling
        (accent fill) still applies because it targets the template's ContentPresenter. -->
