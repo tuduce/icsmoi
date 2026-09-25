@@ -298,6 +298,24 @@
             </controls:Node>
         </DataTemplate>
 
+        <!-- Edge Detector node (stateful: previous level lives in the engine) -->
+        <DataTemplate DataType="{x:Type models:EdgeDetectorNodeViewModel}">
+            <controls:Node
+                Location="{Binding Location, Mode=TwoWay}"
+                IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                HeaderBrush="{DynamicResource Icsmoi.Category.MathLogic}"
+                Header="{Binding Name}"
+                Input="{Binding Inputs}"
+                Output="{Binding Outputs}"
+                InputConnectorTemplate="{StaticResource ValueInputPinTemplate}"
+                OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
+                <StackPanel Margin="6,4" Spacing="4">
+                    <TextBlock Text="Each output is 1 for one tick when Input goes low→high (Rising), high→low (Falling), or either."
+                               FontSize="10" Opacity="0.6" TextWrapping="Wrap" MaxWidth="150" />
+                </StackPanel>
+            </controls:Node>
+        </DataTemplate>
+
         <!-- Clamp node -->
         <DataTemplate DataType="{x:Type models:ClampNodeViewModel}">
             <controls:Node
@@ -348,6 +366,27 @@
                 <StackPanel Margin="6,4" Spacing="4">
                     <views:CurveEditorControl Points="{Binding Points}"
                         ToolTip.Tip="Double-click empty space to add a point, double-click a point to remove it" />
+                </StackPanel>
+            </controls:Node>
+        </DataTemplate>
+
+        <!-- Integrator node (stateful: total lives in the engine) -->
+        <DataTemplate DataType="{x:Type models:IntegratorNodeViewModel}">
+            <controls:Node
+                Location="{Binding Location, Mode=TwoWay}"
+                IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                HeaderBrush="{DynamicResource Icsmoi.Category.Shaping}"
+                Header="{Binding Name}"
+                Input="{Binding Inputs}"
+                Output="{Binding Outputs}"
+                InputConnectorTemplate="{StaticResource ValueInputPinTemplate}"
+                OutputConnectorTemplate="{StaticResource OutputPinTemplate}">
+                <StackPanel Margin="6,4" Spacing="4">
+                    <TextBlock Text="Σ Input × dt. Wrap &gt; 0 wraps to 0..Wrap (Min/Max ignored); Reset ≠ 0 holds 0."
+                               FontSize="10" Opacity="0.6" TextWrapping="Wrap" MaxWidth="150" />
+                    <CheckBox IsChecked="{Binding AddPerTick, Mode=TwoWay}"
+                              Content="Add Input per tick (no × dt)" FontSize="10"
+                              ToolTip.Tip="For events: wire an Edge Detector × step size here for one step per press" />
                 </StackPanel>
             </controls:Node>
         </DataTemplate>

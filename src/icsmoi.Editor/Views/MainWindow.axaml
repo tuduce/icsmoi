@@ -203,6 +203,15 @@
                             <TextBlock Text="Logic" VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
+                    <Button Classes="iconed" Command="{Binding AddEdgeDetectorNodeCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            ToolTip.Tip="One-tick pulse when Input goes low→high, high→low, or either (remembers the previous level)">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <ContentControl Theme="{StaticResource Icsmoi.BadgeIcon}" Content="{StaticResource Icsmoi.Icon.Edge}" />
+                            <TextBlock Text="Edge Detector" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
                     <Button Classes="iconed" Command="{Binding AddSelectNodeCommand}"
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Left"
@@ -241,6 +250,15 @@
                         <StackPanel Orientation="Horizontal" Spacing="10">
                             <ContentControl Theme="{StaticResource Icsmoi.BadgeIcon}" Content="{StaticResource Icsmoi.Icon.Curve}" />
                             <TextBlock Text="Curve" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                    <Button Classes="iconed" Command="{Binding AddIntegratorNodeCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            ToolTip.Tip="Running total of Input per second — trim, distance travelled (remembers its value)">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <ContentControl Theme="{StaticResource Icsmoi.BadgeIcon}" Content="{StaticResource Icsmoi.Icon.Integrator}" />
+                            <TextBlock Text="Integrator" VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
 

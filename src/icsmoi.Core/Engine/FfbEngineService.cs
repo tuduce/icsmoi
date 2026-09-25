@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using icsmoi.Models;
@@ -8,7 +9,7 @@ using icsmoi.Models;
 namespace icsmoi.Engine;
 
 /// <summary>
-/// Runs the <see cref="GraphEvaluator"/> at a fixed frequency on a dedicated
+/// Runs the <see cref="GraphEvaluator"/> (and holds the state of its stateful nodes) at a fixed frequency on a dedicated
 /// <see cref="ThreadPool"/> thread via <see cref="System.Threading.Timer"/>.
 ///
 /// <para><b>Thread safety:</b> <see cref="SimData"/> is a
@@ -31,6 +32,17 @@ public sealed class FfbEngineService : IDisposable
     // The timer always reads a consistent snapshot even if the UI thread
     // swaps it between ticks.
     private volatile EngineSnapshot? _snapshot;
+
+    // Running values of stateful nodes (Integrator), keyed by node Id. Only the timer thread touches the
+    // dictionary a tick captured; Start swaps in a fresh one (a profile switch or engine restart begins
+    // from zero) rather than clearing it, so a tick still in flight can't race the reset. A hot reload
+    // only calls RefreshSnapshot, so node Ids — and their totals — carry over.
+    private volatile Dictionary<Guid, double> _nodeState = new();
+    private EngineSnapshot? _prunedForSnapshot;
+    private long _lastTickTimestamp;
+
+    // A stalled process (debugger, suspend) must not integrate one enormous step when it wakes.
+    private const double MaxDeltaSeconds = 0.25;
 
     // ── Public surface ────────────────────────────────────────────────────────
 
@@ -71,6 +83,8 @@ public sealed class FfbEngineService : IDisposable
     public void Start(FfbProfile profile, int intervalMs = 10)
     {
         Stop();
+        _nodeState = new Dictionary<Guid, double>();
+        _lastTickTimestamp = 0;
         RefreshSnapshot(profile);
         IsRunning = true;
         _timer = new Timer(Tick, null, 0, intervalMs);
@@ -118,10 +132,28 @@ public sealed class FfbEngineService : IDisposable
             var snap = _snapshot;
             if (snap is null) return;
 
+            // Real elapsed time, not the nominal period: ticks are skipped while a device call is slow.
+            var now = Stopwatch.GetTimestamp();
+            var last = _lastTickTimestamp;
+            _lastTickTimestamp = now;
+            var deltaSeconds = last == 0
+                ? 0.0
+                : Math.Min(Stopwatch.GetElapsedTime(last, now).TotalSeconds, MaxDeltaSeconds);
+
+            var nodeState = _nodeState;
+            if (!ReferenceEquals(_prunedForSnapshot, snap))
+            {
+                // The graph changed: forget totals of nodes that are gone.
+                var liveIds = snap.Nodes.Select(n => n.Id).ToHashSet();
+                foreach (var id in nodeState.Keys.Where(k => !liveIds.Contains(k)).ToList())
+                    nodeState.Remove(id);
+                _prunedForSnapshot = snap;
+            }
+
             NodeOutputResult? result;
             try
             {
-                result = _evaluator.Evaluate(snap.Nodes, snap.Connections, SimData);
+                result = _evaluator.Evaluate(snap.Nodes, snap.Connections, SimData, nodeState, deltaSeconds);
             }
             catch (Exception ex) when (ex is InvalidOperationException or ArgumentException or IndexOutOfRangeException)
             {

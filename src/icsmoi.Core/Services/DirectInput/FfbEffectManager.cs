@@ -94,7 +94,7 @@ public sealed class FfbEffectManager : IDisposable
                 case ConditionOutputNodeViewModel { DeviceInstanceGuid: { } deviceGuid } cond:
                     liveIds.Add(cond.Id);
                     if (effectParams.TryGetValue(cond.Id, out var condRaw) && condRaw is ConditionParams condParams)
-                        TryUpdate(cond, deviceGuid, ConditionEffectGuid(cond.ConditionKind), axisCount => BuildCondition(condParams, axisCount),
+                        TryUpdate(cond, deviceGuid, ConditionEffectGuid(cond.ConditionKind), active => BuildCondition(condParams, active),
                             n => n.LastPositiveCoefficient = condParams.PositiveCoefficient);
                     break;
 
@@ -129,7 +129,7 @@ public sealed class FfbEffectManager : IDisposable
     /// </summary>
     private void TryUpdate<TNode>(
         TNode node, Guid deviceGuid, Guid effectGuid,
-        Func<int, EffectParameters> buildParams, Action<TNode> applyReadout)
+        Func<IReadOnlyList<bool>, EffectParameters> buildParams, Action<TNode> applyReadout)
         where TNode : HardwareOutputNodeViewModel
     {
         if (_retryAt.TryGetValue(node.Id, out var due) && Environment.TickCount64 < due) return;
@@ -153,12 +153,21 @@ public sealed class FfbEffectManager : IDisposable
                 state = null;
             }
 
-            var parameters = buildParams(targets.Count);
+            // A condition effect always lists EVERY force axis, even when the node drives just one: the TDX_Force
+            // firmware keeps condition parameters per axis in blocks 0 (roll) and 1 (pitch) and plays both, but
+            // DirectInput numbers a condition's blocks by position in the effect's axis list — so a Y-only spring
+            // arrived as block 0 and landed on roll (COM7 log: both a 20% Y spring and a 10% X spring said
+            // "Set cond … axis=0"; nothing ever reached pitch). Listing both axes sends both blocks; the axes the
+            // node doesn't drive get an all-zero condition, which produces no force.
+            var effectAxes = node is ConditionOutputNodeViewModel ? axes : targets;
+            var active = effectAxes.Select(a => targets.Contains(a)).ToArray();
+
+            var parameters = buildParams(active);
             parameters.Flags = EffectFlags.Cartesian | EffectFlags.ObjectOffsets;
             parameters.TriggerButton = NoTriggerButton;
             parameters.Gain = node.Gain;
-            parameters.Axes = targets.Select(a => a.Offset).ToArray();
-            parameters.Directions = BuildDirections(targets, node, deviceGuid);
+            parameters.Axes = effectAxes.Select(a => a.Offset).ToArray();
+            parameters.Directions = BuildDirections(effectAxes, node, deviceGuid);
 
             var key = KeyOf(parameters);
             if (state is null)
@@ -263,13 +272,14 @@ public sealed class FfbEffectManager : IDisposable
         Parameters = new ConstantForce { Magnitude = ToDirectInputUnits(p.Magnitude) },
     };
 
-    // One condition per axis (each axis gets the same one), like the sibling TDX spring effect.
-    private static EffectParameters BuildCondition(ConditionParams p, int axisCount) => new()
+    // One condition per effect axis, in the effect's axis order. An axis the node drives gets the node's values
+    // (the same on each, like the sibling TDX spring effect); one it doesn't gets an all-zero condition.
+    private static EffectParameters BuildCondition(ConditionParams p, IReadOnlyList<bool> active) => new()
     {
         Duration = InfiniteDuration,
         Parameters = new ConditionSet
         {
-            Conditions = Enumerable.Range(0, axisCount).Select(_ => new Condition
+            Conditions = active.Select(on => !on ? new Condition() : new Condition
             {
                 Offset = ToDirectInputUnits(p.Offset),
                 PositiveCoefficient = ToDirectInputUnits(p.PositiveCoefficient),

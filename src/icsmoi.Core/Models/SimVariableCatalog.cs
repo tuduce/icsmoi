@@ -15,7 +15,7 @@ public readonly record struct SimVariableDefinition(string Name, string Units);
 /// </summary>
 public static class SimVariableCatalog
 {
-    public const int Count = 16;
+    public const int Count = 19;
 
     public static readonly IReadOnlyList<SimVariableDefinition> KnownVariables = new[]
     {
@@ -35,6 +35,10 @@ public static class SimVariableCatalog
         new SimVariableDefinition("PLANE PITCH DEGREES", "degrees"),
         new SimVariableDefinition("PLANE ALT ABOVE GROUND", "feet"),
         new SimVariableDefinition("FLAPS HANDLE PERCENT", "percent"),
+        // Body axes: X = right wing, Y = up, Z = nose. Rotation about X is pitch, about Z is roll.
+        new SimVariableDefinition("ROTATION ACCELERATION BODY X", "radians per second squared"),
+        new SimVariableDefinition("ROTATION ACCELERATION BODY Z", "radians per second squared"),
+        new SimVariableDefinition("ACCELERATION BODY Y", "feet per second squared"),
     };
 
     public static readonly IReadOnlyList<string> VariableNames =

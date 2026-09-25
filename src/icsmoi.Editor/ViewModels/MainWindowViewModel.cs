@@ -455,6 +455,26 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     }
 
     [RelayCommand]
+    private void AddEdgeDetectorNode()
+    {
+        DeselectAll();
+        var node = new EdgeDetectorNodeViewModel { X = 300, Y = 300 };
+        node.IsSelected = true;
+        Nodes.Add(node);
+        Profile.Nodes.Add(node);
+    }
+
+    [RelayCommand]
+    private void AddIntegratorNode()
+    {
+        DeselectAll();
+        var node = new IntegratorNodeViewModel { X = 300, Y = 300 };
+        node.IsSelected = true;
+        Nodes.Add(node);
+        Profile.Nodes.Add(node);
+    }
+
+    [RelayCommand]
     private void AddConstantForceOutputNode()
     {
         DeselectAll();

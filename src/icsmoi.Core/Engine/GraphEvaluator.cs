@@ -7,7 +7,8 @@ using icsmoi.Models;
 namespace icsmoi.Engine;
 
 /// <summary>
-/// Pure, stateless graph evaluator.
+/// Pure graph evaluator — it owns no state of its own. The only state a graph has (the
+/// <see cref="IntegratorNodeViewModel"/> totals) is passed in by the caller.
 /// <para>
 /// Accepts a snapshot of nodes and connections, performs a topological sort
 /// (Kahn's algorithm) to detect cycles, then evaluates each node in dependency
@@ -33,11 +34,18 @@ public sealed class GraphEvaluator
     /// <param name="nodes">Snapshot of all nodes in the profile.</param>
     /// <param name="connections">Snapshot of all connections.</param>
     /// <param name="simData">Current SimConnect variable values (variable name → value).</param>
+    /// <param name="nodeState">
+    /// Per-node running values (node Id → value) for stateful nodes, read and written in place. Owned by the
+    /// caller so it survives between calls; <c>null</c> makes stateful nodes read as 0.
+    /// </param>
+    /// <param name="deltaSeconds">Time since the previous evaluation, for stateful nodes.</param>
     /// <returns>The evaluated outputs, or <c>null</c> if the graph contains a cycle.</returns>
     public NodeOutputResult? Evaluate(
         IReadOnlyList<NodeViewModel> nodes,
         IReadOnlyList<ConnectionViewModel> connections,
-        IReadOnlyDictionary<string, double> simData)
+        IReadOnlyDictionary<string, double> simData,
+        IDictionary<Guid, double>? nodeState = null,
+        double deltaSeconds = 0.0)
     {
         if (nodes.Count == 0) return new NodeOutputResult([], []);
 
@@ -157,6 +165,14 @@ public sealed class GraphEvaluator
 
                 case CurveNodeViewModel curve:
                     EvalCurve(curve, wireValues);
+                    break;
+
+                case IntegratorNodeViewModel integrator:
+                    EvalIntegrator(integrator, wireValues, nodeState, deltaSeconds);
+                    break;
+
+                case EdgeDetectorNodeViewModel edge:
+                    EvalEdgeDetector(edge, wireValues, nodeState);
                     break;
 
                 case ConstantForceOutputNodeViewModel constantForce:
@@ -386,12 +402,90 @@ public sealed class GraphEvaluator
         SetOutputValue(node, result, wireValues);
     }
 
+    private static void EvalIntegrator(
+        IntegratorNodeViewModel node,
+        Dictionary<Guid, double> wireValues,
+        IDictionary<Guid, double>? nodeState,
+        double deltaSeconds)
+    {
+        var input = GetPinValue(node, "Input", wireValues);
+        var reset = GetPinValue(node, "Reset", wireValues) != 0.0;
+        var min = GetPinValue(node, "Min", wireValues);
+        var max = GetPinValue(node, "Max", wireValues);
+        var wrap = GetPinValue(node, "Wrap", wireValues);
+
+        double value = 0.0;
+        nodeState?.TryGetValue(node.Id, out value);
+
+        if (reset)
+        {
+            value = 0.0;
+        }
+        else
+        {
+            if (double.IsFinite(input))
+                value += node.AddPerTick ? input : input * deltaSeconds;
+
+            if (wrap > 0.0)
+            {
+                value -= Math.Floor(value / wrap) * wrap;
+            }
+            else
+            {
+                if (min > max) (min, max) = (max, min);
+                value = Math.Clamp(value, min, max);
+            }
+        }
+
+        // A NaN/∞ input pin (e.g. a Math node dividing by zero) must not poison the total for good.
+        if (!double.IsFinite(value))
+            value = 0.0;
+
+        if (nodeState is not null)
+            nodeState[node.Id] = value;
+
+        SetOutputValue(node, value, wireValues);
+    }
+
+    private static void EvalEdgeDetector(
+        EdgeDetectorNodeViewModel node,
+        Dictionary<Guid, double> wireValues,
+        IDictionary<Guid, double>? nodeState)
+    {
+        var input = GetPinValue(node, "Input", wireValues);
+        var high = double.IsFinite(input) && input != 0.0;
+
+        // No remembered level yet (first evaluation, engine restart, profile switch, or no state supplied)
+        // means "no change": a button already held at that moment is not a press.
+        var wasHigh = high;
+        if (nodeState is not null)
+        {
+            if (nodeState.TryGetValue(node.Id, out var previous))
+                wasHigh = previous != 0.0;
+            nodeState[node.Id] = high ? 1.0 : 0.0;
+        }
+
+        var rising = high && !wasHigh;
+        var falling = !high && wasHigh;
+
+        SetOutputValue(node, "Rising", rising ? 1.0 : 0.0, wireValues);
+        SetOutputValue(node, "Falling", falling ? 1.0 : 0.0, wireValues);
+        SetOutputValue(node, "Either", rising || falling ? 1.0 : 0.0, wireValues);
+    }
+
     // ── Shared pin-access helpers for fixed-named-pin node types ─────────────
 
     private static double GetPinValue(NodeViewModel node, string pinTitle, Dictionary<Guid, double> wireValues)
     {
         var pin = node.Inputs.FirstOrDefault(p => p.Title == pinTitle);
         return pin is not null && wireValues.TryGetValue(pin.Id, out var v) ? v : 0.0;
+    }
+
+    private static void SetOutputValue(NodeViewModel node, string pinTitle, double value, Dictionary<Guid, double> wireValues)
+    {
+        var pin = node.Outputs.FirstOrDefault(p => p.Title == pinTitle);
+        if (pin is not null)
+            wireValues[pin.Id] = value;
     }
 
     private static void SetOutputValue(NodeViewModel node, double value, Dictionary<Guid, double> wireValues)

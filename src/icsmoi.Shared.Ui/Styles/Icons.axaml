@@ -58,6 +58,8 @@
   <!-- Logic gate (D-shape, two inputs, one output) -->
   <StreamGeometry x:Key="Icsmoi.Icon.Logic">M6 5 H12 A7 7 0 0 1 12 19 H6 Z M2.5 9 H6 M2.5 15 H6 M19 12 H21.5</StreamGeometry>
   <!-- Fork: one input, two branches -->
+  <!-- Square pulse: a level with its two edges -->
+  <StreamGeometry x:Key="Icsmoi.Icon.Edge">M3 17 H9 V7 H15 V17 H21</StreamGeometry>
   <StreamGeometry x:Key="Icsmoi.Icon.Select">M3.5 12 H10 M10 12 L15.5 6.5 H20.5 M10 12 L15.5 17.5 H20.5</StreamGeometry>
 
   <!-- ── Node palette: Shaping ────────────────────────────────────────────── -->
@@ -67,6 +69,8 @@
   <StreamGeometry x:Key="Icsmoi.Icon.RangeMap">M8 6 H16 L21 18 H3 Z</StreamGeometry>
   <!-- Axes + smooth S-curve -->
   <StreamGeometry x:Key="Icsmoi.Icon.Curve">M4 4 V20 H20 M7 17 C11 17 11 8 15 8 S18 7 19 6</StreamGeometry>
+  <!-- Integral sign -->
+  <StreamGeometry x:Key="Icsmoi.Icon.Integrator">M15 4.5 C12 3 11 5 11 8 V16 C11 19 10 21 7 19.5</StreamGeometry>
 
   <!-- ── Node palette: Hardware output ────────────────────────────────────── -->
   <!-- Straight force arrow -->

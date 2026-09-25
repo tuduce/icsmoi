@@ -16,6 +16,8 @@ namespace icsmoi.Models;
 [JsonDerivedType(typeof(ClampNodeViewModel), "clamp")]
 [JsonDerivedType(typeof(RangeMapNodeViewModel), "rangemap")]
 [JsonDerivedType(typeof(CurveNodeViewModel), "curve")]
+[JsonDerivedType(typeof(IntegratorNodeViewModel), "integrator")]
+[JsonDerivedType(typeof(EdgeDetectorNodeViewModel), "edgedetector")]
 [JsonDerivedType(typeof(ConstantForceOutputNodeViewModel), "constantforce")]
 [JsonDerivedType(typeof(ConditionOutputNodeViewModel), "condition")]
 [JsonDerivedType(typeof(PeriodicOutputNodeViewModel), "periodic")]
