@@ -29,6 +29,15 @@ public sealed class FfbEffectManager : IDisposable
     // How long a node whose effect failed is left alone before another attempt (the tick runs at 100 Hz).
     private const long RetryDelayMs = 3000;
 
+    // The least time between two updates of one effect. TDX_Force firmware prints every effect report on a 115200-baud
+    // serial log; at the ~60 updates/s a moving value produced (each up to 4 log lines) that log overflowed
+    // ("log: 1591 messages dropped") and, within ~150-350 ms, the stick began failing to send its HID *input* report
+    // ("HID input report send failed: status 0xff", hundreds of failures) for as long as the updates kept coming.
+    // The PC then kept the last state it had received — a trim button whose release was lost read as held for 5-10 s
+    // until the value hit its clamp and the updates stopped. TDX Air Mechanic never hit this: its trim repeats every
+    // 100 ms. Newest value wins: a change inside the window is sent as soon as it elapses, not queued.
+    private const long MinUpdateIntervalMs = 100;
+
     /// <summary>
     /// Raised (on the engine's timer thread) when creating or updating a node's effect throws — a device
     /// that can't be acquired, parameters the driver rejects, a device that vanished. The node's effect is torn
@@ -52,6 +61,9 @@ public sealed class FfbEffectManager : IDisposable
         public int AxisIndex { get; } = axisIndex;
         public int Gain { get; set; } = gain;
         public double DirectionDegrees { get; set; } = directionDegrees;
+
+        /// <summary>When (Environment.TickCount64) the device last got this effect — see <see cref="MinUpdateIntervalMs"/>.</summary>
+        public long LastSentAt { get; set; } = Environment.TickCount64;
 
         /// <summary>The type-specific parameters last sent, in DirectInput units — see <see cref="KeyOf"/>.</summary>
         public long[] Key { get; set; } = key;
@@ -200,7 +212,8 @@ public sealed class FfbEffectManager : IDisposable
 
                 // Talk to the device only when something actually changed: a call costs ~16 ms of USB
                 // round trip (so ~60/s at most), and a graph whose value hasn't moved needs none at all.
-                if (gainChanged || directionChanged || !key.AsSpan().SequenceEqual(state.Key))
+                var changed = gainChanged || directionChanged || !key.AsSpan().SequenceEqual(state.Key);
+                if (changed && Environment.TickCount64 - state.LastSentAt >= MinUpdateIntervalMs)
                 {
                     // Updates use the same pattern as the working app on this stick (TypeSpecific | Start, plus
                     // Direction so Set Effect is re-sent too — it carries the direction and gain, and is what
@@ -215,6 +228,7 @@ public sealed class FfbEffectManager : IDisposable
                     state.Gain = node.Gain;
                     state.DirectionDegrees = node.DirectionDegrees;
                     state.Key = key;
+                    state.LastSentAt = Environment.TickCount64;
                 }
             }
 
