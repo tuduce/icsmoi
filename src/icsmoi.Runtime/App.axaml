@@ -21,7 +21,7 @@
 
     <TrayIcon.Icons>
         <TrayIcons>
-            <TrayIcon Icon="avares://icsmoi.Shared.Ui/Assets/icsmoi.ico" ToolTipText="icsmoi Runtime">
+            <TrayIcon Icon="avares://icsmoi.Shared.Ui/Assets/icsmoi.ico" ToolTipText="icsmoi">
                 <TrayIcon.Menu>
                     <NativeMenu>
                         <NativeMenuItem Header="Show status" Click="OnShowStatusClicked" />

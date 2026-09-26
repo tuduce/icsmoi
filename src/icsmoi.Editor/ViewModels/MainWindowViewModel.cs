@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -283,12 +284,45 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
 
     // -- Node palette --------------------------------------------------------
 
+    /// <summary>
+    /// Supplied by the view: the part of the canvas currently on screen, in node coordinates
+    /// (null while the canvas isn't laid out yet).
+    /// </summary>
+    public Func<Rect?>? GetVisibleCanvasRect { get; set; }
+
+    // Rough footprint of a freshly added node, used to centre it (nodes are measured by the canvas later).
+    private const double NewNodeWidth = 220;
+    private const double NewNodeHeight = 140;
+    private const double CascadeStep = 32;
+
+    /// <summary>
+    /// Puts a newly added node in the middle of what the user is looking at, nudged down-right past any node
+    /// already sitting on that spot so consecutive adds don't stack. Falls back to the origin area when the
+    /// view hasn't reported a viewport yet.
+    /// </summary>
+    private void PlaceInViewport(NodeViewModel node)
+    {
+        var visible = GetVisibleCanvasRect?.Invoke();
+        var x = visible is { } r ? r.Center.X - NewNodeWidth / 2 : 60;
+        var y = visible is { } r2 ? r2.Center.Y - NewNodeHeight / 2 : 150;
+
+        for (var i = 0; i < 20 && Profile.Nodes.Any(n => Math.Abs(n.X - x) < CascadeStep / 2 && Math.Abs(n.Y - y) < CascadeStep / 2); i++)
+        {
+            x += CascadeStep;
+            y += CascadeStep;
+        }
+
+        node.X = x;
+        node.Y = y;
+    }
+
     [RelayCommand]
     private void AddSimConnectNode()
     {
         DeselectAll();
-        var node = new SimConnectNodeViewModel { X = 60, Y = 150 };
+        var node = new SimConnectNodeViewModel();
         node.IsSelected = true;
+        PlaceInViewport(node);
         Nodes.Add(node);
         Profile.Nodes.Add(node);
     }
@@ -297,8 +331,9 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     private void AddJoystickInputNode()
     {
         DeselectAll();
-        var node = new JoystickInputNodeViewModel { X = 60, Y = 300 };
+        var node = new JoystickInputNodeViewModel();
         node.IsSelected = true;
+        PlaceInViewport(node);
         Nodes.Add(node);
         Profile.Nodes.Add(node);
     }
@@ -388,8 +423,9 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     private void AddMathNode()
     {
         DeselectAll();
-        var node = new MathNodeViewModel { X = 300, Y = 150 };
+        var node = new MathNodeViewModel();
         node.IsSelected = true;
+        PlaceInViewport(node);
         Nodes.Add(node);
         Profile.Nodes.Add(node);
     }
@@ -398,8 +434,9 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     private void AddComparisonNode()
     {
         DeselectAll();
-        var node = new ComparisonNodeViewModel { X = 300, Y = 300 };
+        var node = new ComparisonNodeViewModel();
         node.IsSelected = true;
+        PlaceInViewport(node);
         Nodes.Add(node);
         Profile.Nodes.Add(node);
     }
@@ -408,8 +445,9 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     private void AddLogicNode()
     {
         DeselectAll();
-        var node = new LogicNodeViewModel { X = 300, Y = 300 };
+        var node = new LogicNodeViewModel();
         node.IsSelected = true;
+        PlaceInViewport(node);
         Nodes.Add(node);
         Profile.Nodes.Add(node);
     }
@@ -418,8 +456,9 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     private void AddSelectNode()
     {
         DeselectAll();
-        var node = new SelectNodeViewModel { X = 300, Y = 300 };
+        var node = new SelectNodeViewModel();
         node.IsSelected = true;
+        PlaceInViewport(node);
         Nodes.Add(node);
         Profile.Nodes.Add(node);
     }
@@ -428,8 +467,9 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     private void AddClampNode()
     {
         DeselectAll();
-        var node = new ClampNodeViewModel { X = 300, Y = 300 };
+        var node = new ClampNodeViewModel();
         node.IsSelected = true;
+        PlaceInViewport(node);
         Nodes.Add(node);
         Profile.Nodes.Add(node);
     }
@@ -438,8 +478,9 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     private void AddRangeMapNode()
     {
         DeselectAll();
-        var node = new RangeMapNodeViewModel { X = 300, Y = 300 };
+        var node = new RangeMapNodeViewModel();
         node.IsSelected = true;
+        PlaceInViewport(node);
         Nodes.Add(node);
         Profile.Nodes.Add(node);
     }
@@ -448,8 +489,9 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     private void AddCurveNode()
     {
         DeselectAll();
-        var node = new CurveNodeViewModel { X = 300, Y = 300 };
+        var node = new CurveNodeViewModel();
         node.IsSelected = true;
+        PlaceInViewport(node);
         Nodes.Add(node);
         Profile.Nodes.Add(node);
     }
@@ -458,8 +500,9 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     private void AddEdgeDetectorNode()
     {
         DeselectAll();
-        var node = new EdgeDetectorNodeViewModel { X = 300, Y = 300 };
+        var node = new EdgeDetectorNodeViewModel();
         node.IsSelected = true;
+        PlaceInViewport(node);
         Nodes.Add(node);
         Profile.Nodes.Add(node);
     }
@@ -468,8 +511,9 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     private void AddIntegratorNode()
     {
         DeselectAll();
-        var node = new IntegratorNodeViewModel { X = 300, Y = 300 };
+        var node = new IntegratorNodeViewModel();
         node.IsSelected = true;
+        PlaceInViewport(node);
         Nodes.Add(node);
         Profile.Nodes.Add(node);
     }
@@ -478,8 +522,9 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     private void AddConstantForceOutputNode()
     {
         DeselectAll();
-        var node = new ConstantForceOutputNodeViewModel { X = 560, Y = 300 };
+        var node = new ConstantForceOutputNodeViewModel();
         node.IsSelected = true;
+        PlaceInViewport(node);
         Nodes.Add(node);
         Profile.Nodes.Add(node);
     }
@@ -488,8 +533,9 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     private void AddConditionOutputNode()
     {
         DeselectAll();
-        var node = new ConditionOutputNodeViewModel { X = 560, Y = 300 };
+        var node = new ConditionOutputNodeViewModel();
         node.IsSelected = true;
+        PlaceInViewport(node);
         Nodes.Add(node);
         Profile.Nodes.Add(node);
     }
@@ -498,8 +544,9 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     private void AddPeriodicOutputNode()
     {
         DeselectAll();
-        var node = new PeriodicOutputNodeViewModel { X = 560, Y = 300 };
+        var node = new PeriodicOutputNodeViewModel();
         node.IsSelected = true;
+        PlaceInViewport(node);
         Nodes.Add(node);
         Profile.Nodes.Add(node);
     }
@@ -508,8 +555,9 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     private void AddRampForceOutputNode()
     {
         DeselectAll();
-        var node = new RampForceOutputNodeViewModel { X = 560, Y = 300 };
+        var node = new RampForceOutputNodeViewModel();
         node.IsSelected = true;
+        PlaceInViewport(node);
         Nodes.Add(node);
         Profile.Nodes.Add(node);
     }

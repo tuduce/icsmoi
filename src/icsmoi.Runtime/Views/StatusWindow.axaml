@@ -8,7 +8,7 @@
         x:Class="icsmoi.Runtime.Views.StatusWindow"
         x:DataType="vm:StatusWindowViewModel"
         Icon="avares://icsmoi.Shared.Ui/Assets/icsmoi.ico"
-        Title="icsmoi Runtime"
+        Title="icsmoi"
         Width="460" SizeToContent="Height"
         CanResize="False"
         Background="{DynamicResource Icsmoi.Background}">

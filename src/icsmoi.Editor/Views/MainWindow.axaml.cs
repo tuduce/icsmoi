@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -50,7 +51,29 @@ public partial class MainWindow : Window
 
         if (_subscribedViewModel is not null) _subscribedViewModel.PinLayoutChanged -= OnPinLayoutChanged;
         _subscribedViewModel = DataContext as MainWindowViewModel;
-        if (_subscribedViewModel is not null) _subscribedViewModel.PinLayoutChanged += OnPinLayoutChanged;
+        if (_subscribedViewModel is not null)
+        {
+            _subscribedViewModel.PinLayoutChanged += OnPinLayoutChanged;
+            // New nodes land in whatever part of the canvas the user is looking at.
+            _subscribedViewModel.GetVisibleCanvasRect = GetVisibleCanvasRect;
+        }
+    }
+
+    /// <summary>
+    /// The part of the canvas currently on screen, in node coordinates. The editor's items panel is what carries
+    /// the pan/zoom transform and hosts the nodes at their X/Y, so mapping the viewport's corners (the editor's
+    /// parent panel — the editor itself is resized by zoom) into that panel's space gives exactly the visible
+    /// world rectangle regardless of how NodifyM composes offset and zoom.
+    /// </summary>
+    private Rect? GetVisibleCanvasRect()
+    {
+        if (Editor.Parent is not Visual viewport || Editor.Presenter?.Panel is not { } canvas) return null;
+        var size = viewport.Bounds.Size;
+        if (size.Width <= 0 || size.Height <= 0) return null;
+
+        var topLeft = viewport.TranslatePoint(new Point(0, 0), canvas);
+        var bottomRight = viewport.TranslatePoint(new Point(size.Width, size.Height), canvas);
+        return topLeft is { } a && bottomRight is { } b ? new Rect(a, b) : null;
     }
 
     private void OnPinLayoutChanged()
