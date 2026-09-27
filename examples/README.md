@@ -55,6 +55,5 @@ specific setup, so these won't match yours automatically.
 
 The same full feel package as `04` (47 nodes), adapted for retractable gear:
 adds a `GEAR HANDLE POSITION` SimConnect node feeding a little extra
-Logic/Select wiring that gates some of the ground-feel effects by gear state.
-Same setup requirements as `04` — re-assign every device/axis and joystick
+rumble into the stick when the landig gear is lowered. Same setup requirements as `04` — re-assign every device/axis and joystick
 button to your own hardware before use.
