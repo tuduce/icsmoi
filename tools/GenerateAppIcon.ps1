@@ -9,6 +9,10 @@
 # (64 x 64 grid). Keep the two in sync. Colors mirror Tokens.axaml (Background/Text/Accent).
 #
 # Usage:  powershell -ExecutionPolicy Bypass -File tools/GenerateAppIcon.ps1
+#
+# src/icsmoi.Shared.Ui/Assets/icsmoi-wordmark.png (used in the root README) is a separate asset —
+# see tools/RenderLogo, which renders the Icsmoi.Wordmark theme from Logo.axaml directly via
+# Avalonia's headless platform. Regenerate it the same way if the wordmark design ever changes.
 
 Add-Type -AssemblyName System.Drawing
 

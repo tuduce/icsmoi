@@ -1,6 +1,8 @@
-<!-- TODO: add a screenshot of the node editor and the Runtime status window here -->
+<img src="src/icsmoi.Shared.Ui/Assets/icsmoi-wordmark.png" height="80" alt="icsmoi">
 
 # icsmoi
+
+<!-- TODO: add a screenshot of the node editor and the Runtime status window here -->
 
 A visual node-graph editor and runtime for building custom force-feedback (FFB)
 profiles for Microsoft Flight Simulator (2020/2024) — wire together simulator
