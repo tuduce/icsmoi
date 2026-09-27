@@ -1,9 +1,11 @@
 # Example profiles
 
-Three ready-made `.icsmoi.json` profiles you can load straight into a Runtime
-slot, or open in the Editor to see how they're wired. See
-[`user_manual/06-building-effects-tutorial.md`](../user_manual/06-building-effects-tutorial.md)
-for a step-by-step walkthrough of building each of these from scratch.
+Five ready-made `.icsmoi.json` profiles you can load straight into a Runtime
+slot, or open in the Editor to see how they're wired. The first three have a
+step-by-step build-from-scratch walkthrough in
+[`user_manual/06-building-effects-tutorial.md`](../user_manual/06-building-effects-tutorial.md);
+`04` and `05` are larger, real-world profiles meant to be explored in the
+Editor directly rather than rebuilt by hand.
 
 They're also installed alongside icsmoi (in an `Examples` folder next to the
 app) if you installed via the MSI, so you don't need this repository to try
@@ -35,3 +37,24 @@ Joystick Input node's two input rows in the Editor to assign your own trim-up
 and trim-down buttons (the profile ships assuming Button 1 and Button 2, which
 may not match your controller). No sim connection required — it works from
 the joystick alone.
+
+## 04-fixed-landing-gear.icsmoi.json
+
+A full-feel profile for a fixed-gear aircraft (40 nodes): runway surface feel
+with separate rumble/hum patterns for asphalt, concrete (including a periodic
+expansion-joint jolt), and grass — selected by `SURFACE TYPE` and gated by
+`SIM ON GROUND`/ground speed — plus stall buffet, roll/pitch centering
+springs whose stiffness scales with airspeed relative to the yellow-line
+speed, and joystick-button trim on two axes. Open it in the Editor to see the
+full graph rather than following a tutorial. Needs: MSFS connected, your own
+device/axis picked on every hardware-output node, and your own controller's
+buttons re-captured on the Joystick Input node — it was built against a
+specific setup, so these won't match yours automatically.
+
+## 05-retractable-landing-gear.icsmoi.json
+
+The same full feel package as `04` (47 nodes), adapted for retractable gear:
+adds a `GEAR HANDLE POSITION` SimConnect node feeding a little extra
+Logic/Select wiring that gates some of the ground-feel effects by gear state.
+Same setup requirements as `04` — re-assign every device/axis and joystick
+button to your own hardware before use.

@@ -1,0 +1,2714 @@
+{
+  "Nodes": [
+    {
+      "$type": "simconnect",
+      "VariableName": "STALL WARNING",
+      "Id": "f52bacc7-7521-41aa-81e8-1c7941ce8e8e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "60add26e-9849-4429-91a6-8e362c2eddd3",
+          "Anchor": {
+            "X": 59,
+            "Y": 247
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Value",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "SimConnect Input",
+      "X": -200,
+      "Y": 205,
+      "IsSelected": false
+    },
+    {
+      "$type": "periodic",
+      "Waveform": "Sine",
+      "LastMagnitude": 0,
+      "DeviceInstanceGuid": "d35f43f0-38b4-11f0-8001-444553540000",
+      "AxisIndex": -1,
+      "DirectionDegrees": 0,
+      "Gain": 10000,
+      "Id": "cac09d2e-58e1-4003-bfa8-702fa1d4d0ad",
+      "Inputs": [
+        {
+          "Id": "504792a3-d558-4069-8502-16fe09f38e94",
+          "Anchor": {
+            "X": 1384,
+            "Y": 1.5
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Magnitude",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "b1fd92bd-e2bd-4c41-bc7a-9c3c337bf37c",
+          "Anchor": {
+            "X": 1384,
+            "Y": 35.5
+          },
+          "Value": 0.125,
+          "Flow": "Input",
+          "Title": "Period",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "3cd9eab3-24dd-4ec0-b38a-b994df148c59",
+          "Anchor": {
+            "X": 1384,
+            "Y": 69.5
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Phase",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "5d78b571-b4ad-40ea-ac3f-39a6eeb7f3b4",
+          "Anchor": {
+            "X": 1384,
+            "Y": 103.5
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Offset",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [],
+      "Name": "Periodic",
+      "X": 1371,
+      "Y": -46.5,
+      "IsSelected": false
+    },
+    {
+      "$type": "select",
+      "Id": "edde4550-d6bd-41af-9bd9-a9b6aac6fe40",
+      "Inputs": [
+        {
+          "Id": "30c53bd7-2dca-4c10-b33e-65fd2f62c021",
+          "Anchor": {
+            "X": 334,
+            "Y": 253
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Condition",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "6f8f2267-3c17-46b1-8aff-40486968a236",
+          "Anchor": {
+            "X": 334,
+            "Y": 287
+          },
+          "Value": 0.15,
+          "Flow": "Input",
+          "Title": "IfTrue",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "0e22893a-274c-40de-a7a3-4f01f1949870",
+          "Anchor": {
+            "X": 334,
+            "Y": 321
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "IfFalse",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5fed6f93-3527-4380-b6f1-aacfab49a6ea",
+          "Anchor": {
+            "X": 728,
+            "Y": 247
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Select",
+      "X": 321,
+      "Y": 205,
+      "IsSelected": false
+    },
+    {
+      "$type": "periodic",
+      "Waveform": "Sine",
+      "LastMagnitude": 0,
+      "DeviceInstanceGuid": "d35f43f0-38b4-11f0-8001-444553540000",
+      "AxisIndex": -1,
+      "DirectionDegrees": 90,
+      "Gain": 10000,
+      "Id": "62a3a3f1-be8d-46fd-be91-84a7ec88efb8",
+      "Inputs": [
+        {
+          "Id": "222aac84-0ddc-417e-9043-28e527349ce0",
+          "Anchor": {
+            "X": 1331,
+            "Y": 464
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Magnitude",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "72dfe61e-01d5-4fa6-913a-ad6dda58902d",
+          "Anchor": {
+            "X": 1331,
+            "Y": 498
+          },
+          "Value": 0.05,
+          "Flow": "Input",
+          "Title": "Period",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "709179a2-cbc1-4bac-8743-e31a89696d24",
+          "Anchor": {
+            "X": 1331,
+            "Y": 532
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Phase",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "c586b836-b563-42da-a825-0eea723242de",
+          "Anchor": {
+            "X": 1331,
+            "Y": 566
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Offset",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [],
+      "Name": "Periodic",
+      "X": 1318,
+      "Y": 416,
+      "IsSelected": false
+    },
+    {
+      "$type": "math",
+      "Expression": "[A]*2/3",
+      "Id": "28f3d8c7-91f1-47b4-9d54-012fe82c75a7",
+      "Inputs": [
+        {
+          "Id": "3f5b7e77-c12e-429e-b79d-4a2cb03b2106",
+          "Anchor": {
+            "X": 899,
+            "Y": 533
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "A",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "3a37f67e-2cac-41e9-b379-46657c6534f2",
+          "Anchor": {
+            "X": 899,
+            "Y": 554
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "B",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a0cf5235-043c-4b5d-837b-a2997335e1d8",
+          "Anchor": {
+            "X": 1166,
+            "Y": 533
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Math Compute",
+      "X": 886,
+      "Y": 491,
+      "IsSelected": false
+    },
+    {
+      "$type": "condition",
+      "ConditionKind": "Spring",
+      "LastPositiveCoefficient": 0.35077010238963763,
+      "DeviceInstanceGuid": "d35f43f0-38b4-11f0-8001-444553540000",
+      "AxisIndex": 1,
+      "DirectionDegrees": 0,
+      "Gain": 10000,
+      "Id": "773714f8-c726-4b05-9143-bca1efd14cb7",
+      "Inputs": [
+        {
+          "Id": "d7d3f701-8bce-4984-b262-40f85c295e45",
+          "Anchor": {
+            "X": 2192,
+            "Y": -520
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "PositiveCoefficient",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "6d30379e-99bf-4b66-b800-70b95819ed6b",
+          "Anchor": {
+            "X": 2192,
+            "Y": -486
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "NegativeCoefficient",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "5c703c36-8f72-4330-873f-0aba38ec1fb1",
+          "Anchor": {
+            "X": 2192,
+            "Y": -452
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Offset",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "de0958c5-07db-4c46-825c-ded0f8fff940",
+          "Anchor": {
+            "X": 2192,
+            "Y": -418
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "DeadBand",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "81a6300d-a4b9-4bf8-abee-da716abf580d",
+          "Anchor": {
+            "X": 2192,
+            "Y": -384
+          },
+          "Value": 1,
+          "Flow": "Input",
+          "Title": "Saturation",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [],
+      "Name": "Condition",
+      "X": 2179,
+      "Y": -568,
+      "IsSelected": false
+    },
+    {
+      "$type": "simconnect",
+      "VariableName": "AIRSPEED INDICATED",
+      "Id": "75208e99-d005-4f35-b38f-c23e968a274f",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "bf489537-5354-4e0c-b715-66ede3d47100",
+          "Anchor": {
+            "X": 39,
+            "Y": -383
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Value",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "SimConnect Input",
+      "X": -223,
+      "Y": -425,
+      "IsSelected": false
+    },
+    {
+      "$type": "simconnect",
+      "VariableName": "AIRSPEED BARBER POLE",
+      "Id": "fe088765-e718-4504-bb94-92b9e1f35908",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9437ca30-fd99-48cc-8497-22d95c6c0590",
+          "Anchor": {
+            "X": 59,
+            "Y": -200
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Value",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "SimConnect Input",
+      "X": -223,
+      "Y": -242,
+      "IsSelected": false
+    },
+    {
+      "$type": "math",
+      "Expression": "0.8 / (1 \u002B Exp(-5 / Max([B], 1) * ([A] - Max([B], 1) / 2)))",
+      "Id": "7e0b33df-a444-4c71-9329-0f8cb1718265",
+      "Inputs": [
+        {
+          "Id": "286994b9-963b-4ed1-bccc-31eb421c8542",
+          "Anchor": {
+            "X": 783,
+            "Y": -281
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "A",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "aaa7bdff-828f-4b5f-bc92-a48220ab40c1",
+          "Anchor": {
+            "X": 783,
+            "Y": -260
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "B",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "dea0b818-2280-4f36-82b9-e80b64223c6e",
+          "Anchor": {
+            "X": 1282,
+            "Y": -281
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Math Compute",
+      "X": 770,
+      "Y": -323,
+      "IsSelected": false
+    },
+    {
+      "$type": "simconnect",
+      "VariableName": "GEAR HANDLE POSITION",
+      "Id": "9f9a28d8-bcd9-4987-a538-4353025ecb85",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3584a16c-8d79-4f1b-ba92-476a1f6cc4ad",
+          "Anchor": {
+            "X": 130.5,
+            "Y": 766
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Value",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "SimConnect Input",
+      "X": -154.5,
+      "Y": 724,
+      "IsSelected": false
+    },
+    {
+      "$type": "simconnect",
+      "VariableName": "SIM ON GROUND",
+      "Id": "b5ee1e70-7a8d-48db-928a-9e56a8cc6511",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "07b46e0e-8d89-4f6e-8f39-4f36c4fdcab9",
+          "Anchor": {
+            "X": -136,
+            "Y": 1090
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Value",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "SimConnect Input",
+      "X": -395,
+      "Y": 1048,
+      "IsSelected": false
+    },
+    {
+      "$type": "logic",
+      "Operator": "Not",
+      "Id": "d857eacf-92bf-4cd0-9509-95f40ec194fe",
+      "Inputs": [
+        {
+          "Id": "53e28733-58b7-4b84-80c6-828d42fdbbf0",
+          "Anchor": {
+            "X": 174,
+            "Y": 1086
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "A",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "8d38c8ce-b361-49a3-bb11-ae63ec65f4b2",
+          "Anchor": {
+            "X": 174,
+            "Y": 1120
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "B",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "155a8cc1-67c9-47d2-bb41-524140d7b472",
+          "Anchor": {
+            "X": 511,
+            "Y": 1080
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Logic",
+      "X": 161,
+      "Y": 1038,
+      "IsSelected": false
+    },
+    {
+      "$type": "logic",
+      "Operator": "And",
+      "Id": "50572381-6cdd-4c71-8874-931ed9ded041",
+      "Inputs": [
+        {
+          "Id": "35dd012f-2067-44a8-8e4c-ea408d7bd8dc",
+          "Anchor": {
+            "X": 264,
+            "Y": 772
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "A",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "a9e8f9d3-0388-4d72-a014-7d78a6e42415",
+          "Anchor": {
+            "X": 264,
+            "Y": 806
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "B",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f204b224-09ff-4dcf-aff9-c1cdcc0af050",
+          "Anchor": {
+            "X": 511,
+            "Y": 766
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Logic",
+      "X": 251,
+      "Y": 724,
+      "IsSelected": false
+    },
+    {
+      "$type": "select",
+      "Id": "67448765-56fd-4417-9caa-c2d19124a1ec",
+      "Inputs": [
+        {
+          "Id": "a2dadb07-e107-4ff2-ad0d-332646e7efd7",
+          "Anchor": {
+            "X": 636,
+            "Y": 854
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Condition",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "65bc1400-d9a7-454b-8d57-9a3e156116e2",
+          "Anchor": {
+            "X": 636,
+            "Y": 888
+          },
+          "Value": 0.025,
+          "Flow": "Input",
+          "Title": "IfTrue",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "61e6b983-2f12-413a-ad32-5cd17c71b47a",
+          "Anchor": {
+            "X": 636,
+            "Y": 922
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "IfFalse",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "04c12930-b689-4f3c-b377-367e1a731adb",
+          "Anchor": {
+            "X": 1030,
+            "Y": 848
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Select",
+      "X": 623,
+      "Y": 806,
+      "IsSelected": false
+    },
+    {
+      "$type": "periodic",
+      "Waveform": "Sine",
+      "LastMagnitude": 0,
+      "DeviceInstanceGuid": "d35f43f0-38b4-11f0-8001-444553540000",
+      "AxisIndex": -1,
+      "DirectionDegrees": 0,
+      "Gain": 10000,
+      "Id": "a2c76360-52ff-4a0b-8870-f9a98528bdaf",
+      "Inputs": [
+        {
+          "Id": "4a27f456-6872-4803-8138-ee9599dc0a3c",
+          "Anchor": {
+            "X": 1147,
+            "Y": 854
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Magnitude",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "61dbb545-8c1a-468d-a6c3-ec969529d981",
+          "Anchor": {
+            "X": 1147,
+            "Y": 888
+          },
+          "Value": 0.03,
+          "Flow": "Input",
+          "Title": "Period",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "ee918105-10da-4a1e-9c54-2bd50d816756",
+          "Anchor": {
+            "X": 1147,
+            "Y": 922
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Phase",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "cf07bf13-cede-4b90-a383-dd943a5b9fb7",
+          "Anchor": {
+            "X": 1147,
+            "Y": 956
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Offset",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [],
+      "Name": "Periodic",
+      "X": 1134,
+      "Y": 806,
+      "IsSelected": false
+    },
+    {
+      "$type": "periodic",
+      "Waveform": "Sine",
+      "LastMagnitude": 0,
+      "DeviceInstanceGuid": "d35f43f0-38b4-11f0-8001-444553540000",
+      "AxisIndex": -1,
+      "DirectionDegrees": 137,
+      "Gain": 10000,
+      "Id": "d7e1639e-e9c5-439b-9f0d-fe79c01cd242",
+      "Inputs": [
+        {
+          "Id": "30145c90-83fe-4f95-9ca2-77bb86c33677",
+          "Anchor": {
+            "X": 1147,
+            "Y": 1235
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Magnitude",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "f494718c-eb6c-4953-93f1-9937250d659f",
+          "Anchor": {
+            "X": 1147,
+            "Y": 1269
+          },
+          "Value": 0.005,
+          "Flow": "Input",
+          "Title": "Period",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "38bbceb7-281f-40d1-a2ff-58ccb6ea74b8",
+          "Anchor": {
+            "X": 1147,
+            "Y": 1303
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Phase",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "4f2649ec-4237-4671-b3f1-ed215e06d278",
+          "Anchor": {
+            "X": 1147,
+            "Y": 1337
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Offset",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [],
+      "Name": "Periodic",
+      "X": 1134,
+      "Y": 1187,
+      "IsSelected": false
+    },
+    {
+      "$type": "math",
+      "Expression": "[A]*7/9",
+      "Id": "3cdcd9a4-f23d-4835-b02a-d6a3294beadc",
+      "Inputs": [
+        {
+          "Id": "492d2e55-ffa9-4369-aa03-f38f6f74f19c",
+          "Anchor": {
+            "X": 732,
+            "Y": 1275
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "A",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "4322b464-4456-4897-b87d-e7f23094e3f8",
+          "Anchor": {
+            "X": 732,
+            "Y": 1296
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "B",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3aa289a4-3b1d-425a-909e-46e4cfc36c07",
+          "Anchor": {
+            "X": 999,
+            "Y": 1275
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Math Compute",
+      "X": 719,
+      "Y": 1233,
+      "IsSelected": false
+    },
+    {
+      "$type": "joystick",
+      "DeviceInstanceGuid": "d35f43f0-38b4-11f0-8001-444553540000",
+      "Id": "fdca5136-262d-4a4a-95e9-4a0769cb4705",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "$type": "joystick",
+          "Kind": "Button",
+          "Index": 30,
+          "Id": "fa8569fd-d8f7-4ef4-be76-dd22dc281a33",
+          "Anchor": {
+            "X": 130.5,
+            "Y": -767
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Button 31",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "$type": "joystick",
+          "Kind": "Button",
+          "Index": 28,
+          "Id": "d7ac1a88-23bb-4b9f-8c2d-b487961c8a64",
+          "Anchor": {
+            "X": 130.5,
+            "Y": -733
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Button 29",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "$type": "joystick",
+          "Kind": "Button",
+          "Index": 29,
+          "Id": "4d4fe335-b872-45ed-b95c-6ae7a2c5fba9",
+          "Anchor": {
+            "X": 130.5,
+            "Y": -699
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Button 30",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "$type": "joystick",
+          "Kind": "Button",
+          "Index": 31,
+          "Id": "fe4b3149-8da5-4141-96c2-bd4068163a7c",
+          "Anchor": {
+            "X": 130.5,
+            "Y": -665
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Button 32",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Joystick Input",
+      "X": -337.5,
+      "Y": -815,
+      "IsSelected": false
+    },
+    {
+      "$type": "math",
+      "Expression": "([A]-[B]) * 0.15",
+      "Id": "c5c1b1dc-4ddf-466b-a8d9-f1954a634592",
+      "Inputs": [
+        {
+          "Id": "c3c43d37-e42d-48fb-9f53-177c8d99af01",
+          "Anchor": {
+            "X": 830,
+            "Y": -901
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "A",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "354fb8c3-6622-43c8-99c0-d80537786782",
+          "Anchor": {
+            "X": 830,
+            "Y": -880
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "B",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "75b87d25-2ec7-450f-aca5-563ff08a8cff",
+          "Anchor": {
+            "X": 1097,
+            "Y": -901
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Math Compute",
+      "X": 817,
+      "Y": -943,
+      "IsSelected": false
+    },
+    {
+      "$type": "integrator",
+      "AddPerTick": false,
+      "Id": "00744eed-5d17-4cf1-bac3-f5ce71ed838f",
+      "Inputs": [
+        {
+          "Id": "ed9f423e-1ac2-43aa-8149-6c3751d7c0d6",
+          "Anchor": {
+            "X": 1308,
+            "Y": -945.5
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Input",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "b1073283-957c-43b8-bef1-7183cecdaa3e",
+          "Anchor": {
+            "X": 1308,
+            "Y": -911.5
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Reset",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "5ddd5171-aac4-46f0-a680-794d06272eb4",
+          "Anchor": {
+            "X": 1308,
+            "Y": -877.5
+          },
+          "Value": -1,
+          "Flow": "Input",
+          "Title": "Min",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "96b22d69-d3a3-4a1b-96c9-83f191e8e04c",
+          "Anchor": {
+            "X": 1308,
+            "Y": -843.5
+          },
+          "Value": 1,
+          "Flow": "Input",
+          "Title": "Max",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "2925c657-2a2e-4da2-933c-b8e3c3a6a075",
+          "Anchor": {
+            "X": 1308,
+            "Y": -809.5
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Wrap",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ac42ef70-f7e0-4da9-93b7-1333db835917",
+          "Anchor": {
+            "X": 1710,
+            "Y": -951.5
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Integrator",
+      "X": 1295,
+      "Y": -993.5,
+      "IsSelected": false
+    },
+    {
+      "$type": "condition",
+      "ConditionKind": "Spring",
+      "LastPositiveCoefficient": 0.35077010238963763,
+      "DeviceInstanceGuid": "d35f43f0-38b4-11f0-8001-444553540000",
+      "AxisIndex": 0,
+      "DirectionDegrees": 0,
+      "Gain": 10000,
+      "Id": "55f67264-82a1-4225-ad23-27785b8df8f3",
+      "Inputs": [
+        {
+          "Id": "9f10d7f3-1776-4851-937d-56c902adc7a8",
+          "Anchor": {
+            "X": 2192,
+            "Y": -231
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "PositiveCoefficient",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "672e524b-4b22-43b0-bb22-8c30c3481eb9",
+          "Anchor": {
+            "X": 2192,
+            "Y": -197
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "NegativeCoefficient",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "e9cc37e4-c727-473f-9f98-bf3e939dc2c2",
+          "Anchor": {
+            "X": 2192,
+            "Y": -163
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Offset",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "1a05585d-33f6-4981-bc12-9ff5cdb50909",
+          "Anchor": {
+            "X": 2192,
+            "Y": -129
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "DeadBand",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "e13e2d50-c3a9-433a-9d1a-f809c31a406a",
+          "Anchor": {
+            "X": 2192,
+            "Y": -95
+          },
+          "Value": 1,
+          "Flow": "Input",
+          "Title": "Saturation",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [],
+      "Name": "Condition",
+      "X": 2179,
+      "Y": -279,
+      "IsSelected": false
+    },
+    {
+      "$type": "math",
+      "Expression": "([A]-[B]) * 0.15",
+      "Id": "f699d3cc-5dcc-46d9-a330-cba9c1d3d094",
+      "Inputs": [
+        {
+          "Id": "803288e8-9af1-47fc-bf42-530b29890024",
+          "Anchor": {
+            "X": 830,
+            "Y": -671
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "A",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "cf26258a-453c-4ed2-b740-9b4548c86d8a",
+          "Anchor": {
+            "X": 830,
+            "Y": -650
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "B",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4d227897-2d91-4776-bd2a-6c8b57d8c4a7",
+          "Anchor": {
+            "X": 1097,
+            "Y": -671
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Math Compute",
+      "X": 817,
+      "Y": -713,
+      "IsSelected": false
+    },
+    {
+      "$type": "integrator",
+      "AddPerTick": false,
+      "Id": "f9053bd7-7a7c-4e2c-b5a4-8c8a05fbf65a",
+      "Inputs": [
+        {
+          "Id": "4096e698-9762-4cb7-ac1f-3fee377f0524",
+          "Anchor": {
+            "X": 1308,
+            "Y": -626
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Input",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "c1fcc48a-91e3-4b4e-8ffc-f272a61ad164",
+          "Anchor": {
+            "X": 1308,
+            "Y": -592
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Reset",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "2090f503-f912-438d-aa12-7133fecf505d",
+          "Anchor": {
+            "X": 1308,
+            "Y": -558
+          },
+          "Value": -1,
+          "Flow": "Input",
+          "Title": "Min",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "c24826e7-df61-45b7-ac83-f3fdaccdfb03",
+          "Anchor": {
+            "X": 1308,
+            "Y": -524
+          },
+          "Value": 1,
+          "Flow": "Input",
+          "Title": "Max",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "f1fc6091-467d-477c-96bb-a6288a83e6fa",
+          "Anchor": {
+            "X": 1308,
+            "Y": -490
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Wrap",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4dc39e28-78b9-41ba-90cf-5947265f5da4",
+          "Anchor": {
+            "X": 1710,
+            "Y": -632
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Integrator",
+      "X": 1295,
+      "Y": -674,
+      "IsSelected": false
+    },
+    {
+      "$type": "simconnect",
+      "VariableName": "SURFACE TYPE",
+      "Id": "a699487b-f556-4591-be40-b153f1b7727a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "776fd66b-7b27-4bc3-bbfa-a84288ff78b0",
+          "Anchor": {
+            "X": -236,
+            "Y": 1640
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Value",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Surface type",
+      "X": -495,
+      "Y": 1598,
+      "IsSelected": false
+    },
+    {
+      "$type": "simconnect",
+      "VariableName": "GROUND VELOCITY",
+      "Id": "f5f11e33-0660-411c-9f5e-1c5ffc8af61b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3f235327-2164-4152-801a-f2bbb1ad2a33",
+          "Anchor": {
+            "X": -248,
+            "Y": 2081
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Value",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Ground speed (m/s)",
+      "X": -507,
+      "Y": 2039,
+      "IsSelected": false
+    },
+    {
+      "$type": "rangemap",
+      "Clamp": true,
+      "Id": "ca3aa4a3-c37f-48a0-9381-589c1bfe0b3d",
+      "Inputs": [
+        {
+          "Id": "b8c73a8a-5edf-49ae-a75b-78d09da468fd",
+          "Anchor": {
+            "X": 65.5,
+            "Y": 2110.5
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Value",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "9f32d4bd-91b5-40be-9496-4474e7ebd08c",
+          "Anchor": {
+            "X": 65.5,
+            "Y": 2144.5
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "InMin",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "1a5c0fcf-1464-40ef-b48c-72eec7ee1cb5",
+          "Anchor": {
+            "X": 65.5,
+            "Y": 2178.5
+          },
+          "Value": 50,
+          "Flow": "Input",
+          "Title": "InMax",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "c4b08a97-21f5-4f88-8eac-9c0456756dac",
+          "Anchor": {
+            "X": 65.5,
+            "Y": 2212.5
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "OutMin",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "6d7fb668-ffae-4453-a475-896af67a7ab5",
+          "Anchor": {
+            "X": 65.5,
+            "Y": 2246.5
+          },
+          "Value": 1,
+          "Flow": "Input",
+          "Title": "OutMax",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "feccb2aa-4140-4feb-a36b-3428402bbf77",
+          "Anchor": {
+            "X": 416.5,
+            "Y": 2104.5
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Speed 0..50 m/s to 0..1",
+      "X": 52.5,
+      "Y": 2062.5,
+      "IsSelected": false
+    },
+    {
+      "$type": "math",
+      "Expression": "[B] * if([A]==4 or [A]==17, 1, 0)",
+      "Id": "4f0e737f-587e-4030-804c-a417e452587c",
+      "Inputs": [
+        {
+          "Id": "914f2967-cb8e-4ff9-b614-7a949c1894da",
+          "Anchor": {
+            "X": 514,
+            "Y": 1677
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "A",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "a68e37f8-7f82-46a0-a16b-5264d04fb593",
+          "Anchor": {
+            "X": 514,
+            "Y": 1698
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "B",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5fbc7670-dc59-4fda-828c-d7b4e3b60947",
+          "Anchor": {
+            "X": 862,
+            "Y": 1677
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Asphalt and on ground",
+      "X": 501,
+      "Y": 1635,
+      "IsSelected": false
+    },
+    {
+      "$type": "math",
+      "Expression": "[B] * if([A]==0, 1, 0)",
+      "Id": "185d063c-9196-4c3d-8219-861782d2ec7e",
+      "Inputs": [
+        {
+          "Id": "0fa25868-9e89-4aa9-94bd-9dc6f3aec774",
+          "Anchor": {
+            "X": 103.5,
+            "Y": 1779
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "A",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "f1832aa7-76d1-460d-ade7-3726a4605b94",
+          "Anchor": {
+            "X": 103.5,
+            "Y": 1800
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "B",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6d2947cd-2ed6-4cb6-b7ed-dd39b0e26642",
+          "Anchor": {
+            "X": 378.5,
+            "Y": 1779
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Concrete and on ground",
+      "X": 90.5,
+      "Y": 1737,
+      "IsSelected": false
+    },
+    {
+      "$type": "math",
+      "Expression": "[B] * if([A]==1 or [A]==5 or [A]==12, 1, 0)",
+      "Id": "7839f685-6b97-4b6f-be0b-af76442d5121",
+      "Inputs": [
+        {
+          "Id": "2e9373ac-2f66-4ac5-bef6-f86f0cb8fe63",
+          "Anchor": {
+            "X": 35.5,
+            "Y": 2385
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "A",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "666a7f41-b7e0-4e51-b489-65aefb0dc406",
+          "Anchor": {
+            "X": 35.5,
+            "Y": 2406
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "B",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4eea4c63-45d7-48bd-9ea9-378c1b8006f8",
+          "Anchor": {
+            "X": 451.5,
+            "Y": 2385
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Grass and on ground",
+      "X": 22.5,
+      "Y": 2343,
+      "IsSelected": false
+    },
+    {
+      "$type": "math",
+      "Expression": "[A]*[B]*0.024",
+      "Id": "a905c6a0-b520-48b4-8c8c-3c111e23586b",
+      "Inputs": [
+        {
+          "Id": "e3cf4d10-016a-41ef-b82d-d84d294ecf3a",
+          "Anchor": {
+            "X": 1276,
+            "Y": 1695
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "A",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "099cab0f-c9a1-48ad-bcc5-af9a36067cf7",
+          "Anchor": {
+            "X": 1276,
+            "Y": 1716
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "B",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c45b92a3-c20d-4f7b-b8a2-c968d74c5d42",
+          "Anchor": {
+            "X": 1543,
+            "Y": 1695
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Asphalt rumble 1",
+      "X": 1263,
+      "Y": 1653,
+      "IsSelected": false
+    },
+    {
+      "$type": "math",
+      "Expression": "[A]*[B]*0.018",
+      "Id": "f7c952fb-0bad-49d3-bfec-20988355e05c",
+      "Inputs": [
+        {
+          "Id": "7bd626d9-85f9-42d9-a556-5244954c9db4",
+          "Anchor": {
+            "X": 1276,
+            "Y": 1896
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "A",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "18ae3895-c3b4-471f-80f3-babd53d37d97",
+          "Anchor": {
+            "X": 1276,
+            "Y": 1917
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "B",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4a8b4699-62fd-49a1-8d5d-7493739f0b9f",
+          "Anchor": {
+            "X": 1543,
+            "Y": 1896
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Asphalt rumble 2",
+      "X": 1263,
+      "Y": 1854,
+      "IsSelected": false
+    },
+    {
+      "$type": "periodic",
+      "Waveform": "Sine",
+      "LastMagnitude": 0,
+      "DeviceInstanceGuid": "d35f43f0-38b4-11f0-8001-444553540000",
+      "AxisIndex": -1,
+      "DirectionDegrees": 0,
+      "Gain": 10000,
+      "Id": "ac32f2a7-840e-405e-985c-17719eaa0eb8",
+      "Inputs": [
+        {
+          "Id": "bc76b6e2-372d-4cf8-91a8-41698f69aee6",
+          "Anchor": {
+            "X": 1706,
+            "Y": 1580
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Magnitude",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "c4eb3660-f705-4f38-be72-fe125659e499",
+          "Anchor": {
+            "X": 1706,
+            "Y": 1614
+          },
+          "Value": 0.014,
+          "Flow": "Input",
+          "Title": "Period",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "b0e6592c-7529-40d7-8173-23e989f10db0",
+          "Anchor": {
+            "X": 1706,
+            "Y": 1648
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Phase",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "9780a47a-804c-4e0c-8fef-af36f3c66ae1",
+          "Anchor": {
+            "X": 1706,
+            "Y": 1682
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Offset",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [],
+      "Name": "Asphalt sine 1",
+      "X": 1693,
+      "Y": 1532,
+      "IsSelected": false
+    },
+    {
+      "$type": "periodic",
+      "Waveform": "Sine",
+      "LastMagnitude": 0,
+      "DeviceInstanceGuid": "d35f43f0-38b4-11f0-8001-444553540000",
+      "AxisIndex": -1,
+      "DirectionDegrees": 90,
+      "Gain": 10000,
+      "Id": "af659fd3-fab3-4c45-881b-ccde46c36af7",
+      "Inputs": [
+        {
+          "Id": "304caa0d-b610-4aa7-be1e-fc3eb6b36748",
+          "Anchor": {
+            "X": 1706,
+            "Y": 1942
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Magnitude",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "0b882a7b-eefd-488f-b281-995e08b3fc72",
+          "Anchor": {
+            "X": 1706,
+            "Y": 1976
+          },
+          "Value": 0.022,
+          "Flow": "Input",
+          "Title": "Period",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "48fc67fd-1036-4688-b4a6-79d20b6f3edc",
+          "Anchor": {
+            "X": 1706,
+            "Y": 2010
+          },
+          "Value": 0.25,
+          "Flow": "Input",
+          "Title": "Phase",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "d48cff9b-9417-4dbc-ab4f-0cf69cc0f057",
+          "Anchor": {
+            "X": 1706,
+            "Y": 2044
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Offset",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [],
+      "Name": "Asphalt sine 2",
+      "X": 1693,
+      "Y": 1894,
+      "IsSelected": false
+    },
+    {
+      "$type": "math",
+      "Expression": "[A]*[B]*0.014",
+      "Id": "aa28224a-f164-4eb0-bf78-361fdfb3d824",
+      "Inputs": [
+        {
+          "Id": "dd08761f-e88f-4ee6-948f-1cf33466b918",
+          "Anchor": {
+            "X": 804,
+            "Y": 2155
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "A",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "88c4e235-c0f9-4eed-ae7f-07ed05a0dec3",
+          "Anchor": {
+            "X": 804,
+            "Y": 2176
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "B",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "35967062-caa6-4bbf-bc9d-e175eb912f63",
+          "Anchor": {
+            "X": 1071,
+            "Y": 2155
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Concrete hum",
+      "X": 791,
+      "Y": 2113,
+      "IsSelected": false
+    },
+    {
+      "$type": "periodic",
+      "Waveform": "Sine",
+      "LastMagnitude": 0,
+      "DeviceInstanceGuid": "d35f43f0-38b4-11f0-8001-444553540000",
+      "AxisIndex": -1,
+      "DirectionDegrees": 0,
+      "Gain": 10000,
+      "Id": "01a0e589-e1ac-4cfa-931e-ef6ba5c9c83b",
+      "Inputs": [
+        {
+          "Id": "2dce30a0-dc26-4815-bb50-494f859bd4d0",
+          "Anchor": {
+            "X": 1231.5,
+            "Y": 2132
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Magnitude",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "8e4c0b9f-778c-428c-9c85-c43505eb8659",
+          "Anchor": {
+            "X": 1231.5,
+            "Y": 2166
+          },
+          "Value": 0.03,
+          "Flow": "Input",
+          "Title": "Period",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "a0724156-d8c5-4447-8576-bced2a86668b",
+          "Anchor": {
+            "X": 1231.5,
+            "Y": 2200
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Phase",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "3aaffbd5-6d0e-4a05-9210-87cf33ea18cc",
+          "Anchor": {
+            "X": 1231.5,
+            "Y": 2234
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Offset",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [],
+      "Name": "Concrete sine",
+      "X": 1218.5,
+      "Y": 2084,
+      "IsSelected": false
+    },
+    {
+      "$type": "integrator",
+      "AddPerTick": false,
+      "Id": "02d92f85-1ce1-489b-a51f-9b2f3b49711f",
+      "Inputs": [
+        {
+          "Id": "adbd423a-d39c-4845-a0b8-62f251b4a9ee",
+          "Anchor": {
+            "X": -187,
+            "Y": 2621
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Input",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "3e26811a-f2b1-44b9-9a3b-ab86c79f8f39",
+          "Anchor": {
+            "X": -187,
+            "Y": 2655
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Reset",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "0b259a99-3c20-4219-97c7-0e4d6a5fa153",
+          "Anchor": {
+            "X": -187,
+            "Y": 2689
+          },
+          "Value": -1,
+          "Flow": "Input",
+          "Title": "Min",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "da7fa27c-005b-4698-8a8d-39271691ad61",
+          "Anchor": {
+            "X": -187,
+            "Y": 2723
+          },
+          "Value": 1,
+          "Flow": "Input",
+          "Title": "Max",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "ef8ee37b-8c6e-4b7d-a9c1-fdaf9a61a187",
+          "Anchor": {
+            "X": -187,
+            "Y": 2757
+          },
+          "Value": 20,
+          "Flow": "Input",
+          "Title": "Wrap",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7eab8c26-d594-492a-8553-f1bb23736b98",
+          "Anchor": {
+            "X": 215,
+            "Y": 2615
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Distance (wraps at 20 m)",
+      "X": -200,
+      "Y": 2573,
+      "IsSelected": false
+    },
+    {
+      "$type": "math",
+      "Expression": "[A]/20",
+      "Id": "bcb30fe6-7d52-403b-a4f0-c5d3eb41abbf",
+      "Inputs": [
+        {
+          "Id": "282843ee-cf9e-43dc-9b26-5a0a1b4ad08f",
+          "Anchor": {
+            "X": 461,
+            "Y": 3292
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "A",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "d00ecf13-7c90-47b4-8bf0-25f15efb3cb6",
+          "Anchor": {
+            "X": 461,
+            "Y": 3313
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "B",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "46a315c2-e852-462c-8c9f-04b5c24c6a59",
+          "Anchor": {
+            "X": 728,
+            "Y": 3292
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Distance / 20",
+      "X": 448,
+      "Y": 3250,
+      "IsSelected": false
+    },
+    {
+      "$type": "curve",
+      "Points": [
+        {
+          "X": 0,
+          "Y": 0
+        },
+        {
+          "X": 0.05,
+          "Y": 1
+        },
+        {
+          "X": 0.15,
+          "Y": 0
+        },
+        {
+          "X": 1,
+          "Y": 0
+        }
+      ],
+      "Id": "188a6eaa-884d-4f27-b7f3-5cb86b891bde",
+      "Inputs": [
+        {
+          "Id": "e9842db3-48bd-45f1-99e1-4f5b0f3fbf6b",
+          "Anchor": {
+            "X": 936,
+            "Y": 3327.5
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Value",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0741bdf9-b12d-4cd6-8a34-e009203e6b69",
+          "Anchor": {
+            "X": 1290,
+            "Y": 3321.5
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Jolt shape (1 m rise, 2 m fall)",
+      "X": 923,
+      "Y": 3279.5,
+      "IsSelected": false
+    },
+    {
+      "$type": "math",
+      "Expression": "[A]*[B]",
+      "Id": "2f1a8f9c-4239-44a6-99d5-75aa1370418a",
+      "Inputs": [
+        {
+          "Id": "f165cea2-8c20-4cda-9b7b-28bb856ca102",
+          "Anchor": {
+            "X": 1513,
+            "Y": 2818
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "A",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "6cc30e1c-08b3-4ec9-9ca8-b6c5969bee1a",
+          "Anchor": {
+            "X": 1513,
+            "Y": 2839
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "B",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bc4762de-1da6-4028-b824-7571d7f53080",
+          "Anchor": {
+            "X": 1780,
+            "Y": 2818
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Jolt only on concrete",
+      "X": 1500,
+      "Y": 2776,
+      "IsSelected": false
+    },
+    {
+      "$type": "math",
+      "Expression": "[A]*(0.2\u002B0.4*[B])",
+      "Id": "07b64c54-a8a0-4e97-8b49-6d1d67c6d45c",
+      "Inputs": [
+        {
+          "Id": "bcbfa51c-cfc9-4f99-8410-c53fdd371d84",
+          "Anchor": {
+            "X": 1883,
+            "Y": 2665.5
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "A",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "5d5f36c9-4e36-468a-be62-8149cc10e296",
+          "Anchor": {
+            "X": 1883,
+            "Y": 2686.5
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "B",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3c870d9d-63ef-4db2-87f8-0f8c64a9dd3b",
+          "Anchor": {
+            "X": 2150,
+            "Y": 2665.5
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Jolt strength 20-60 percent",
+      "X": 1870,
+      "Y": 2623.5,
+      "IsSelected": false
+    },
+    {
+      "$type": "constantforce",
+      "LastMagnitude": 0,
+      "DeviceInstanceGuid": "d35f43f0-38b4-11f0-8001-444553540000",
+      "AxisIndex": -1,
+      "DirectionDegrees": 180,
+      "Gain": 10000,
+      "Id": "f697808d-705b-49df-90d2-a1d7c2a398b2",
+      "Inputs": [
+        {
+          "Id": "63dcf4fd-dced-46d0-926d-573caf9a6b65",
+          "Anchor": {
+            "X": 2291,
+            "Y": 2604
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Magnitude",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [],
+      "Name": "Concrete jolt (backwards)",
+      "X": 2278,
+      "Y": 2556,
+      "IsSelected": false
+    },
+    {
+      "$type": "simconnect",
+      "VariableName": "ROTATION ACCELERATION BODY Z",
+      "Id": "c1c755c6-71d1-4eaf-9f05-40975eecc4f6",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9fd0473a-a6be-4f5f-8319-a5940b448ab0",
+          "Anchor": {
+            "X": 13.5,
+            "Y": 2960
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Value",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Roll acceleration",
+      "X": -337.5,
+      "Y": 2918,
+      "IsSelected": false
+    },
+    {
+      "$type": "simconnect",
+      "VariableName": "ROTATION ACCELERATION BODY X",
+      "Id": "3fc4eadf-5e97-4252-b2fd-d14c0f9687a7",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e64609f0-a824-4184-9159-b7cbcd734a1e",
+          "Anchor": {
+            "X": 13.5,
+            "Y": 3190
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Value",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Pitch acceleration",
+      "X": -337.5,
+      "Y": 3148,
+      "IsSelected": false
+    },
+    {
+      "$type": "math",
+      "Expression": "[A]*[B]*0.1",
+      "Id": "1ab3b49e-3e69-4add-912f-8c035a80a92e",
+      "Inputs": [
+        {
+          "Id": "1ec93612-d849-4f39-90d2-a41116bd753c",
+          "Anchor": {
+            "X": 595,
+            "Y": 2716
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "A",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "6acf1cfd-4af5-419f-8345-e43446b483c8",
+          "Anchor": {
+            "X": 595,
+            "Y": 2737
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "B",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "91b02e4b-8aae-40af-bd3a-c9c3e2d3fa59",
+          "Anchor": {
+            "X": 862,
+            "Y": 2716
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Grass roll bumps",
+      "X": 582,
+      "Y": 2674,
+      "IsSelected": false
+    },
+    {
+      "$type": "math",
+      "Expression": "[A]*[B]*0.1",
+      "Id": "1e8898cc-8221-4d9d-99d3-77cb3bed1e9a",
+      "Inputs": [
+        {
+          "Id": "74432a6e-16fc-4528-8f66-052517d36a32",
+          "Anchor": {
+            "X": 511,
+            "Y": 2920
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "A",
+          "IsConnected": true,
+          "CanConnect": false
+        },
+        {
+          "Id": "cbed7a68-9366-4c7d-a518-36837dd1d63d",
+          "Anchor": {
+            "X": 511,
+            "Y": 2941
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "B",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2b3ddfed-493e-4fa6-91dc-2b57473bb7a8",
+          "Anchor": {
+            "X": 778,
+            "Y": 2920
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Grass pitch bumps",
+      "X": 498,
+      "Y": 2878,
+      "IsSelected": false
+    },
+    {
+      "$type": "constantforce",
+      "LastMagnitude": 0,
+      "DeviceInstanceGuid": "d35f43f0-38b4-11f0-8001-444553540000",
+      "AxisIndex": 0,
+      "DirectionDegrees": 0,
+      "Gain": 10000,
+      "Id": "bea6b982-3bfa-4030-8106-b79dc5d73564",
+      "Inputs": [
+        {
+          "Id": "0448c6b5-409b-4ab4-a787-2d454857471d",
+          "Anchor": {
+            "X": 960,
+            "Y": 2824
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Magnitude",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [],
+      "Name": "Grass to roll axis (X)",
+      "X": 947,
+      "Y": 2776,
+      "IsSelected": false
+    },
+    {
+      "$type": "constantforce",
+      "LastMagnitude": 0,
+      "DeviceInstanceGuid": "d35f43f0-38b4-11f0-8001-444553540000",
+      "AxisIndex": 1,
+      "DirectionDegrees": 0,
+      "Gain": 10000,
+      "Id": "1de3ac36-16c8-4029-984e-c91e68b87f9a",
+      "Inputs": [
+        {
+          "Id": "cf4f2ec1-727a-40a2-9dd0-3ffc7038c772",
+          "Anchor": {
+            "X": 960,
+            "Y": 3068
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Magnitude",
+          "IsConnected": true,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [],
+      "Name": "Grass to pitch axis (Y)",
+      "X": 947,
+      "Y": 3020,
+      "IsSelected": false
+    }
+  ],
+  "Connections": [
+    {
+      "SourceNodeId": "f52bacc7-7521-41aa-81e8-1c7941ce8e8e",
+      "SourcePinId": "60add26e-9849-4429-91a6-8e362c2eddd3",
+      "TargetNodeId": "edde4550-d6bd-41af-9bd9-a9b6aac6fe40",
+      "TargetPinId": "30c53bd7-2dca-4c10-b33e-65fd2f62c021"
+    },
+    {
+      "SourceNodeId": "edde4550-d6bd-41af-9bd9-a9b6aac6fe40",
+      "SourcePinId": "5fed6f93-3527-4380-b6f1-aacfab49a6ea",
+      "TargetNodeId": "28f3d8c7-91f1-47b4-9d54-012fe82c75a7",
+      "TargetPinId": "3f5b7e77-c12e-429e-b79d-4a2cb03b2106"
+    },
+    {
+      "SourceNodeId": "edde4550-d6bd-41af-9bd9-a9b6aac6fe40",
+      "SourcePinId": "5fed6f93-3527-4380-b6f1-aacfab49a6ea",
+      "TargetNodeId": "cac09d2e-58e1-4003-bfa8-702fa1d4d0ad",
+      "TargetPinId": "504792a3-d558-4069-8502-16fe09f38e94"
+    },
+    {
+      "SourceNodeId": "28f3d8c7-91f1-47b4-9d54-012fe82c75a7",
+      "SourcePinId": "a0cf5235-043c-4b5d-837b-a2997335e1d8",
+      "TargetNodeId": "62a3a3f1-be8d-46fd-be91-84a7ec88efb8",
+      "TargetPinId": "222aac84-0ddc-417e-9043-28e527349ce0"
+    },
+    {
+      "SourceNodeId": "75208e99-d005-4f35-b38f-c23e968a274f",
+      "SourcePinId": "bf489537-5354-4e0c-b715-66ede3d47100",
+      "TargetNodeId": "7e0b33df-a444-4c71-9329-0f8cb1718265",
+      "TargetPinId": "286994b9-963b-4ed1-bccc-31eb421c8542"
+    },
+    {
+      "SourceNodeId": "fe088765-e718-4504-bb94-92b9e1f35908",
+      "SourcePinId": "9437ca30-fd99-48cc-8497-22d95c6c0590",
+      "TargetNodeId": "7e0b33df-a444-4c71-9329-0f8cb1718265",
+      "TargetPinId": "aaa7bdff-828f-4b5f-bc92-a48220ab40c1"
+    },
+    {
+      "SourceNodeId": "7e0b33df-a444-4c71-9329-0f8cb1718265",
+      "SourcePinId": "dea0b818-2280-4f36-82b9-e80b64223c6e",
+      "TargetNodeId": "773714f8-c726-4b05-9143-bca1efd14cb7",
+      "TargetPinId": "d7d3f701-8bce-4984-b262-40f85c295e45"
+    },
+    {
+      "SourceNodeId": "7e0b33df-a444-4c71-9329-0f8cb1718265",
+      "SourcePinId": "dea0b818-2280-4f36-82b9-e80b64223c6e",
+      "TargetNodeId": "773714f8-c726-4b05-9143-bca1efd14cb7",
+      "TargetPinId": "6d30379e-99bf-4b66-b800-70b95819ed6b"
+    },
+    {
+      "SourceNodeId": "b5ee1e70-7a8d-48db-928a-9e56a8cc6511",
+      "SourcePinId": "07b46e0e-8d89-4f6e-8f39-4f36c4fdcab9",
+      "TargetNodeId": "d857eacf-92bf-4cd0-9509-95f40ec194fe",
+      "TargetPinId": "53e28733-58b7-4b84-80c6-828d42fdbbf0"
+    },
+    {
+      "SourceNodeId": "d857eacf-92bf-4cd0-9509-95f40ec194fe",
+      "SourcePinId": "155a8cc1-67c9-47d2-bb41-524140d7b472",
+      "TargetNodeId": "50572381-6cdd-4c71-8874-931ed9ded041",
+      "TargetPinId": "a9e8f9d3-0388-4d72-a014-7d78a6e42415"
+    },
+    {
+      "SourceNodeId": "9f9a28d8-bcd9-4987-a538-4353025ecb85",
+      "SourcePinId": "3584a16c-8d79-4f1b-ba92-476a1f6cc4ad",
+      "TargetNodeId": "50572381-6cdd-4c71-8874-931ed9ded041",
+      "TargetPinId": "35dd012f-2067-44a8-8e4c-ea408d7bd8dc"
+    },
+    {
+      "SourceNodeId": "50572381-6cdd-4c71-8874-931ed9ded041",
+      "SourcePinId": "f204b224-09ff-4dcf-aff9-c1cdcc0af050",
+      "TargetNodeId": "67448765-56fd-4417-9caa-c2d19124a1ec",
+      "TargetPinId": "a2dadb07-e107-4ff2-ad0d-332646e7efd7"
+    },
+    {
+      "SourceNodeId": "67448765-56fd-4417-9caa-c2d19124a1ec",
+      "SourcePinId": "04c12930-b689-4f3c-b377-367e1a731adb",
+      "TargetNodeId": "a2c76360-52ff-4a0b-8870-f9a98528bdaf",
+      "TargetPinId": "4a27f456-6872-4803-8138-ee9599dc0a3c"
+    },
+    {
+      "SourceNodeId": "67448765-56fd-4417-9caa-c2d19124a1ec",
+      "SourcePinId": "04c12930-b689-4f3c-b377-367e1a731adb",
+      "TargetNodeId": "3cdcd9a4-f23d-4835-b02a-d6a3294beadc",
+      "TargetPinId": "492d2e55-ffa9-4369-aa03-f38f6f74f19c"
+    },
+    {
+      "SourceNodeId": "3cdcd9a4-f23d-4835-b02a-d6a3294beadc",
+      "SourcePinId": "3aa289a4-3b1d-425a-909e-46e4cfc36c07",
+      "TargetNodeId": "d7e1639e-e9c5-439b-9f0d-fe79c01cd242",
+      "TargetPinId": "30145c90-83fe-4f95-9ca2-77bb86c33677"
+    },
+    {
+      "SourceNodeId": "c5c1b1dc-4ddf-466b-a8d9-f1954a634592",
+      "SourcePinId": "75b87d25-2ec7-450f-aca5-563ff08a8cff",
+      "TargetNodeId": "00744eed-5d17-4cf1-bac3-f5ce71ed838f",
+      "TargetPinId": "ed9f423e-1ac2-43aa-8149-6c3751d7c0d6"
+    },
+    {
+      "SourceNodeId": "7e0b33df-a444-4c71-9329-0f8cb1718265",
+      "SourcePinId": "dea0b818-2280-4f36-82b9-e80b64223c6e",
+      "TargetNodeId": "55f67264-82a1-4225-ad23-27785b8df8f3",
+      "TargetPinId": "9f10d7f3-1776-4851-937d-56c902adc7a8"
+    },
+    {
+      "SourceNodeId": "7e0b33df-a444-4c71-9329-0f8cb1718265",
+      "SourcePinId": "dea0b818-2280-4f36-82b9-e80b64223c6e",
+      "TargetNodeId": "55f67264-82a1-4225-ad23-27785b8df8f3",
+      "TargetPinId": "672e524b-4b22-43b0-bb22-8c30c3481eb9"
+    },
+    {
+      "SourceNodeId": "00744eed-5d17-4cf1-bac3-f5ce71ed838f",
+      "SourcePinId": "ac42ef70-f7e0-4da9-93b7-1333db835917",
+      "TargetNodeId": "773714f8-c726-4b05-9143-bca1efd14cb7",
+      "TargetPinId": "5c703c36-8f72-4330-873f-0aba38ec1fb1"
+    },
+    {
+      "SourceNodeId": "fdca5136-262d-4a4a-95e9-4a0769cb4705",
+      "SourcePinId": "fa8569fd-d8f7-4ef4-be76-dd22dc281a33",
+      "TargetNodeId": "c5c1b1dc-4ddf-466b-a8d9-f1954a634592",
+      "TargetPinId": "c3c43d37-e42d-48fb-9f53-177c8d99af01"
+    },
+    {
+      "SourceNodeId": "fdca5136-262d-4a4a-95e9-4a0769cb4705",
+      "SourcePinId": "d7ac1a88-23bb-4b9f-8c2d-b487961c8a64",
+      "TargetNodeId": "c5c1b1dc-4ddf-466b-a8d9-f1954a634592",
+      "TargetPinId": "354fb8c3-6622-43c8-99c0-d80537786782"
+    },
+    {
+      "SourceNodeId": "fdca5136-262d-4a4a-95e9-4a0769cb4705",
+      "SourcePinId": "4d4fe335-b872-45ed-b95c-6ae7a2c5fba9",
+      "TargetNodeId": "f699d3cc-5dcc-46d9-a330-cba9c1d3d094",
+      "TargetPinId": "803288e8-9af1-47fc-bf42-530b29890024"
+    },
+    {
+      "SourceNodeId": "fdca5136-262d-4a4a-95e9-4a0769cb4705",
+      "SourcePinId": "fe4b3149-8da5-4141-96c2-bd4068163a7c",
+      "TargetNodeId": "f699d3cc-5dcc-46d9-a330-cba9c1d3d094",
+      "TargetPinId": "cf26258a-453c-4ed2-b740-9b4548c86d8a"
+    },
+    {
+      "SourceNodeId": "f699d3cc-5dcc-46d9-a330-cba9c1d3d094",
+      "SourcePinId": "4d227897-2d91-4776-bd2a-6c8b57d8c4a7",
+      "TargetNodeId": "f9053bd7-7a7c-4e2c-b5a4-8c8a05fbf65a",
+      "TargetPinId": "4096e698-9762-4cb7-ac1f-3fee377f0524"
+    },
+    {
+      "SourceNodeId": "f9053bd7-7a7c-4e2c-b5a4-8c8a05fbf65a",
+      "SourcePinId": "4dc39e28-78b9-41ba-90cf-5947265f5da4",
+      "TargetNodeId": "55f67264-82a1-4225-ad23-27785b8df8f3",
+      "TargetPinId": "e9cc37e4-c727-473f-9f98-bf3e939dc2c2"
+    },
+    {
+      "SourceNodeId": "f5f11e33-0660-411c-9f5e-1c5ffc8af61b",
+      "SourcePinId": "3f235327-2164-4152-801a-f2bbb1ad2a33",
+      "TargetNodeId": "ca3aa4a3-c37f-48a0-9381-589c1bfe0b3d",
+      "TargetPinId": "b8c73a8a-5edf-49ae-a75b-78d09da468fd"
+    },
+    {
+      "SourceNodeId": "a699487b-f556-4591-be40-b153f1b7727a",
+      "SourcePinId": "776fd66b-7b27-4bc3-bbfa-a84288ff78b0",
+      "TargetNodeId": "4f0e737f-587e-4030-804c-a417e452587c",
+      "TargetPinId": "914f2967-cb8e-4ff9-b614-7a949c1894da"
+    },
+    {
+      "SourceNodeId": "b5ee1e70-7a8d-48db-928a-9e56a8cc6511",
+      "SourcePinId": "07b46e0e-8d89-4f6e-8f39-4f36c4fdcab9",
+      "TargetNodeId": "4f0e737f-587e-4030-804c-a417e452587c",
+      "TargetPinId": "a68e37f8-7f82-46a0-a16b-5264d04fb593"
+    },
+    {
+      "SourceNodeId": "a699487b-f556-4591-be40-b153f1b7727a",
+      "SourcePinId": "776fd66b-7b27-4bc3-bbfa-a84288ff78b0",
+      "TargetNodeId": "185d063c-9196-4c3d-8219-861782d2ec7e",
+      "TargetPinId": "0fa25868-9e89-4aa9-94bd-9dc6f3aec774"
+    },
+    {
+      "SourceNodeId": "b5ee1e70-7a8d-48db-928a-9e56a8cc6511",
+      "SourcePinId": "07b46e0e-8d89-4f6e-8f39-4f36c4fdcab9",
+      "TargetNodeId": "185d063c-9196-4c3d-8219-861782d2ec7e",
+      "TargetPinId": "f1832aa7-76d1-460d-ade7-3726a4605b94"
+    },
+    {
+      "SourceNodeId": "a699487b-f556-4591-be40-b153f1b7727a",
+      "SourcePinId": "776fd66b-7b27-4bc3-bbfa-a84288ff78b0",
+      "TargetNodeId": "7839f685-6b97-4b6f-be0b-af76442d5121",
+      "TargetPinId": "2e9373ac-2f66-4ac5-bef6-f86f0cb8fe63"
+    },
+    {
+      "SourceNodeId": "b5ee1e70-7a8d-48db-928a-9e56a8cc6511",
+      "SourcePinId": "07b46e0e-8d89-4f6e-8f39-4f36c4fdcab9",
+      "TargetNodeId": "7839f685-6b97-4b6f-be0b-af76442d5121",
+      "TargetPinId": "666a7f41-b7e0-4e51-b489-65aefb0dc406"
+    },
+    {
+      "SourceNodeId": "4f0e737f-587e-4030-804c-a417e452587c",
+      "SourcePinId": "5fbc7670-dc59-4fda-828c-d7b4e3b60947",
+      "TargetNodeId": "a905c6a0-b520-48b4-8c8c-3c111e23586b",
+      "TargetPinId": "e3cf4d10-016a-41ef-b82d-d84d294ecf3a"
+    },
+    {
+      "SourceNodeId": "ca3aa4a3-c37f-48a0-9381-589c1bfe0b3d",
+      "SourcePinId": "feccb2aa-4140-4feb-a36b-3428402bbf77",
+      "TargetNodeId": "a905c6a0-b520-48b4-8c8c-3c111e23586b",
+      "TargetPinId": "099cab0f-c9a1-48ad-bcc5-af9a36067cf7"
+    },
+    {
+      "SourceNodeId": "4f0e737f-587e-4030-804c-a417e452587c",
+      "SourcePinId": "5fbc7670-dc59-4fda-828c-d7b4e3b60947",
+      "TargetNodeId": "f7c952fb-0bad-49d3-bfec-20988355e05c",
+      "TargetPinId": "7bd626d9-85f9-42d9-a556-5244954c9db4"
+    },
+    {
+      "SourceNodeId": "ca3aa4a3-c37f-48a0-9381-589c1bfe0b3d",
+      "SourcePinId": "feccb2aa-4140-4feb-a36b-3428402bbf77",
+      "TargetNodeId": "f7c952fb-0bad-49d3-bfec-20988355e05c",
+      "TargetPinId": "18ae3895-c3b4-471f-80f3-babd53d37d97"
+    },
+    {
+      "SourceNodeId": "a905c6a0-b520-48b4-8c8c-3c111e23586b",
+      "SourcePinId": "c45b92a3-c20d-4f7b-b8a2-c968d74c5d42",
+      "TargetNodeId": "ac32f2a7-840e-405e-985c-17719eaa0eb8",
+      "TargetPinId": "bc76b6e2-372d-4cf8-91a8-41698f69aee6"
+    },
+    {
+      "SourceNodeId": "f7c952fb-0bad-49d3-bfec-20988355e05c",
+      "SourcePinId": "4a8b4699-62fd-49a1-8d5d-7493739f0b9f",
+      "TargetNodeId": "af659fd3-fab3-4c45-881b-ccde46c36af7",
+      "TargetPinId": "304caa0d-b610-4aa7-be1e-fc3eb6b36748"
+    },
+    {
+      "SourceNodeId": "185d063c-9196-4c3d-8219-861782d2ec7e",
+      "SourcePinId": "6d2947cd-2ed6-4cb6-b7ed-dd39b0e26642",
+      "TargetNodeId": "aa28224a-f164-4eb0-bf78-361fdfb3d824",
+      "TargetPinId": "dd08761f-e88f-4ee6-948f-1cf33466b918"
+    },
+    {
+      "SourceNodeId": "ca3aa4a3-c37f-48a0-9381-589c1bfe0b3d",
+      "SourcePinId": "feccb2aa-4140-4feb-a36b-3428402bbf77",
+      "TargetNodeId": "aa28224a-f164-4eb0-bf78-361fdfb3d824",
+      "TargetPinId": "88c4e235-c0f9-4eed-ae7f-07ed05a0dec3"
+    },
+    {
+      "SourceNodeId": "aa28224a-f164-4eb0-bf78-361fdfb3d824",
+      "SourcePinId": "35967062-caa6-4bbf-bc9d-e175eb912f63",
+      "TargetNodeId": "01a0e589-e1ac-4cfa-931e-ef6ba5c9c83b",
+      "TargetPinId": "2dce30a0-dc26-4815-bb50-494f859bd4d0"
+    },
+    {
+      "SourceNodeId": "f5f11e33-0660-411c-9f5e-1c5ffc8af61b",
+      "SourcePinId": "3f235327-2164-4152-801a-f2bbb1ad2a33",
+      "TargetNodeId": "02d92f85-1ce1-489b-a51f-9b2f3b49711f",
+      "TargetPinId": "adbd423a-d39c-4845-a0b8-62f251b4a9ee"
+    },
+    {
+      "SourceNodeId": "02d92f85-1ce1-489b-a51f-9b2f3b49711f",
+      "SourcePinId": "7eab8c26-d594-492a-8553-f1bb23736b98",
+      "TargetNodeId": "bcb30fe6-7d52-403b-a4f0-c5d3eb41abbf",
+      "TargetPinId": "282843ee-cf9e-43dc-9b26-5a0a1b4ad08f"
+    },
+    {
+      "SourceNodeId": "bcb30fe6-7d52-403b-a4f0-c5d3eb41abbf",
+      "SourcePinId": "46a315c2-e852-462c-8c9f-04b5c24c6a59",
+      "TargetNodeId": "188a6eaa-884d-4f27-b7f3-5cb86b891bde",
+      "TargetPinId": "e9842db3-48bd-45f1-99e1-4f5b0f3fbf6b"
+    },
+    {
+      "SourceNodeId": "188a6eaa-884d-4f27-b7f3-5cb86b891bde",
+      "SourcePinId": "0741bdf9-b12d-4cd6-8a34-e009203e6b69",
+      "TargetNodeId": "2f1a8f9c-4239-44a6-99d5-75aa1370418a",
+      "TargetPinId": "f165cea2-8c20-4cda-9b7b-28bb856ca102"
+    },
+    {
+      "SourceNodeId": "185d063c-9196-4c3d-8219-861782d2ec7e",
+      "SourcePinId": "6d2947cd-2ed6-4cb6-b7ed-dd39b0e26642",
+      "TargetNodeId": "2f1a8f9c-4239-44a6-99d5-75aa1370418a",
+      "TargetPinId": "6cc30e1c-08b3-4ec9-9ca8-b6c5969bee1a"
+    },
+    {
+      "SourceNodeId": "2f1a8f9c-4239-44a6-99d5-75aa1370418a",
+      "SourcePinId": "bc4762de-1da6-4028-b824-7571d7f53080",
+      "TargetNodeId": "07b64c54-a8a0-4e97-8b49-6d1d67c6d45c",
+      "TargetPinId": "bcbfa51c-cfc9-4f99-8410-c53fdd371d84"
+    },
+    {
+      "SourceNodeId": "ca3aa4a3-c37f-48a0-9381-589c1bfe0b3d",
+      "SourcePinId": "feccb2aa-4140-4feb-a36b-3428402bbf77",
+      "TargetNodeId": "07b64c54-a8a0-4e97-8b49-6d1d67c6d45c",
+      "TargetPinId": "5d5f36c9-4e36-468a-be62-8149cc10e296"
+    },
+    {
+      "SourceNodeId": "07b64c54-a8a0-4e97-8b49-6d1d67c6d45c",
+      "SourcePinId": "3c870d9d-63ef-4db2-87f8-0f8c64a9dd3b",
+      "TargetNodeId": "f697808d-705b-49df-90d2-a1d7c2a398b2",
+      "TargetPinId": "63dcf4fd-dced-46d0-926d-573caf9a6b65"
+    },
+    {
+      "SourceNodeId": "c1c755c6-71d1-4eaf-9f05-40975eecc4f6",
+      "SourcePinId": "9fd0473a-a6be-4f5f-8319-a5940b448ab0",
+      "TargetNodeId": "1ab3b49e-3e69-4add-912f-8c035a80a92e",
+      "TargetPinId": "1ec93612-d849-4f39-90d2-a41116bd753c"
+    },
+    {
+      "SourceNodeId": "7839f685-6b97-4b6f-be0b-af76442d5121",
+      "SourcePinId": "4eea4c63-45d7-48bd-9ea9-378c1b8006f8",
+      "TargetNodeId": "1ab3b49e-3e69-4add-912f-8c035a80a92e",
+      "TargetPinId": "6acf1cfd-4af5-419f-8345-e43446b483c8"
+    },
+    {
+      "SourceNodeId": "3fc4eadf-5e97-4252-b2fd-d14c0f9687a7",
+      "SourcePinId": "e64609f0-a824-4184-9159-b7cbcd734a1e",
+      "TargetNodeId": "1e8898cc-8221-4d9d-99d3-77cb3bed1e9a",
+      "TargetPinId": "74432a6e-16fc-4528-8f66-052517d36a32"
+    },
+    {
+      "SourceNodeId": "7839f685-6b97-4b6f-be0b-af76442d5121",
+      "SourcePinId": "4eea4c63-45d7-48bd-9ea9-378c1b8006f8",
+      "TargetNodeId": "1e8898cc-8221-4d9d-99d3-77cb3bed1e9a",
+      "TargetPinId": "cbed7a68-9366-4c7d-a518-36837dd1d63d"
+    },
+    {
+      "SourceNodeId": "1ab3b49e-3e69-4add-912f-8c035a80a92e",
+      "SourcePinId": "91b02e4b-8aae-40af-bd3a-c9c3e2d3fa59",
+      "TargetNodeId": "bea6b982-3bfa-4030-8106-b79dc5d73564",
+      "TargetPinId": "0448c6b5-409b-4ab4-a787-2d454857471d"
+    },
+    {
+      "SourceNodeId": "1e8898cc-8221-4d9d-99d3-77cb3bed1e9a",
+      "SourcePinId": "2b3ddfed-493e-4fa6-91dc-2b57473bb7a8",
+      "TargetNodeId": "1de3ac36-16c8-4029-984e-c91e68b87f9a",
+      "TargetPinId": "cf4f2ec1-727a-40a2-9dd0-3ffc7038c772"
+    }
+  ],
+  "ProfileName": "Plane retractable gear"
+}
