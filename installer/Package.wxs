@@ -29,6 +29,18 @@
       <Directory Id="ApplicationProgramsFolder" Name="icsmoi" />
     </StandardDirectory>
 
+    <StandardDirectory Id="DesktopFolder">
+      <Component Id="DesktopShortcut" Guid="*">
+        <Shortcut Id="RuntimeDesktopShortcut"
+                  Name="icsmoi"
+                  Description="Force-feedback profile editor and runtime"
+                  Target="[INSTALLFOLDER]icsmoi.Runtime.exe"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Icon="AppIcon" />
+        <RegistryValue Root="HKCU" Key="Software\icsmoi" Name="DesktopShortcutInstalled" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </StandardDirectory>
+
     <!-- Harvests every file under the Runtime's publish output (exe, dlls, Editor\, Examples\, etc.). -->
     <ComponentGroup Id="AppFiles" Directory="INSTALLFOLDER">
       <Files Include="$(var.PublishDir)**" />
@@ -50,6 +62,7 @@
     <Feature Id="Main" Title="icsmoi" Level="1">
       <ComponentGroupRef Id="AppFiles" />
       <ComponentRef Id="ApplicationShortcut" />
+      <ComponentRef Id="DesktopShortcut" />
     </Feature>
   </Package>
 </Wix>
