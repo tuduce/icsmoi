@@ -1,0 +1,416 @@
+{
+  "Nodes": [
+    {
+      "$type": "joystick",
+      "DeviceInstanceGuid": null,
+      "Id": "453b4a5f-fd51-4d2d-aca4-f5d92793efd4",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "$type": "joystick",
+          "Kind": "Button",
+          "Index": 0,
+          "Id": "3bcb83bb-d255-43e4-914f-86c87da8cb6b",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Button 1",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "$type": "joystick",
+          "Kind": "Button",
+          "Index": 1,
+          "Id": "c92e67d0-90d8-49cc-8df9-3e612c23e5e0",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Button 2",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Joystick Input",
+      "X": 40,
+      "Y": 40,
+      "IsSelected": false
+    },
+    {
+      "$type": "edgedetector",
+      "Id": "4490e744-ba08-425c-8771-c1629e58c2c6",
+      "Inputs": [
+        {
+          "Id": "e231c1d1-6eca-47e1-bb6e-20c516556da9",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Input",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "609095c0-0659-4e81-b5a2-d7b1350be05e",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Rising",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "45921f55-776a-4bcf-b554-89be913a7d24",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Falling",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "762ea8a8-6a8c-45ef-aefe-95a0dc0661f2",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Either",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Trim Up Press",
+      "X": 340,
+      "Y": 20,
+      "IsSelected": false
+    },
+    {
+      "$type": "edgedetector",
+      "Id": "f549e2b6-0edc-4091-aad9-8db0ab3a9bd6",
+      "Inputs": [
+        {
+          "Id": "0821fa53-615d-40c4-949e-f6f29d76fead",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Input",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "37fc6954-2414-40ae-b403-c821be859ec5",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Rising",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "619a70c8-525d-4008-b912-d42c5bc1fe9f",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Falling",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "6b574145-79e9-455e-b706-d07c5699eeae",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Either",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Trim Down Press",
+      "X": 340,
+      "Y": 140,
+      "IsSelected": false
+    },
+    {
+      "$type": "math",
+      "Expression": "([A]-[B])*0.02",
+      "Id": "9533a7a5-3559-47a2-8331-d0cdefdd1402",
+      "Inputs": [
+        {
+          "Id": "671c2d06-970f-4e69-b441-2ae606e71abd",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "A",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "d50a656d-7b81-4710-81c1-047b6ee4de11",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "B",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0f99cc07-19d4-48cd-82c9-45e7260d65f5",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Trim Step",
+      "X": 640,
+      "Y": 80,
+      "IsSelected": false
+    },
+    {
+      "$type": "integrator",
+      "AddPerTick": true,
+      "Id": "4c8c6d5f-f6ca-437e-87e0-9ab3f85a6fc7",
+      "Inputs": [
+        {
+          "Id": "84ea8305-6b2c-4ccb-ad14-a17c0ba4becf",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Input",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "13cf95f5-c553-4e63-ba7b-d6914038f006",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Reset",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "dda53e65-e877-429b-a72d-8eb67e49c88c",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": -1,
+          "Flow": "Input",
+          "Title": "Min",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "f96dec85-0ffa-4ba6-acdf-e37e9f4c570f",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 1,
+          "Flow": "Input",
+          "Title": "Max",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "82f0dac8-b65e-47b7-8868-a3acc08eb0fe",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Wrap",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "55867776-3d06-4f13-839a-97effabeec3e",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Trim Position",
+      "X": 940,
+      "Y": 80,
+      "IsSelected": false
+    },
+    {
+      "$type": "condition",
+      "ConditionKind": "Spring",
+      "LastPositiveCoefficient": 0,
+      "DeviceInstanceGuid": null,
+      "AxisIndex": -1,
+      "DirectionDegrees": 0,
+      "Gain": 10000,
+      "Id": "8d3dc1a0-44d8-4f19-bf5d-8795d053e4ba",
+      "Inputs": [
+        {
+          "Id": "ee375445-d276-4676-8339-93894dd5de8c",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0.3,
+          "Flow": "Input",
+          "Title": "PositiveCoefficient",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "9f9d254a-c306-4dcb-a9f2-1a79e6e62047",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0.3,
+          "Flow": "Input",
+          "Title": "NegativeCoefficient",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "b1e1040d-ef6d-4fc2-80a0-f329971675d4",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Offset",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "b6bdcd2a-54b6-4411-a359-f186b852bcc7",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "DeadBand",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "eca8b21c-5ac9-4a0c-b77a-c4eccb004742",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 1,
+          "Flow": "Input",
+          "Title": "Saturation",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [],
+      "Name": "Condition",
+      "X": 1240,
+      "Y": 80,
+      "IsSelected": false
+    }
+  ],
+  "Connections": [
+    {
+      "SourceNodeId": "453b4a5f-fd51-4d2d-aca4-f5d92793efd4",
+      "SourcePinId": "3bcb83bb-d255-43e4-914f-86c87da8cb6b",
+      "TargetNodeId": "4490e744-ba08-425c-8771-c1629e58c2c6",
+      "TargetPinId": "e231c1d1-6eca-47e1-bb6e-20c516556da9"
+    },
+    {
+      "SourceNodeId": "453b4a5f-fd51-4d2d-aca4-f5d92793efd4",
+      "SourcePinId": "c92e67d0-90d8-49cc-8df9-3e612c23e5e0",
+      "TargetNodeId": "f549e2b6-0edc-4091-aad9-8db0ab3a9bd6",
+      "TargetPinId": "0821fa53-615d-40c4-949e-f6f29d76fead"
+    },
+    {
+      "SourceNodeId": "4490e744-ba08-425c-8771-c1629e58c2c6",
+      "SourcePinId": "609095c0-0659-4e81-b5a2-d7b1350be05e",
+      "TargetNodeId": "9533a7a5-3559-47a2-8331-d0cdefdd1402",
+      "TargetPinId": "671c2d06-970f-4e69-b441-2ae606e71abd"
+    },
+    {
+      "SourceNodeId": "f549e2b6-0edc-4091-aad9-8db0ab3a9bd6",
+      "SourcePinId": "37fc6954-2414-40ae-b403-c821be859ec5",
+      "TargetNodeId": "9533a7a5-3559-47a2-8331-d0cdefdd1402",
+      "TargetPinId": "d50a656d-7b81-4710-81c1-047b6ee4de11"
+    },
+    {
+      "SourceNodeId": "9533a7a5-3559-47a2-8331-d0cdefdd1402",
+      "SourcePinId": "0f99cc07-19d4-48cd-82c9-45e7260d65f5",
+      "TargetNodeId": "4c8c6d5f-f6ca-437e-87e0-9ab3f85a6fc7",
+      "TargetPinId": "84ea8305-6b2c-4ccb-ad14-a17c0ba4becf"
+    },
+    {
+      "SourceNodeId": "4c8c6d5f-f6ca-437e-87e0-9ab3f85a6fc7",
+      "SourcePinId": "55867776-3d06-4f13-839a-97effabeec3e",
+      "TargetNodeId": "8d3dc1a0-44d8-4f19-bf5d-8795d053e4ba",
+      "TargetPinId": "b1e1040d-ef6d-4fc2-80a0-f329971675d4"
+    }
+  ],
+  "ProfileName": "Button Trim (Example)"
+}

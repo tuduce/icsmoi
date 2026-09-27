@@ -52,6 +52,16 @@ public sealed partial class StatusWindowViewModel : ObservableObject, IDisposabl
         Slots = Enumerable.Range(0, RuntimeSettings.SlotCount).Select(i => new ProfileSlotViewModel(this, i)).ToArray();
     }
 
+    /// <summary>The running build's version (Major.Minor of the assembly version, e.g. "v26.1"), shown next to
+    /// the "Runtime" caption so a bug report can include which release it came from.</summary>
+    public string VersionText { get; } = FormatVersion();
+
+    private static string FormatVersion()
+    {
+        var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+        return version is null ? "" : $"v{version.Major}.{version.Minor}";
+    }
+
     // ── Profile slots ────────────────────────────────────────────────────────
 
     public IReadOnlyList<ProfileSlotViewModel> Slots { get; }

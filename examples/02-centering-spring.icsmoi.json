@@ -1,0 +1,180 @@
+{
+  "Nodes": [
+    {
+      "$type": "simconnect",
+      "VariableName": "AIRSPEED INDICATED",
+      "Id": "73373dc1-3df7-4cf8-bb4a-5d72c9547bac",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "250e7862-f67d-4191-b0ae-1deb96c2c932",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Value",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Name": "SimConnect Input",
+      "X": 40,
+      "Y": 60,
+      "IsSelected": false
+    },
+    {
+      "$type": "curve",
+      "Points": [
+        {
+          "X": 0,
+          "Y": 0.05
+        },
+        {
+          "X": 60,
+          "Y": 0.15
+        },
+        {
+          "X": 120,
+          "Y": 0.4
+        },
+        {
+          "X": 200,
+          "Y": 0.6
+        }
+      ],
+      "Id": "9940bc40-b7a5-417b-b8b1-cf873ba625d8",
+      "Inputs": [
+        {
+          "Id": "f3bd51c1-f22a-45ec-9343-b88af82d7a1a",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Value",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "24ce9dee-1809-4674-a0a3-d2f49949c2f6",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Stiffness Curve",
+      "X": 340,
+      "Y": 60,
+      "IsSelected": false
+    },
+    {
+      "$type": "condition",
+      "ConditionKind": "Spring",
+      "LastPositiveCoefficient": 0,
+      "DeviceInstanceGuid": null,
+      "AxisIndex": -1,
+      "DirectionDegrees": 0,
+      "Gain": 10000,
+      "Id": "b3a85aec-3bb2-43b0-8d83-a539cae2bc7c",
+      "Inputs": [
+        {
+          "Id": "37730fec-da8e-4d3e-91c4-622b9a5d5765",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "PositiveCoefficient",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "2702de58-344a-46e1-ac26-707dcc983dea",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "NegativeCoefficient",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "ee8d8b85-e1c8-4990-8912-65db2647ab1f",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Offset",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "13abbe54-292a-414c-a21f-e1a021e04504",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "DeadBand",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "e22673d6-b35d-424b-a1be-f4103c693b40",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 1,
+          "Flow": "Input",
+          "Title": "Saturation",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [],
+      "Name": "Condition",
+      "X": 640,
+      "Y": 60,
+      "IsSelected": false
+    }
+  ],
+  "Connections": [
+    {
+      "SourceNodeId": "73373dc1-3df7-4cf8-bb4a-5d72c9547bac",
+      "SourcePinId": "250e7862-f67d-4191-b0ae-1deb96c2c932",
+      "TargetNodeId": "9940bc40-b7a5-417b-b8b1-cf873ba625d8",
+      "TargetPinId": "f3bd51c1-f22a-45ec-9343-b88af82d7a1a"
+    },
+    {
+      "SourceNodeId": "9940bc40-b7a5-417b-b8b1-cf873ba625d8",
+      "SourcePinId": "24ce9dee-1809-4674-a0a3-d2f49949c2f6",
+      "TargetNodeId": "b3a85aec-3bb2-43b0-8d83-a539cae2bc7c",
+      "TargetPinId": "37730fec-da8e-4d3e-91c4-622b9a5d5765"
+    },
+    {
+      "SourceNodeId": "9940bc40-b7a5-417b-b8b1-cf873ba625d8",
+      "SourcePinId": "24ce9dee-1809-4674-a0a3-d2f49949c2f6",
+      "TargetNodeId": "b3a85aec-3bb2-43b0-8d83-a539cae2bc7c",
+      "TargetPinId": "2702de58-344a-46e1-ac26-707dcc983dea"
+    }
+  ],
+  "ProfileName": "Centering Spring (Example)"
+}

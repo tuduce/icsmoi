@@ -5,4 +5,7 @@
     <Project Path="src/icsmoi.Runtime/icsmoi.Runtime.csproj" />
     <Project Path="src/icsmoi.Shared.Ui/icsmoi.Shared.Ui.csproj" />
   </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/ExampleProfileGenerator/ExampleProfileGenerator.csproj" />
+  </Folder>
 </Solution>

@@ -1,0 +1,156 @@
+{
+  "Nodes": [
+    {
+      "$type": "simconnect",
+      "VariableName": "AIRSPEED INDICATED",
+      "Id": "60546173-d2e7-45ad-8d4f-38a0aa8fdd5e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5852ee99-5460-4b71-83eb-3c75c2ce5950",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Value",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Name": "SimConnect Input",
+      "X": 40,
+      "Y": 60,
+      "IsSelected": false
+    },
+    {
+      "$type": "rangemap",
+      "Clamp": true,
+      "Id": "5d993b83-e37e-4bb9-a5f6-5179511a4fda",
+      "Inputs": [
+        {
+          "Id": "51ad5988-6eef-408f-8246-ef338056edd3",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Value",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "530113c6-3c1b-46f1-b948-1200618e6c06",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 40,
+          "Flow": "Input",
+          "Title": "InMin",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "ad7b3746-61c1-4c63-843f-462309f51a47",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 200,
+          "Flow": "Input",
+          "Title": "InMax",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "5011eda2-fb50-44f7-8987-df91edb0d0c7",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "OutMin",
+          "IsConnected": false,
+          "CanConnect": false
+        },
+        {
+          "Id": "a2fce63e-70e3-41bd-9daf-b6cb36b4f5fb",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0.15,
+          "Flow": "Input",
+          "Title": "OutMax",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e37e3760-04d3-4a52-88dd-07df71b85a76",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Output",
+          "Title": "Result",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Name": "Range Map",
+      "X": 340,
+      "Y": 60,
+      "IsSelected": false
+    },
+    {
+      "$type": "constantforce",
+      "LastMagnitude": 0,
+      "DeviceInstanceGuid": null,
+      "AxisIndex": -1,
+      "DirectionDegrees": 0,
+      "Gain": 10000,
+      "Id": "f31a8f28-0f9a-4615-a104-b56d59941e39",
+      "Inputs": [
+        {
+          "Id": "640d07df-7250-4420-b599-af0bbb71db4f",
+          "Anchor": {
+            "X": 0,
+            "Y": 0
+          },
+          "Value": 0,
+          "Flow": "Input",
+          "Title": "Magnitude",
+          "IsConnected": false,
+          "CanConnect": false
+        }
+      ],
+      "Outputs": [],
+      "Name": "Constant Force",
+      "X": 640,
+      "Y": 60,
+      "IsSelected": false
+    }
+  ],
+  "Connections": [
+    {
+      "SourceNodeId": "60546173-d2e7-45ad-8d4f-38a0aa8fdd5e",
+      "SourcePinId": "5852ee99-5460-4b71-83eb-3c75c2ce5950",
+      "TargetNodeId": "5d993b83-e37e-4bb9-a5f6-5179511a4fda",
+      "TargetPinId": "51ad5988-6eef-408f-8246-ef338056edd3"
+    },
+    {
+      "SourceNodeId": "5d993b83-e37e-4bb9-a5f6-5179511a4fda",
+      "SourcePinId": "e37e3760-04d3-4a52-88dd-07df71b85a76",
+      "TargetNodeId": "f31a8f28-0f9a-4615-a104-b56d59941e39",
+      "TargetPinId": "640d07df-7250-4420-b599-af0bbb71db4f"
+    }
+  ],
+  "ProfileName": "Airspeed Buffet (Example)"
+}

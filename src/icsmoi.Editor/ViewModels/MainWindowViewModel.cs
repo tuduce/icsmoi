@@ -153,6 +153,16 @@ public partial class MainWindowViewModel : NodifyEditorViewModelBase
     [ObservableProperty]
     private FfbProfile _profile = CreateDefaultProfile();
 
+    /// <summary>The running build's version (Major.Minor of the assembly version, e.g. "v26.1"), shown as the
+    /// wordmark's tooltip so a bug report can include which release it came from.</summary>
+    public string VersionText { get; } = FormatVersion();
+
+    private static string FormatVersion()
+    {
+        var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+        return version is null ? "icsmoi" : $"icsmoi v{version.Major}.{version.Minor}";
+    }
+
     public MainWindowViewModel()
     {
         RefreshDevices(); // before seeding, so the initial nodes' axis dropdowns can be filled

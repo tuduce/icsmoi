@@ -2,3 +2,15 @@
 bin/
 obj/
 .vs/
+*.user
+.idea/
+
+# Proprietary MSFS SDK files — see lib/SimConnect/README.md. Not distributed with this repo.
+lib/SimConnect/*.dll
+
+# Release packaging output
+publish/
+installer/bin/
+installer/obj/
+*.msi
+*.sha256

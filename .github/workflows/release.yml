@@ -1,0 +1,108 @@
+name: Release
+
+# Tag-triggered only: creating a tag on this repo requires push access, so a fork/PR from a
+# stranger can never trigger this — which matters because it runs on a self-hosted runner (see
+# below). Tag format: v26.1, v26.2, ... v27.1, ... (see the versioning note in CHANGELOG.md).
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    # Must be self-hosted: this build needs the proprietary MSFS SimConnect SDK files
+    # (lib/SimConnect/*.dll — gitignored, see lib/SimConnect/README.md) and WiX Toolset v6,
+    # neither of which a GitHub-hosted runner can have. Both are expected to already be present
+    # on this machine — this workflow does not fetch or install either.
+    runs-on: [self-hosted, Windows]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify the proprietary SimConnect SDK files are present on this runner
+        shell: pwsh
+        run: |
+          $files = @(
+            "lib/SimConnect/Microsoft.FlightSimulator.SimConnect.dll",
+            "lib/SimConnect/SimConnect.dll"
+          )
+          $missing = $files | Where-Object { -not (Test-Path $_) }
+          if ($missing) {
+            Write-Error "Missing on this runner: $($missing -join ', '). See lib/SimConnect/README.md — place your own copy of these files here once, this is a one-time setup on this machine, not something the workflow can fetch."
+            exit 1
+          }
+
+      - name: Parse version from tag
+        id: version
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          if ($tag -notmatch '^v(\d+\.\d+)$') {
+            Write-Error "Tag '$tag' doesn't match the expected vYY.N format (e.g. v26.1)."
+            exit 1
+          }
+          $short = $Matches[1]
+          "short=$short" >> $env:GITHUB_OUTPUT
+          "full=$short.0" >> $env:GITHUB_OUTPUT
+
+      - name: Publish Editor (self-contained, win-x64)
+        run: dotnet publish src/icsmoi.Editor/icsmoi.Editor.csproj -c Release -r win-x64 --self-contained true -p:Version=${{ steps.version.outputs.full }} -o publish/Editor
+
+      - name: Publish Runtime (self-contained, win-x64)
+        run: dotnet publish src/icsmoi.Runtime/icsmoi.Runtime.csproj -c Release -r win-x64 --self-contained true -p:Version=${{ steps.version.outputs.full }} -o publish/Runtime
+
+      - name: Bundle the Editor and example profiles into the Runtime's publish output
+        shell: pwsh
+        run: |
+          # BundleEditor (icsmoi.Runtime.csproj) only fires for `dotnet build`/`dotnet run` and copies
+          # from the Editor's *build* output, not its *publish* output — so `dotnet publish` on the
+          # Runtime alone does not produce a working installer payload. Do the equivalent copy here,
+          # from each project's real publish output, instead of touching that dev-time MSBuild target.
+          New-Item -ItemType Directory -Force -Path publish/Runtime/Editor, publish/Runtime/Examples | Out-Null
+          Copy-Item -Recurse -Force publish/Editor/* publish/Runtime/Editor/
+          Copy-Item -Force examples/*.icsmoi.json publish/Runtime/Examples/
+
+      - name: Build the MSI installer
+        run: dotnet build installer/icsmoi.wixproj -c Release -p:AppPublishDir="${{ github.workspace }}\publish\Runtime\" -p:ProductVersion=${{ steps.version.outputs.full }} -o installer_out
+
+      - name: Rename and hash the installer
+        id: artifact
+        shell: pwsh
+        run: |
+          $msiName = "icsmoi-${{ steps.version.outputs.short }}-win-x64.msi"
+          Move-Item installer_out/icsmoi.msi $msiName -Force
+          $hash = (Get-FileHash $msiName -Algorithm SHA256).Hash
+          "$hash  $msiName" | Out-File "$msiName.sha256" -Encoding ascii
+          "msi=$msiName" >> $env:GITHUB_OUTPUT
+
+      - name: Zip the example profiles
+        shell: pwsh
+        run: Compress-Archive -Path examples/*.icsmoi.json, examples/README.md -DestinationPath icsmoi-example-profiles.zip -Force
+
+      - name: Extract this version's release notes from CHANGELOG.md
+        shell: pwsh
+        run: |
+          $version = "${{ steps.version.outputs.short }}"
+          $content = Get-Content CHANGELOG.md -Raw
+          $pattern = "(?ms)^## $([regex]::Escape($version))\b.*?(?=^## |\z)"
+          $match = [regex]::Match($content, $pattern)
+          if (-not $match.Success) {
+            Write-Error "No '## $version' section found in CHANGELOG.md — add one before tagging."
+            exit 1
+          }
+          $match.Value.TrimEnd() | Out-File release-notes.md -Encoding utf8
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          name: icsmoi ${{ steps.version.outputs.short }}
+          body_path: release-notes.md
+          files: |
+            ${{ steps.artifact.outputs.msi }}
+            ${{ steps.artifact.outputs.msi }}.sha256
+            icsmoi-example-profiles.zip

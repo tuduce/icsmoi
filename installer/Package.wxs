@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Packages the Runtime's self-contained publish output (which already contains the bundled
+  Editor under Editor\ and the example profiles under Examples\ — see
+  .github/workflows/release.yml) into a per-machine MSI under Program Files\icsmoi.
+
+  ProductVersion is supplied at build time via -p:DefineConstants="...;ProductVersion=26.1.0".
+  UpgradeCode below is fixed forever so later releases upgrade in place — never change it.
+-->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="icsmoi"
+           Manufacturer="Cristian Tuduce"
+           Version="$(var.ProductVersion)"
+           UpgradeCode="407097DE-5BDB-43F8-8ED4-D6F50B671352"
+           Scope="perMachine">
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of icsmoi is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Icon Id="AppIcon" SourceFile="..\src\icsmoi.Shared.Ui\Assets\icsmoi.ico" />
+    <Property Id="ARPPRODUCTICON" Value="AppIcon" />
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/tuduce/icsmoi" />
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="icsmoi" />
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ApplicationProgramsFolder" Name="icsmoi" />
+    </StandardDirectory>
+
+    <!-- Harvests every file under the Runtime's publish output (exe, dlls, Editor\, Examples\, etc.). -->
+    <ComponentGroup Id="AppFiles" Directory="INSTALLFOLDER">
+      <Files Include="$(var.PublishDir)**" />
+    </ComponentGroup>
+
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Guid="*">
+        <Shortcut Id="RuntimeStartMenuShortcut"
+                  Name="icsmoi"
+                  Description="Force-feedback profile editor and runtime"
+                  Target="[INSTALLFOLDER]icsmoi.Runtime.exe"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Icon="AppIcon" />
+        <RemoveFolder Id="CleanUpShortcutFolder" Directory="ApplicationProgramsFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\icsmoi" Name="Installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+
+    <Feature Id="Main" Title="icsmoi" Level="1">
+      <ComponentGroupRef Id="AppFiles" />
+      <ComponentRef Id="ApplicationShortcut" />
+    </Feature>
+  </Package>
+</Wix>

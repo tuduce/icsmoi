@@ -1,0 +1,13 @@
+<Project>
+  <!--
+    Default version for local `dotnet build`/`dotnet run`. Release builds override
+    this with `-p:Version=` derived from the git tag (see .github/workflows/release.yml) —
+    icsmoi uses a YY.N version scheme (26.1, 26.2, ... 27.1, ...), so a plain 0.0.0
+    placeholder here is intentional and never meant to reach a shipped build.
+  -->
+  <PropertyGroup>
+    <Version>0.0.0-local</Version>
+    <Authors>Cristian Tuduce</Authors>
+    <Product>icsmoi</Product>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,20 @@
+<Project Sdk="WixToolset.Sdk/6.0.2">
+  <PropertyGroup>
+    <OutputType>Package</OutputType>
+    <OutputName>icsmoi</OutputName>
+    <Platform>x64</Platform>
+
+    <!--
+      Local defaults so the project loads/builds standalone without extra arguments. The release
+      workflow overrides both with plain, semicolon-free MSBuild properties:
+        dotnet build installer/icsmoi.wixproj -p:AppPublishDir=<path-with-trailing-slash> -p:ProductVersion=26.1.0
+      (combined into DefineConstants here, rather than asking the caller to pass a single
+      semicolon-separated DefineConstants value on the command line, which is awkward to escape
+      correctly across shells).
+    -->
+    <AppPublishDir Condition="'$(AppPublishDir)' == ''">..\publish\Runtime\</AppPublishDir>
+    <ProductVersion Condition="'$(ProductVersion)' == ''">0.0.0</ProductVersion>
+
+    <DefineConstants>PublishDir=$(AppPublishDir);ProductVersion=$(ProductVersion)</DefineConstants>
+  </PropertyGroup>
+</Project>
