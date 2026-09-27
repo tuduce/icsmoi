@@ -31,3 +31,20 @@ automatically via the `<Reference>`/`<None>` entries in
 Without these files, `icsmoi.Core` (and therefore the Editor and Runtime) will
 fail to build — SimConnect telemetry is not optional at compile time in the
 current codebase.
+
+## On the release self-hosted runner specifically
+
+Do **not** place the files directly in this folder on the runner machine.
+`actions/checkout` runs with its default `clean: true`, which deletes
+gitignored files (this folder included) before every checkout — anything
+placed here would be wiped out on the very next release run.
+
+Instead, place both files once in a fixed folder outside any repo checkout,
+then point the release workflow at it via a **repository variable** (not
+hardcoded in the workflow, so this public file doesn't reveal a path on your
+machine): **Settings → Secrets and variables → Actions → Variables → New
+repository variable**, name `SIMCONNECT_SDK_DIR`, value = that folder's path
+on the runner (e.g. `C:\actions-runner\simconnect-sdk`).
+`.github/workflows/release.yml` copies the two files from there into this
+folder at the start of each release build, and fails with a clear message if
+the variable isn't set or the files aren't found.

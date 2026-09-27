@@ -22,16 +22,32 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Verify the proprietary SimConnect SDK files are present on this runner
+      - name: Restore the proprietary SimConnect SDK files onto this checkout
         shell: pwsh
+        env:
+          # A fixed, runner-local folder OUTSIDE any repo's checkout — set once as a repository
+          # variable (Settings → Secrets and variables → Actions → Variables → SIMCONNECT_SDK_DIR),
+          # rather than hardcoded here, so this public workflow file doesn't reveal a path on your
+          # machine. actions/checkout defaults to `clean: true` (`git clean -ffdx`), which wipes
+          # gitignored files too, so lib/SimConnect/*.dll can NOT live inside the workspace across
+          # runs — the two files must live in this external folder instead.
+          SIMCONNECT_SDK_DIR: ${{ vars.SIMCONNECT_SDK_DIR }}
         run: |
-          $files = @(
-            "lib/SimConnect/Microsoft.FlightSimulator.SimConnect.dll",
-            "lib/SimConnect/SimConnect.dll"
-          )
-          $missing = $files | Where-Object { -not (Test-Path $_) }
+          if ([string]::IsNullOrWhiteSpace($env:SIMCONNECT_SDK_DIR)) {
+            Write-Error "Repository variable SIMCONNECT_SDK_DIR is not set. Add it under Settings -> Secrets and variables -> Actions -> Variables, pointing at a folder on this runner (outside any repo checkout) that holds your copy of the MSFS SimConnect SDK files — see lib/SimConnect/README.md."
+            exit 1
+          }
+          $dest = "lib\SimConnect"
+          New-Item -ItemType Directory -Force -Path $dest | Out-Null
+          $files = "Microsoft.FlightSimulator.SimConnect.dll", "SimConnect.dll"
+          $missing = @()
+          foreach ($f in $files) {
+            $src = Join-Path $env:SIMCONNECT_SDK_DIR $f
+            if (Test-Path $src) { Copy-Item $src (Join-Path $dest $f) -Force }
+            else { $missing += $src }
+          }
           if ($missing) {
-            Write-Error "Missing on this runner: $($missing -join ', '). See lib/SimConnect/README.md — place your own copy of these files here once, this is a one-time setup on this machine, not something the workflow can fetch."
+            Write-Error "Missing on this runner: $($missing -join ', '). Place your own copy of the MSFS SimConnect SDK files there once — see lib/SimConnect/README.md for where to get them from the SDK."
             exit 1
           }
 
